@@ -28,7 +28,7 @@ router.beforeEach((to:RouteLocationNormalized, from:RouteLocationNormalized, nex
         // 判断当前用户是否已拉取完user_info信息
         useUserStore().getInfo().then(() => {
           isRelogin.show = false
-          usePermissionStore().generateRoutes().then((accessRoutes:Array<{path:string}>) => {
+          usePermissionStore().generateRoutes().then((accessRoutes:any) => {
             // 根据roles权限生成可访问的路由表
             accessRoutes.forEach((route:{path:string}) => {
               if (!isHttp(route.path)) {
