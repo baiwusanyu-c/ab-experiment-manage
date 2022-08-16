@@ -1,13 +1,6 @@
 import {defineStore} from "pinia";
-interface ITagView {
-  name:string
-  path:string
-  meta:{
-    title:string
-    affix:boolean
-    noCache:boolean
-  }
-}
+import {ITagView} from "../../utils/types";
+
 const useTagsViewStore = defineStore(
   'tags-view',
   {
@@ -91,7 +84,7 @@ const useTagsViewStore = defineStore(
           resolve([...this.cachedViews])
         })
       },
-      delAllViews(view:ITagView) {
+      delAllViews(view?:ITagView) {
         return new Promise(resolve => {
           this.delAllVisitedViews(view)
           this.delAllCachedViews(view)

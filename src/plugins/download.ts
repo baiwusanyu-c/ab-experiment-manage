@@ -1,14 +1,14 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
-import { saveAs } from 'file-saver'
-import { getToken } from '@/utils/auth'
-import errorCode from '@/utils/errorCode'
-import { blobValidate } from '@/utils/ruoyi'
+import FileSaver, { saveAs } from 'file-saver'
+import { getToken } from '../utils/auth'
+import errorCode from '../utils/errorCode'
+import { blobValidate } from '../utils/ruoyi'
 
 const baseURL = import.meta.env.VITE_APP_BASE_API
 
 export default {
-  name(name, isDelete = true) {
+  name(name:string, isDelete = true) {
     var url = baseURL + "/common/download?fileName=" + encodeURI(name) + "&delete=" + isDelete
     axios({
       method: 'get',
@@ -25,7 +25,7 @@ export default {
       }
     })
   },
-  resource(resource) {
+  resource(resource:string) {
     var url = baseURL + "/common/download/resource?resource=" + encodeURI(resource);
     axios({
       method: 'get',
@@ -42,7 +42,7 @@ export default {
       }
     })
   },
-  zip(url, name) {
+  zip(url:string, name:string) {
     var url = baseURL + url
     axios({
       method: 'get',
@@ -59,13 +59,13 @@ export default {
       }
     })
   },
-  saveAs(text, name, opts) {
+  saveAs(text:string, name:string, opts:FileSaver.FileSaverOptions) {
     saveAs(text, name, opts);
   },
-  async printErrMsg(data) {
+  async printErrMsg(data:any) {
     const resText = await data.text();
     const rspObj = JSON.parse(resText);
-    const errMsg = errorCode[rspObj.code] || rspObj.msg || errorCode['default']
+    const errMsg = errorCode[rspObj.code as keyof typeof errorCode] || rspObj.msg || errorCode['default']
     ElMessage.error(errMsg);
   }
 }

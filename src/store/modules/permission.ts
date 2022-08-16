@@ -6,19 +6,10 @@ import ParentView from '../../components/ParentView/index.vue'
 import InnerLink from '../../layout/components/InnerLink/index.vue'
 import {defineStore} from "pinia";
 import {RouterOptions} from "vue-router";
+import {routerArray, routerArrayType} from "../../utils/types";
 // 匹配views里面所有的.vue文件
 const modules = import.meta.glob('./../../views/**/*.vue')
-interface routerArray extends RouterOptions {
-  children:Array<any>,
-  component?:any
-  redirect:string
-  path:string
-  permissions:Array<string>,
-  roles?:Array<string>,
-  hidden?: boolean,
 
-}
-declare type routerArrayType  = typeof constantRoutes
 const usePermissionStore = defineStore(
   'permission',
   {

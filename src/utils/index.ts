@@ -21,16 +21,16 @@ export function formatDate(cellValue:string) {
  * @param {string} option
  * @returns {string}
  */
-export function formatTime(time, option) {
+export function formatTime(time:number, option:string) {
   if (('' + time).length === 10) {
-    time = parseInt(time) * 1000
+    time = parseInt(time.toString()) * 1000
   } else {
     time = +time
   }
-  const d = new Date(time)
+  const d:Date = new Date(time)
   const now = Date.now()
 
-  const diff = (now - d) / 1000
+  const diff = (now - Number(d)) / 1000
 
   if (diff < 30) {
     return '刚刚'
@@ -216,16 +216,16 @@ export function getTime(type:string) {
  * @param {boolean} immediate
  * @return {*}
  */
-export function debounce(func, wait, immediate) {
-  let timeout, args, context, timestamp, result
+export function debounce(func:Function, wait:number, immediate:boolean) {
+  let timeout:number | null, args:Array<any> | null, context:Array<any> | null, timestamp:number | null, result:Function
 
   const later = function() {
     // 据上一次触发时间间隔
-    const last = +new Date() - timestamp
+    const last = +new Date() - Number(timestamp)
 
     // 上次被包装函数被调用时间间隔 last 小于设定时间间隔 wait
     if (last < wait && last > 0) {
-      timeout = setTimeout(later, wait - last)
+      timeout = window.setTimeout(later, wait - last)
     } else {
       timeout = null
       // 如果设定为immediate===true，因为开始边界已经调用过了此处无需调用
@@ -236,12 +236,12 @@ export function debounce(func, wait, immediate) {
     }
   }
 
-  return function(...args) {
+  return function(...args:any) {
     context = this
     timestamp = +new Date()
     const callNow = immediate && !timeout
     // 如果延时不存在，重新设定延时
-    if (!timeout) timeout = setTimeout(later, wait)
+    if (!timeout) timeout = window.setTimeout(later, wait)
     if (callNow) {
       result = func.apply(context, args)
       context = args = null
@@ -258,11 +258,12 @@ export function debounce(func, wait, immediate) {
  * @param {Object} source
  * @returns {Object}
  */
-export function deepClone(source) {
+export function deepClone(source:IOption) {
   if (!source && typeof source !== 'object') {
-    throw new Error('error arguments', 'deepClone')
+    // @ts-ignore
+    throw new Error('error arguments', "deepClone")
   }
-  const targetObj = source.constructor === Array ? [] : {}
+  const targetObj:IOption = source.constructor === Array ? [] : {}
   Object.keys(source).forEach(keys => {
     if (source[keys] && typeof source[keys] === 'object') {
       targetObj[keys] = deepClone(source[keys])
@@ -277,7 +278,7 @@ export function deepClone(source) {
  * @param {Array} arr
  * @returns {Array}
  */
-export function uniqueArr(arr) {
+export function uniqueArr(arr:Array<unknown>) {
   return Array.from(new Set(arr))
 }
 
@@ -286,50 +287,50 @@ export function uniqueArr(arr) {
  */
 export function createUniqueString() {
   const timestamp = +new Date() + ''
-  const randomNum = parseInt((1 + Math.random()) * 65536) + ''
+  const randomNum = parseInt(((1 + Math.random()) * 65536).toString()) + ''
   return (+(randomNum + timestamp)).toString(32)
 }
 
 /**
  * Check if an element has a class
- * @param {HTMLElement} elm
+ * @param {HTMLElement} ele
  * @param {string} cls
  * @returns {boolean}
  */
-export function hasClass(ele, cls) {
+export function hasClass(ele:HTMLElement, cls:string) {
   return !!ele.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'))
 }
 
 /**
  * Add class to element
- * @param {HTMLElement} elm
+ * @param {HTMLElement} ele
  * @param {string} cls
  */
-export function addClass(ele, cls) {
+export function addClass(ele:HTMLElement, cls:string) {
   if (!hasClass(ele, cls)) ele.className += ' ' + cls
 }
 
 /**
  * Remove class from element
- * @param {HTMLElement} elm
+ * @param {HTMLElement} ele
  * @param {string} cls
  */
-export function removeClass(ele, cls) {
+export function removeClass(ele:HTMLElement, cls:string) {
   if (hasClass(ele, cls)) {
     const reg = new RegExp('(\\s|^)' + cls + '(\\s|$)')
     ele.className = ele.className.replace(reg, ' ')
   }
 }
 
-export function makeMap(str, expectsLowerCase) {
+export function makeMap(str:string, expectsLowerCase:boolean) {
   const map = Object.create(null)
   const list = str.split(',')
   for (let i = 0; i < list.length; i++) {
     map[list[i]] = true
   }
   return expectsLowerCase
-    ? val => map[val.toLowerCase()]
-    : val => map[val]
+    ? (val:string) => map[val.toLowerCase()]
+    : (val:string) => map[val]
 }
  
 export const exportDefault = 'export default '
@@ -376,16 +377,16 @@ export const beautifierConf = {
 }
 
 // 首字母大小
-export function titleCase(str) {
+export function titleCase(str:string) {
   return str.replace(/( |^)[a-z]/g, L => L.toUpperCase())
 }
 
 // 下划转驼峰
-export function camelCase(str) {
+export function camelCase(str:string) {
   return str.replace(/_[a-z]/g, str1 => str1.substr(-1).toUpperCase())
 }
 
-export function isNumberStr(str) {
+export function isNumberStr(str:string) {
   return /^[+-]?(0|([1-9]\d*))(\.\d+)?$/g.test(str)
 }
  
