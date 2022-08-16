@@ -78,7 +78,7 @@
           >删除</el-button
         >
       </el-col>
-      <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar v-model:showSearch="showSearch" @query-table="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="tableList" @selection-change="handleSelectionChange">
@@ -255,7 +255,7 @@
       return
     }
     if (row.genType === '1') {
-      genCode(row.tableName).then(response => {
+      genCode(row.tableName).then(() => {
         proxy.$modal.msgSuccess(`成功生成到自定义路径：${  row.genPath}`)
       })
     } else {

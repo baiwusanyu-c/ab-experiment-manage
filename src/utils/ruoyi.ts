@@ -85,6 +85,7 @@ export function selectDictLabel(datas: any, value: string) {
       actions.push(datas[key].label)
       return true
     }
+    return false
   })
   if (actions.length === 0) {
     actions.push(value)
@@ -100,9 +101,9 @@ export function selectDictLabels(datas: any, value: string, separator: string) {
   const actions: Array<any> = []
   const currentSeparator = undefined === separator ? ',' : separator
   const temp = value.split(currentSeparator)
-  Object.keys(value.split(currentSeparator)).some(val => {
+  Object.keys(value.split(currentSeparator)).forEach(val => {
     let match = false
-    Object.keys(datas).some(key => {
+    Object.keys(datas).forEach(key => {
       if (datas[key].value == `${temp[val as keyof typeof temp]}`) {
         actions.push(datas[key].label + currentSeparator)
         match = true
@@ -121,6 +122,7 @@ export function sprintf(str: string, ...argum) {
     flag = true,
     i = 1
   str = str.replace(/%s/g, () => {
+    if (i > args.length) return
     const arg = args[i++]
     if (typeof arg === 'undefined') {
       flag = false

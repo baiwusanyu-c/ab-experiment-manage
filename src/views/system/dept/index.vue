@@ -11,7 +11,7 @@
       <el-form-item label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="部门状态" clearable>
           <el-option
-            v-for="dict in sys_normal_disable"
+            v-for="dict in sysNormalDisable"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value" />
@@ -37,7 +37,7 @@
       <el-col :span="1.5">
         <el-button type="info" plain icon="Sort" @click="toggleExpandAll">展开/折叠</el-button>
       </el-col>
-      <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar v-model:showSearch="showSearch" @query-table="getList"></right-toolbar>
     </el-row>
 
     <el-table
@@ -51,7 +51,7 @@
       <el-table-column prop="orderNum" label="排序" width="200"></el-table-column>
       <el-table-column prop="status" label="状态" width="100">
         <template #default="scope">
-          <dict-tag :options="sys_normal_disable" :value="scope.row.status" />
+          <dict-tag :options="sysNormalDisable" :value="scope.row.status" />
         </template>
       </el-table-column>
       <el-table-column label="创建时间" align="center" prop="createTime" width="200">
@@ -130,12 +130,9 @@
           <el-col :span="12">
             <el-form-item label="部门状态">
               <el-radio-group v-model="form.status">
-                <el-radio
-                  v-for="dict in sys_normal_disable"
-                  :key="dict.value"
-                  :label="dict.value"
-                  >{{ dict.label }}</el-radio
-                >
+                <el-radio v-for="dict in sysNormalDisable" :key="dict.value" :label="dict.value">{{
+                  dict.label
+                }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -162,7 +159,7 @@
   } from '@/api/system/dept'
 
   const { proxy } = getCurrentInstance()
-  const { sys_normal_disable } = proxy.useDict('sys_normal_disable')
+  const { sys_normal_disable: sysNormalDisable } = proxy.useDict('sys_normal_disable')
 
   const deptList = ref([])
   const open = ref(false)
@@ -268,14 +265,14 @@
   function submitForm() {
     proxy.$refs['deptRef'].validate(valid => {
       if (valid) {
-        if (form.value.deptId != undefined) {
-          updateDept(form.value).then(response => {
+        if (form.value.deptId !== undefined) {
+          updateDept(form.value).then(() => {
             proxy.$modal.msgSuccess('修改成功')
             open.value = false
             getList()
           })
         } else {
-          addDept(form.value).then(response => {
+          addDept(form.value).then(() => {
             proxy.$modal.msgSuccess('新增成功')
             open.value = false
             getList()

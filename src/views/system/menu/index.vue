@@ -11,7 +11,7 @@
       <el-form-item label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="菜单状态" clearable>
           <el-option
-            v-for="dict in sys_normal_disable"
+            v-for="dict in sysNormalDisable"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value" />
@@ -37,7 +37,7 @@
       <el-col :span="1.5">
         <el-button type="info" plain icon="Sort" @click="toggleExpandAll">展开/折叠</el-button>
       </el-col>
-      <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar v-model:showSearch="showSearch" @query-table="getList"></right-toolbar>
     </el-row>
 
     <el-table
@@ -68,7 +68,7 @@
         :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="status" label="状态" width="80">
         <template #default="scope">
-          <dict-tag :options="sys_normal_disable" :value="scope.row.status" />
+          <dict-tag :options="sysNormalDisable" :value="scope.row.status" />
         </template>
       </el-table-column>
       <el-table-column label="创建时间" align="center" prop="createTime">
@@ -276,7 +276,7 @@
                 </span>
               </template>
               <el-radio-group v-model="form.visible">
-                <el-radio v-for="dict in sys_show_hide" :key="dict.value" :label="dict.value">{{
+                <el-radio v-for="dict in sysShowHide" :key="dict.value" :label="dict.value">{{
                   dict.label
                 }}</el-radio>
               </el-radio-group>
@@ -295,12 +295,9 @@
                 </span>
               </template>
               <el-radio-group v-model="form.status">
-                <el-radio
-                  v-for="dict in sys_normal_disable"
-                  :key="dict.value"
-                  :label="dict.value"
-                  >{{ dict.label }}</el-radio
-                >
+                <el-radio v-for="dict in sysNormalDisable" :key="dict.value" :label="dict.value">{{
+                  dict.label
+                }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -323,7 +320,10 @@
   import IconSelect from '@/components/IconSelect'
 
   const { proxy } = getCurrentInstance()
-  const { sys_show_hide, sys_normal_disable } = proxy.useDict('sys_show_hide', 'sys_normal_disable')
+  const { sys_show_hide: sysShowHide, sys_normal_disable: sysNormalDisable } = proxy.useDict(
+    'sys_show_hide',
+    'sys_normal_disable'
+  )
 
   const menuList = ref([])
   const open = ref(false)
@@ -450,14 +450,14 @@
   function submitForm() {
     proxy.$refs['menuRef'].validate(valid => {
       if (valid) {
-        if (form.value.menuId != undefined) {
-          updateMenu(form.value).then(response => {
+        if (form.value.menuId !== undefined) {
+          updateMenu(form.value).then(() => {
             proxy.$modal.msgSuccess('修改成功')
             open.value = false
             getList()
           })
         } else {
-          addMenu(form.value).then(response => {
+          addMenu(form.value).then(() => {
             proxy.$modal.msgSuccess('新增成功')
             open.value = false
             getList()

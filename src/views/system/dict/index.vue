@@ -29,7 +29,7 @@
           clearable
           style="width: 240px">
           <el-option
-            v-for="dict in sys_normal_disable"
+            v-for="dict in sysNormalDisable"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value" />
@@ -103,7 +103,7 @@
           >刷新缓存</el-button
         >
       </el-col>
-      <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar v-model:showSearch="showSearch" @query-table="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="typeList" @selection-change="handleSelectionChange">
@@ -123,7 +123,7 @@
       </el-table-column>
       <el-table-column label="状态" align="center" prop="status">
         <template #default="scope">
-          <dict-tag :options="sys_normal_disable" :value="scope.row.status" />
+          <dict-tag :options="sysNormalDisable" :value="scope.row.status" />
         </template>
       </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
@@ -170,7 +170,7 @@
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="form.status">
-            <el-radio v-for="dict in sys_normal_disable" :key="dict.value" :label="dict.value">{{
+            <el-radio v-for="dict in sysNormalDisable" :key="dict.value" :label="dict.value">{{
               dict.label
             }}</el-radio>
           </el-radio-group>
@@ -201,7 +201,7 @@
   } from '@/api/system/dict/type'
 
   const { proxy } = getCurrentInstance()
-  const { sys_normal_disable } = proxy.useDict('sys_normal_disable')
+  const { sys_normal_disable: sysNormalDisable } = proxy.useDict('sys_normal_disable')
 
   const typeList = ref([])
   const open = ref(false)
@@ -293,14 +293,14 @@
   function submitForm() {
     proxy.$refs['dictRef'].validate(valid => {
       if (valid) {
-        if (form.value.dictId != undefined) {
-          updateType(form.value).then(response => {
+        if (form.value.dictId !== undefined) {
+          updateType(form.value).then(() => {
             proxy.$modal.msgSuccess('修改成功')
             open.value = false
             getList()
           })
         } else {
-          addType(form.value).then(response => {
+          addType(form.value).then(() => {
             proxy.$modal.msgSuccess('新增成功')
             open.value = false
             getList()

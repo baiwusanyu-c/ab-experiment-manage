@@ -131,7 +131,7 @@
           <right-toolbar
             v-model:showSearch="showSearch"
             :columns="columns"
-            @queryTable="getList"></right-toolbar>
+            @query-table="getList"></right-toolbar>
         </el-row>
 
         <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
@@ -594,7 +594,7 @@
         inputErrorMessage: '用户密码长度必须介于 5 和 20 之间',
       })
       .then(({ value }) => {
-        resetUserPwd(row.userId, value).then(response => {
+        resetUserPwd(row.userId, value).then(() => {
           proxy.$modal.msgSuccess(`修改成功，新密码是：${value}`)
         })
       })

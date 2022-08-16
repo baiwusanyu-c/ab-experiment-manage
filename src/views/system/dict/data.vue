@@ -25,7 +25,7 @@
       <el-form-item label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="数据状态" clearable>
           <el-option
-            v-for="dict in sys_normal_disable"
+            v-for="dict in sysNormalDisable"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value" />
@@ -83,7 +83,7 @@
       <el-col :span="1.5">
         <el-button type="warning" plain icon="Close" @click="handleClose">关闭</el-button>
       </el-col>
-      <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar v-model:showSearch="showSearch" @query-table="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="dataList" @selection-change="handleSelectionChange">
@@ -103,7 +103,7 @@
       <el-table-column label="字典排序" align="center" prop="dictSort" />
       <el-table-column label="状态" align="center" prop="status">
         <template #default="scope">
-          <dict-tag :options="sys_normal_disable" :value="scope.row.status" />
+          <dict-tag :options="sysNormalDisable" :value="scope.row.status" />
         </template>
       </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
@@ -172,7 +172,7 @@
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="form.status">
-            <el-radio v-for="dict in sys_normal_disable" :key="dict.value" :label="dict.value">{{
+            <el-radio v-for="dict in sysNormalDisable" :key="dict.value" :label="dict.value">{{
               dict.label
             }}</el-radio>
           </el-radio-group>
@@ -197,7 +197,7 @@
   import { addData, delData, getData, listData, updateData } from '@/api/system/dict/data'
 
   const { proxy } = getCurrentInstance()
-  const { sys_normal_disable } = proxy.useDict('sys_normal_disable')
+  const { sys_normal_disable: sysNormalDisable } = proxy.useDict('sys_normal_disable')
 
   const dataList = ref([])
   const open = ref(false)
@@ -326,14 +326,14 @@
     proxy.$refs['dataRef'].validate(valid => {
       if (valid) {
         if (form.value.dictCode != undefined) {
-          updateData(form.value).then(response => {
+          updateData(form.value).then(() => {
             useDictStore().removeDict(queryParams.value.dictType)
             proxy.$modal.msgSuccess('修改成功')
             open.value = false
             getList()
           })
         } else {
-          addData(form.value).then(response => {
+          addData(form.value).then(() => {
             useDictStore().removeDict(queryParams.value.dictType)
             proxy.$modal.msgSuccess('新增成功')
             open.value = false

@@ -4,7 +4,7 @@
       id="hamburger-container"
       :is-active="appStore.sidebar.opened"
       class="hamburger-container"
-      @toggleClick="toggleSideBar" />
+      @toggle-click="toggleSideBar" />
     <breadcrumb
       v-if="!settingsStore.topNav"
       id="breadcrumb-container"

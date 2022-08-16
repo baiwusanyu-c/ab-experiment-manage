@@ -87,7 +87,7 @@
           >导出</el-button
         >
       </el-col>
-      <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar v-model:showSearch="showSearch" @query-table="getList"></right-toolbar>
     </el-row>
 
     <!-- 表格数据 -->
@@ -278,7 +278,7 @@
     updateRole,
   } from '@/api/system/role'
   import { treeselect as menuTreeselect, roleMenuTreeselect } from '@/api/system/menu'
-  import { treeselect as deptTreeselect, roleDeptTreeselect } from '@/api/system/dept'
+  import { roleDeptTreeselect } from '@/api/system/dept'
 
   const router = useRouter()
   const { proxy } = getCurrentInstance()
@@ -427,6 +427,7 @@
     const checkedKeys = deptRef.value.getCheckedKeys()
     // 半选中的部门节点
     const halfCheckedKeys = deptRef.value.getHalfCheckedKeys()
+    // eslint-disable-next-line prefer-spread
     checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys)
     return checkedKeys
   }
@@ -532,6 +533,7 @@
     const checkedKeys = menuRef.value.getCheckedKeys()
     // 半选中的菜单节点
     const halfCheckedKeys = menuRef.value.getHalfCheckedKeys()
+    // eslint-disable-next-line prefer-spread
     checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys)
     return checkedKeys
   }

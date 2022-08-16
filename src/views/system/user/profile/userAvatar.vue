@@ -20,7 +20,7 @@
           :auto-crop-width="options.autoCropWidth"
           :auto-crop-height="options.autoCropHeight"
           :fixed-box="options.fixedBox"
-          @realTime="realTime" />
+          @real-time="realTime" />
       </el-col>
       <el-col :xs="24" :md="12" :style="{ height: '350px' }">
         <div class="avatar-upload-preview">
@@ -93,7 +93,7 @@
     visible.value = true
   }
   /** 覆盖默认上传行为 */
-  function requestUpload() {}
+  // function requestUpload() {}
   /** 向左旋转 */
   function rotateLeft() {
     proxy.$refs.cropper.rotateLeft()

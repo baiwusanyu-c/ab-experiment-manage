@@ -23,7 +23,7 @@
       <el-form-item label="类型" prop="noticeType">
         <el-select v-model="queryParams.noticeType" placeholder="公告类型" clearable>
           <el-option
-            v-for="dict in sys_notice_type"
+            v-for="dict in sysNoticeType"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value" />
@@ -68,7 +68,7 @@
           >删除</el-button
         >
       </el-col>
-      <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar v-model:showSearch="showSearch" @query-table="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="noticeList" @selection-change="handleSelectionChange">
@@ -81,12 +81,12 @@
         :show-overflow-tooltip="true" />
       <el-table-column label="公告类型" align="center" prop="noticeType" width="100">
         <template #default="scope">
-          <dict-tag :options="sys_notice_type" :value="scope.row.noticeType" />
+          <dict-tag :options="sysNoticeType" :value="scope.row.noticeType" />
         </template>
       </el-table-column>
       <el-table-column label="状态" align="center" prop="status" width="100">
         <template #default="scope">
-          <dict-tag :options="sys_notice_status" :value="scope.row.status" />
+          <dict-tag :options="sysNoticeStatus" :value="scope.row.status" />
         </template>
       </el-table-column>
       <el-table-column label="创建者" align="center" prop="createBy" width="100" />
@@ -135,7 +135,7 @@
             <el-form-item label="公告类型" prop="noticeType">
               <el-select v-model="form.noticeType" placeholder="请选择">
                 <el-option
-                  v-for="dict in sys_notice_type"
+                  v-for="dict in sysNoticeType"
                   :key="dict.value"
                   :label="dict.label"
                   :value="dict.value"></el-option>
@@ -145,7 +145,7 @@
           <el-col :span="24">
             <el-form-item label="状态">
               <el-radio-group v-model="form.status">
-                <el-radio v-for="dict in sys_notice_status" :key="dict.value" :label="dict.value">{{
+                <el-radio v-for="dict in sysNoticeStatus" :key="dict.value" :label="dict.value">{{
                   dict.label
                 }}</el-radio>
               </el-radio-group>
@@ -176,7 +176,7 @@
   import { addNotice, delNotice, getNotice, listNotice, updateNotice } from '@/api/system/notice'
 
   const { proxy } = getCurrentInstance()
-  const { sys_notice_status, sys_notice_type } = proxy.useDict(
+  const { sys_notice_status: sysNoticeStatus, sys_notice_type: sysNoticeType } = proxy.useDict(
     'sys_notice_status',
     'sys_notice_type'
   )
