@@ -7,15 +7,7 @@ import locale from 'element-plus/lib/locale/lang/zh-cn' // 中文语言
 
 import '@/assets/styles/index.scss' // global css
 
-import App from './App.vue'
-import store from './store'
-import router from './router'
-import directive from './directive/index' // directive
-
-
 // 注册指令
-import plugins from './plugins' // plugins
-import { download } from './utils/request'
 
 // svg图标
 import 'virtual:svg-icons-register'
@@ -24,23 +16,35 @@ import elementIcons from '../src/components/SvgIcon/svgicon'
 
 import './permission' // permission control
 
-import { useDict } from './utils/dict'
-import { parseTime, resetForm, addDateRange, handleTree, selectDictLabel, selectDictLabels } from './utils/ruoyi'
-
 // 分页组件
 import Pagination from '../src/components/Pagination/index.vue'
 // 自定义表格工具组件
 import RightToolbar from '../src/components/RightToolbar/index.vue'
 // 文件上传组件
-import FileUpload from "../src/components/FileUpload/index.vue"
+import FileUpload from '../src/components/FileUpload/index.vue'
 // 图片上传组件
-import ImageUpload from "../src/components/ImageUpload/index.vue"
+import ImageUpload from '../src/components/ImageUpload/index.vue'
 // 图片预览组件
-import ImagePreview from "../src/components/ImagePreview/index.vue"
+import ImagePreview from '../src/components/ImagePreview/index.vue'
 // 自定义树选择组件
 import TreeSelect from '../src/components/TreeSelect/index.vue'
 // 字典标签组件
 import DictTag from '../src/components/DictTag/index.vue'
+import {
+  addDateRange,
+  handleTree,
+  parseTime,
+  resetForm,
+  selectDictLabel,
+  selectDictLabels,
+} from './utils/ruoyi'
+import { useDict } from './utils/dict'
+import { download } from './utils/request'
+import plugins from './plugins' // plugins
+import directive from './directive/index' // directive
+import router from './router'
+import store from './store'
+import App from './App.vue'
 
 const app = createApp(App)
 
@@ -67,15 +71,15 @@ app.use(router)
 app.use(store)
 app.use(plugins)
 app.use(elementIcons)
-app.component('svg-icon', SvgIcon)
+app.component('SvgIcon', SvgIcon)
 
 directive(app)
 
 // 使用element-plus 并且设置全局的大小
 app.use(ElementPlus, {
-  locale: locale,
+  locale,
   // 支持 large、default、small
-  size: Cookies.get('size') || 'default'
+  size: Cookies.get('size') || 'default',
 })
 
 app.mount('#app')

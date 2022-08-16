@@ -1,12 +1,10 @@
-
-
 /**
  * 通用js方法封装处理
  * Copyright (c) 2019 ruoyi
  */
 
 // 日期格式化
-export function parseTime(time:unknown, pattern:string) {
+export function parseTime(time: unknown, pattern: string) {
   if (arguments.length === 0 || !time) {
     return null
   }
@@ -15,12 +13,15 @@ export function parseTime(time:unknown, pattern:string) {
   if (typeof time === 'object') {
     date = time as Date
   } else {
-    if ((typeof time === 'string') && (/^[0-9]+$/.test(time))) {
+    if (typeof time === 'string' && /^[0-9]+$/.test(time)) {
       time = parseInt(time)
     } else if (typeof time === 'string') {
-      time = time.replace(new RegExp(/-/gm), '/').replace('T', ' ').replace(new RegExp(/\.[\d]{3}/gm), '');
+      time = time
+        .replace(new RegExp(/-/gm), '/')
+        .replace('T', ' ')
+        .replace(new RegExp(/\.[\d]{3}/gm), '')
     }
-    if ((typeof time === 'number') && (time.toString().length === 10)) {
+    if (typeof time === 'number' && time.toString().length === 10) {
       time = time * 1000
     }
     date = new Date(time as string)
@@ -32,120 +33,127 @@ export function parseTime(time:unknown, pattern:string) {
     h: date.getHours(),
     i: date.getMinutes(),
     s: date.getSeconds(),
-    a: date.getDay()
+    a: date.getDay(),
   }
-  const time_str = format.replace(/{(y|m|d|h|i|s|a)+}/g, (result:string, key:string):string => {
+  const timeStr = format.replace(/{(y|m|d|h|i|s|a)+}/g, (result: string, key: string): string => {
     let value = formatObj[key as keyof typeof formatObj].toString()
     // Note: getDay() returns 0 on Sunday
-    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][Number(value)] }
+    if (key === 'a') {
+      return ['日', '一', '二', '三', '四', '五', '六'][Number(value)]
+    }
     if (result.length > 0 && Number(value) < 10) {
-      value = ('0' + value)
+      value = `0${value}`
     }
     return value || '0'
   })
-  return time_str
+  return timeStr
 }
 
 // 表单重置
-export function resetForm(refName:string) {
+export function resetForm(refName: string) {
   if (this.$refs[refName]) {
-    this.$refs[refName].resetFields();
+    this.$refs[refName].resetFields()
   }
 }
 
 // 添加日期范围
-export function addDateRange(params:any, dateRange:Array<any>, propName:string) {
-  let search = params;
-  search.params = typeof (search.params) === 'object' && search.params !== null && !Array.isArray(search.params) ? search.params : {};
-  dateRange = Array.isArray(dateRange) ? dateRange : [];
-  if (typeof (propName) === 'undefined') {
-    search.params['beginTime'] = dateRange[0];
-    search.params['endTime'] = dateRange[1];
+export function addDateRange(params: any, dateRange: Array<any>, propName: string) {
+  const search = params
+  search.params =
+    typeof search.params === 'object' && search.params !== null && !Array.isArray(search.params)
+      ? search.params
+      : {}
+  dateRange = Array.isArray(dateRange) ? dateRange : []
+  if (typeof propName === 'undefined') {
+    search.params['beginTime'] = dateRange[0]
+    search.params['endTime'] = dateRange[1]
   } else {
-    search.params['begin' + propName] = dateRange[0];
-    search.params['end' + propName] = dateRange[1];
+    search.params[`begin${propName}`] = dateRange[0]
+    search.params[`end${propName}`] = dateRange[1]
   }
-  return search;
+  return search
 }
 
 // 回显数据字典
-export function selectDictLabel(datas:any, value:string) {
+export function selectDictLabel(datas: any, value: string) {
   if (value === undefined) {
-    return "";
+    return ''
   }
-  var actions = [];
-  Object.keys(datas).some((key) => {
-    if (datas[key].value == ('' + value)) {
-      actions.push(datas[key].label);
-      return true;
+  const actions = []
+  Object.keys(datas).some(key => {
+    if (datas[key].value == `${value}`) {
+      actions.push(datas[key].label)
+      return true
     }
   })
   if (actions.length === 0) {
-    actions.push(value);
+    actions.push(value)
   }
-  return actions.join('');
+  return actions.join('')
 }
 
 // 回显数据字典（字符串数组）
-export function selectDictLabels(datas:any, value:string, separator:string) {
+export function selectDictLabels(datas: any, value: string, separator: string) {
   if (value === undefined) {
-    return "";
+    return ''
   }
-  let actions:Array<any> = [];
-  let currentSeparator = undefined === separator ? "," : separator;
-  let temp = value.split(currentSeparator);
-  Object.keys(value.split(currentSeparator)).some((val) => {
-    var match = false;
-    Object.keys(datas).some((key) => {
-      if (datas[key].value == ('' + temp[val as keyof typeof temp])) {
-        actions.push(datas[key].label + currentSeparator);
-        match = true;
+  const actions: Array<any> = []
+  const currentSeparator = undefined === separator ? ',' : separator
+  const temp = value.split(currentSeparator)
+  Object.keys(value.split(currentSeparator)).some(val => {
+    let match = false
+    Object.keys(datas).some(key => {
+      if (datas[key].value == `${temp[val as keyof typeof temp]}`) {
+        actions.push(datas[key].label + currentSeparator)
+        match = true
       }
     })
     if (!match) {
-      actions.push(temp[val as keyof typeof temp] + currentSeparator);
+      actions.push(temp[val as keyof typeof temp] + currentSeparator)
     }
   })
-  return actions.join('').substring(0, actions.join('').length - 1);
+  return actions.join('').substring(0, actions.join('').length - 1)
 }
 
 // 字符串格式化(%s )
-export function sprintf(str:string) {
-  var args = arguments, flag = true, i = 1;
-  str = str.replace(/%s/g, function () {
-    var arg = args[i++];
+export function sprintf(str: string, ...argum) {
+  let args = [str].concat(argum),
+    flag = true,
+    i = 1
+  str = str.replace(/%s/g, () => {
+    const arg = args[i++]
     if (typeof arg === 'undefined') {
-      flag = false;
-      return '';
+      flag = false
+      return ''
     }
-    return arg;
-  });
-  return flag ? str : '';
+    return arg
+  })
+  return flag ? str : ''
 }
 
 // 转换字符串，undefined,null等转化为""
-export function parseStrEmpty(str:string) {
-  if (!str || str == "undefined" || str == "null") {
-    return "";
+export function parseStrEmpty(str: string) {
+  if (!str || str == 'undefined' || str == 'null') {
+    return ''
   }
-  return str;
+  return str
 }
 
 // 数据合并
-export function mergeRecursive(source:any, target:any) {
-  for (let p in target) {
+export function mergeRecursive(source: any, target: any) {
+  for (const p in target) {
     try {
       if (target[p].constructor == Object) {
-        source[p] = mergeRecursive(source[p], target[p]);
+        source[p] = mergeRecursive(source[p], target[p])
       } else {
-        source[p] = target[p];
+        source[p] = target[p]
       }
     } catch (e) {
-      source[p] = target[p];
+      source[p] = target[p]
     }
   }
-  return source;
-};
+  return source
+}
 
 /**
  * 构造树型结构数据
@@ -154,101 +162,100 @@ export function mergeRecursive(source:any, target:any) {
  * @param {*} parentId 父节点字段 默认 'parentId'
  * @param {*} children 孩子节点字段 默认 'children'
  */
-export function handleTree(data:any, id:string, parentId:string, children:Array<any>) {
-  let config = {
+export function handleTree(data: any, id: string, parentId: string, children: Array<any>) {
+  const config = {
     id: id || 'id',
     parentId: parentId || 'parentId',
-    childrenList: children || 'children'
-  };
+    childrenList: children || 'children',
+  }
 
-  let childrenListMap = {};
-  let nodeIds = {};
-  let tree = [];
+  const childrenListMap = {}
+  const nodeIds = {}
+  const tree = []
 
-  for (let d of data) {
-    let parentId = d[config.parentId];
+  for (const d of data) {
+    const parentId = d[config.parentId]
     if (childrenListMap[parentId as keyof typeof childrenListMap] == null) {
-      (childrenListMap[parentId as keyof typeof childrenListMap] as Array<any>) = [];
+      ;(childrenListMap[parentId as keyof typeof childrenListMap] as Array<any>) = []
     }
     // @ts-ignore
-    nodeIds[d[config.id]] = d;
-    (childrenListMap[parentId as keyof typeof childrenListMap] as Array<any>).push(d);
+    nodeIds[d[config.id]] = d
+    ;(childrenListMap[parentId as keyof typeof childrenListMap] as Array<any>).push(d)
   }
 
-  for (let d of data) {
-    let parentId = d[config.parentId];
+  for (const d of data) {
+    const parentId = d[config.parentId]
     if (nodeIds[parentId as keyof typeof nodeIds] == null) {
-      tree.push(d);
+      tree.push(d)
     }
   }
 
-  for (let t of tree) {
-    adaptToChildrenList(t);
+  for (const t of tree) {
+    adaptToChildrenList(t)
   }
 
-  function adaptToChildrenList(o:Array<any>) {
+  function adaptToChildrenList(o: Array<any>) {
     // @ts-ignore
     if (childrenListMap[o[config.id]] !== null) {
       // @ts-ignore
-      o[config.childrenList] = childrenListMap[o[config.id]];
+      o[config.childrenList] = childrenListMap[o[config.id]]
     }
     // @ts-ignore
     if (o[config.childrenList]) {
       // @ts-ignore
-      for (let c of o[config.childrenList]) {
-        adaptToChildrenList(c);
+      for (const c of o[config.childrenList]) {
+        adaptToChildrenList(c)
       }
     }
   }
-  return tree;
+  return tree
 }
 
 /**
-* 参数处理
-* @param {*} params  参数
-*/
-export function tansParams(params:any) {
+ * 参数处理
+ * @param {*} params  参数
+ */
+export function tansParams(params: any) {
   let result = ''
   for (const propName of Object.keys(params)) {
-    const value = params[propName];
-    var part = encodeURIComponent(propName) + "=";
-    if (value !== null && value !== "" && typeof (value) !== "undefined") {
+    const value = params[propName]
+    const part = `${encodeURIComponent(propName)}=`
+    if (value !== null && value !== '' && typeof value !== 'undefined') {
       if (typeof value === 'object') {
         for (const key of Object.keys(value)) {
-          if (value[key] !== null && value[key] !== "" && typeof (value[key]) !== 'undefined') {
-            let params = propName + '[' + key + ']';
-            var subPart = encodeURIComponent(params) + "=";
-            result += subPart + encodeURIComponent(value[key]) + "&";
+          if (value[key] !== null && value[key] !== '' && typeof value[key] !== 'undefined') {
+            const params = `${propName}[${key}]`
+            const subPart = `${encodeURIComponent(params)}=`
+            result += `${subPart + encodeURIComponent(value[key])}&`
           }
         }
       } else {
-        result += part + encodeURIComponent(value) + "&";
+        result += `${part + encodeURIComponent(value)}&`
       }
     }
   }
   return result
 }
 
-
 // 返回项目路径
-export function getNormalPath(p:string) {
+export function getNormalPath(p: string) {
   if (p.length === 0 || !p || p == 'undefined') {
     return p
-  };
-  let res = p.replace('//', '/')
+  }
+  const res = p.replace('//', '/')
   if (res[res.length - 1] === '/') {
     return res.slice(0, res.length - 1)
   }
-  return res;
+  return res
 }
 
 // 验证是否为blob格式
-export async function blobValidate(data:Blob) {
+export async function blobValidate(data: Blob) {
   try {
-    const text = await data.text();
-    JSON.parse(text);
-    return false;
+    const text = await data.text()
+    JSON.parse(text)
+    return false
   } catch (error) {
-    return true;
+    return true
   }
 }

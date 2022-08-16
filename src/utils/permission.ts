@@ -5,14 +5,14 @@ import useUserStore from '../store/modules/user'
  * @param {Array} value 校验值
  * @returns {Boolean}
  */
-export function checkPermi(value:Array<any>) {
+export function checkPermi(value: Array<any>) {
   if (value && value instanceof Array && value.length > 0) {
     const permissions = useUserStore().permissions
     const permissionDatas = value
-    const all_permission = "*:*:*";
+    const allPermission = '*:*:*'
 
     const hasPermission = permissions.some(permission => {
-      return all_permission === permission || permissionDatas.includes(permission)
+      return allPermission === permission || permissionDatas.includes(permission)
     })
 
     if (!hasPermission) {
@@ -30,14 +30,14 @@ export function checkPermi(value:Array<any>) {
  * @param {Array} value 校验值
  * @returns {Boolean}
  */
-export function checkRole(value:Array<any>) {
+export function checkRole(value: Array<any>) {
   if (value && value instanceof Array && value.length > 0) {
     const roles = useUserStore().roles
     const permissionRoles = value
-    const super_admin = "admin";
+    const superAdmin = 'admin'
 
     const hasRole = roles.some(role => {
-      return super_admin === role || permissionRoles.includes(role)
+      return superAdmin === role || permissionRoles.includes(role)
     })
 
     if (!hasRole) {

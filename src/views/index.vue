@@ -26,12 +26,9 @@
             >>☛☛点我进入☚☚</el-link
           >
           &nbsp;&nbsp;&nbsp; 腾讯云服务器秒杀区
-          <el-link href="http://txy.ruoyi.vip" type="primary" target="_blank"
-            >>☛☛点我进入☚☚</el-link
+          <el-link href="http://txy.ruoyi.vip" type="primary" target="_blank">>☛☛点我进入☚☚</el-link
           ><br />
-          <h4 class="text-danger">
-            云产品通用红包，可叠加官网常规优惠使用。(仅限新用户)
-          </h4>
+          <h4 class="text-danger">云产品通用红包，可叠加官网常规优惠使用。(仅限新用户)</h4>
         </blockquote>
 
         <hr />
@@ -57,10 +54,7 @@
             @click="goTarget('https://gitee.com/y_project/RuoYi-Vue')"
             >访问码云</el-button
           >
-          <el-button
-            icon="HomeFilled"
-            plain
-            @click="goTarget('http://ruoyi.vip')"
+          <el-button icon="HomeFilled" plain @click="goTarget('http://ruoyi.vip')"
             >访问主页</el-button
           >
         </p>
@@ -104,7 +98,7 @@
     <el-row :gutter="20">
       <el-col :xs="24" :sm="24" :md="12" :lg="8">
         <el-card class="update-log">
-          <template v-slot:header>
+          <template #header>
             <div class="clearfix">
               <span>联系信息</span>
             </div>
@@ -120,21 +114,13 @@
             <p>
               <i class="el-icon-user-solid"></i> QQ群：<s>满937441</s> <s>满887144332</s>
               <s>满180251782</s> <s>满104180207</s> <s>满186866453</s> <s>满201396349</s>
-              <s>满101456076</s> <s>满101539465</s> <s>满264312783</s> <s>满167385320</s> 
-              <s>满139821253</s> <a href="https://jq.qq.com/?_wv=1027&k=96Dkdq0k" target="_blank">
-                104748341</a
-              >
+              <s>满101456076</s> <s>满101539465</s> <s>满264312783</s> <s>满167385320</s>
+              <s>满139821253</s>
+              <a href="https://jq.qq.com/?_wv=1027&k=96Dkdq0k" target="_blank"> 104748341</a>
             </p>
+            <p><i class="el-icon-chat-dot-round"></i> 微信：<a href="javascript:;">/ *若依</a></p>
             <p>
-              <i class="el-icon-chat-dot-round"></i> 微信：<a
-                href="javascript:;"
-                >/ *若依</a
-              >
-            </p>
-            <p>
-              <i class="el-icon-money"></i> 支付宝：<a
-                href="javascript:;"
-                class="支付宝信息"
+              <i class="el-icon-money"></i> 支付宝：<a href="javascript:;" class="支付宝信息"
                 >/ *若依</a
               >
             </p>
@@ -143,7 +129,7 @@
       </el-col>
       <el-col :xs="24" :sm="24" :md="12" :lg="8">
         <el-card class="update-log">
-          <template v-slot:header>
+          <template #header>
             <div class="clearfix">
               <span>更新日志</span>
             </div>
@@ -654,9 +640,7 @@
                 <li>调整表头固定列默认样式</li>
                 <li>代码生成模板调整，字段为String并且必填则加空串条件</li>
                 <li>代码生成字典Integer/Long使用parseInt</li>
-                <li>
-                  修复dict_sort不可update为0的问题&查询返回增加dict_sort升序排序
-                </li>
+                <li>修复dict_sort不可update为0的问题&查询返回增加dict_sort升序排序</li>
                 <li>修正岗位导出权限注解</li>
                 <li>禁止加密密文返回前端</li>
                 <li>修复代码生成页面中的查询条件创建时间未生效的问题</li>
@@ -812,7 +796,7 @@
       </el-col>
       <el-col :xs="24" :sm="24" :md="12" :lg="8">
         <el-card class="update-log">
-          <template v-slot:header>
+          <template #header>
             <div class="clearfix">
               <span>捐赠支持</span>
             </div>
@@ -821,8 +805,7 @@
             <img
               src="https://oscimg.oschina.net/oscnet/up-d6695f82666e5018f715c41cb7ee60d3b73.png"
               alt="donate"
-              style="width:100%"
-            />
+              style="width: 100%" />
             <span style="display: inline-block; height: 30px; line-height: 30px"
               >你可以请作者喝杯咖啡表示鼓励</span
             >
@@ -834,74 +817,73 @@
 </template>
 
 <script setup name="Index">
-const version = ref('3.8.3')
+  const version = ref('3.8.3')
 
-function goTarget(url) {
-  window.open(url, '__blank')
-}
+  function goTarget(url) {
+    window.open(url, '__blank')
+  }
 </script>
 
 <style scoped lang="scss">
-.home {
-  blockquote {
-    padding: 10px 20px;
-    margin: 0 0 20px;
-    font-size: 17.5px;
-    border-left: 5px solid #eee;
-  }
-  hr {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    border: 0;
-    border-top: 1px solid #eee;
-  }
-  .col-item {
-    margin-bottom: 20px;
-  }
+  .home {
+    blockquote {
+      padding: 10px 20px;
+      margin: 0 0 20px;
+      font-size: 17.5px;
+      border-left: 5px solid #eee;
+    }
+    hr {
+      margin-top: 20px;
+      margin-bottom: 20px;
+      border: 0;
+      border-top: 1px solid #eee;
+    }
+    .col-item {
+      margin-bottom: 20px;
+    }
 
-  ul {
-    padding: 0;
-    margin: 0;
-  }
+    ul {
+      padding: 0;
+      margin: 0;
+    }
 
-  font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 13px;
-  color: #676a6c;
-  overflow-x: hidden;
+    font-family: 'open sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    color: #676a6c;
+    overflow-x: hidden;
 
-  ul {
-    list-style-type: none;
-  }
+    ul {
+      list-style-type: none;
+    }
 
-  h4 {
-    margin-top: 0px;
-  }
+    h4 {
+      margin-top: 0px;
+    }
 
-  h2 {
-    margin-top: 10px;
-    font-size: 26px;
-    font-weight: 100;
-  }
+    h2 {
+      margin-top: 10px;
+      font-size: 26px;
+      font-weight: 100;
+    }
 
-  p {
-    margin-top: 10px;
+    p {
+      margin-top: 10px;
 
-    b {
-      font-weight: 700;
+      b {
+        font-weight: 700;
+      }
+    }
+
+    .update-log {
+      ol {
+        display: block;
+        list-style-type: decimal;
+        margin-block-start: 1em;
+        margin-block-end: 1em;
+        margin-inline-start: 0;
+        margin-inline-end: 0;
+        padding-inline-start: 40px;
+      }
     }
   }
-
-  .update-log {
-    ol {
-      display: block;
-      list-style-type: decimal;
-      margin-block-start: 1em;
-      margin-block-end: 1em;
-      margin-inline-start: 0;
-      margin-inline-end: 0;
-      padding-inline-start: 40px;
-    }
-  }
-}
 </style>
-

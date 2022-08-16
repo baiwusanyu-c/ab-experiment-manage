@@ -1,52 +1,52 @@
 import request from '../../../utils/request'
 
 // 查询字典数据列表
-export function listData(query:any) {
+export function listData(query: any) {
   return request({
     url: '/system/dict/data/list',
     method: 'get',
-    params: query
+    params: query,
   })
 }
 
 // 查询字典数据详细
-export function getData(dictCode:string) {
+export function getData(dictCode: string) {
   return request({
-    url: '/system/dict/data/' + dictCode,
-    method: 'get'
+    url: `/system/dict/data/${dictCode}`,
+    method: 'get',
   })
 }
 
 // 根据字典类型查询字典数据信息
-export function getDicts(dictType:string) {
+export function getDicts(dictType: string) {
   return request({
-    url: '/system/dict/data/type/' + dictType,
-    method: 'get'
+    url: `/system/dict/data/type/${dictType}`,
+    method: 'get',
   })
 }
 
 // 新增字典数据
-export function addData(data:any) {
+export function addData(data: any) {
   return request({
     url: '/system/dict/data',
     method: 'post',
-    data: data
+    data,
   })
 }
 
 // 修改字典数据
-export function updateData(data:any) {
+export function updateData(data: any) {
   return request({
     url: '/system/dict/data',
     method: 'put',
-    data: data
+    data,
   })
 }
 
 // 删除字典数据
-export function delData(dictCode:string) {
+export function delData(dictCode: string) {
   return request({
-    url: '/system/dict/data/' + dictCode,
-    method: 'delete'
+    url: `/system/dict/data/${dictCode}`,
+    method: 'delete',
   })
 }

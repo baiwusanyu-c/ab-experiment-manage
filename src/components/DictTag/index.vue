@@ -7,43 +7,44 @@
           :key="item.value"
           :index="index"
           :class="item.elTagClass"
-        >{{ item.label }}</span>
+          >{{ item.label }}</span
+        >
         <el-tag
           v-else
-          :disable-transitions="true"
           :key="item.value + ''"
+          :disable-transitions="true"
           :index="index"
           :type="item.elTagType === 'primary' ? '' : item.elTagType"
           :class="item.elTagClass"
-        >{{ item.label }}</el-tag>
+          >{{ item.label }}</el-tag
+        >
       </template>
     </template>
   </div>
 </template>
 
 <script setup>
-const props = defineProps({
-  // 数据
-  options: {
-    type: Array,
-    default: null,
-  },
-  // 当前的值
-  value: [Number, String, Array],
-})
+  const props = defineProps({
+    // 数据
+    options: {
+      type: Array,
+      default: null,
+    },
+    // 当前的值
+    value: [Number, String, Array],
+  })
 
-const values = computed(() => {
-  if (props.value !== null && typeof props.value !== 'undefined') {
-    return Array.isArray(props.value) ? props.value : [String(props.value)];
-  } else {
-    return [];
-  }
-})
-
+  const values = computed(() => {
+    if (props.value !== null && typeof props.value !== 'undefined') {
+      return Array.isArray(props.value) ? props.value : [String(props.value)]
+    } else {
+      return []
+    }
+  })
 </script>
 
 <style scoped>
-.el-tag + .el-tag {
-  margin-left: 10px;
-}
+  .el-tag + .el-tag {
+    margin-left: 10px;
+  }
 </style>
