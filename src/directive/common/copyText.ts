@@ -2,9 +2,9 @@
 * v-copyText 复制文本内容
 * Copyright (c) 2022 ruoyi
 */
-
+import {DirectiveBinding} from 'vue'
 export default {
-  beforeMount(el, { value, arg }) {
+  beforeMount(el:any, { value, arg }:DirectiveBinding) {
     if (arg === "callback") {
       el.$copyCallback = value;
     } else {
@@ -21,9 +21,9 @@ export default {
   }
 }
 
-function copyTextToClipboard(input, { target = document.body } = {}) {
+function copyTextToClipboard(input:string, { target = document.body } = {}) {
   const element = document.createElement('textarea');
-  const previouslyFocusedElement = document.activeElement;
+  const previouslyFocusedElement:Element | null = document.activeElement;
 
   element.value = input;
 
@@ -35,8 +35,8 @@ function copyTextToClipboard(input, { target = document.body } = {}) {
   element.style.left = '-9999px';
   element.style.fontSize = '12pt'; // Prevent zooming on iOS
 
-  const selection = document.getSelection();
-  const originalRange = selection.rangeCount > 0 && selection.getRangeAt(0);
+  const selection:Selection | null = document.getSelection();
+  const originalRange = (selection && selection.rangeCount > 0) ? selection.getRangeAt(0) : undefined;
 
   target.append(element);
   element.select();
@@ -53,13 +53,13 @@ function copyTextToClipboard(input, { target = document.body } = {}) {
   element.remove();
 
   if (originalRange) {
-    selection.removeAllRanges();
-    selection.addRange(originalRange);
+    selection && selection.removeAllRanges();
+    selection && selection.addRange(originalRange);
   }
 
   // Get the focus back on the previously focused element, if any
   if (previouslyFocusedElement) {
-    previouslyFocusedElement.focus();
+    (previouslyFocusedElement as HTMLElement).focus();
   }
 
   return isSuccess;

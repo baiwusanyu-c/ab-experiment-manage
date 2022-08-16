@@ -3,10 +3,11 @@
  * Copyright (c) 2019 ruoyi
  */
  
-import useUserStore from '@/store/modules/user'
+import useUserStore from '../../store/modules/user'
+ import {DirectiveBinding} from "vue";
 
 export default {
-  mounted(el, binding, vnode) {
+  mounted(el:HTMLElement, binding:DirectiveBinding) {
     const { value } = binding
     const all_permission = "*:*:*";
     const permissions = useUserStore().permissions
