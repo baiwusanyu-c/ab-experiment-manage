@@ -1,10 +1,9 @@
 import useDictStore from '../store/modules/dict'
 import { getDicts } from '../api/system/dict/data'
 import {ref,toRefs} from "vue";
+import {IOption} from "./types";
 
-interface IOption {
-  [key:string]:any
-}
+
 interface IDict {
   dictLabel: string
   dictValue: string

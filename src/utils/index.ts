@@ -1,9 +1,10 @@
-import { parseTime } from '@/ruoyi'
+import { parseTime } from './ruoyi'
+import {IOption} from "./types";
 
 /**
  * 表格时间格式化
  */
-export function formatDate(cellValue) {
+export function formatDate(cellValue:string) {
   if (cellValue == null || cellValue == "") return "";
   var date = new Date(cellValue) 
   var year = date.getFullYear()
@@ -62,26 +63,26 @@ export function formatTime(time, option) {
  * @param {string} url
  * @returns {Object}
  */
-export function getQueryObject(url) {
+export function getQueryObject(url:string) {
   url = url == null ? window.location.href : url
   const search = url.substring(url.lastIndexOf('?') + 1)
-  const obj = {}
+  const obj:IOption = {}
   const reg = /([^?&=]+)=([^?&=]*)/g
   search.replace(reg, (rs, $1, $2) => {
     const name = decodeURIComponent($1)
     let val = decodeURIComponent($2)
     val = String(val)
-    obj[name] = val
+    obj[name as keyof typeof obj] = val
     return rs
   })
   return obj
 }
 
 /**
- * @param {string} input value
+ * @param {string} str value
  * @returns {number} output value
  */
-export function byteLength(str) {
+export function byteLength(str:string) {
   // returns the byte length of an utf8 string
   let s = str.length
   for (var i = str.length - 1; i >= 0; i--) {
@@ -97,7 +98,7 @@ export function byteLength(str) {
  * @param {Array} actual
  * @returns {Array}
  */
-export function cleanArray(actual) {
+export function cleanArray(actual:Array<unknown>) {
   const newArray = []
   for (let i = 0; i < actual.length; i++) {
     if (actual[i]) {
@@ -111,7 +112,7 @@ export function cleanArray(actual) {
  * @param {Object} json
  * @returns {Array}
  */
-export function param(json) {
+export function param(json:IOption) {
   if (!json) return ''
   return cleanArray(
     Object.keys(json).map(key => {
@@ -125,12 +126,12 @@ export function param(json) {
  * @param {string} url
  * @returns {Object}
  */
-export function param2Obj(url) {
+export function param2Obj(url:string) {
   const search = decodeURIComponent(url.split('?')[1]).replace(/\+/g, ' ')
   if (!search) {
     return {}
   }
-  const obj = {}
+  const obj:IOption = {}
   const searchArr = search.split('&')
   searchArr.forEach(v => {
     const index = v.indexOf('=')
@@ -147,7 +148,7 @@ export function param2Obj(url) {
  * @param {string} val
  * @returns {string}
  */
-export function html2Text(val) {
+export function html2Text(val:string) {
   const div = document.createElement('div')
   div.innerHTML = val
   return div.textContent || div.innerText
@@ -159,7 +160,7 @@ export function html2Text(val) {
  * @param {(Object|Array)} source
  * @returns {Object}
  */
-export function objectMerge(target, source) {
+export function objectMerge(target:IOption, source:Array<unknown> | IOption) {
   if (typeof target !== 'object') {
     target = {}
   }
@@ -181,7 +182,7 @@ export function objectMerge(target, source) {
  * @param {HTMLElement} element
  * @param {string} className
  */
-export function toggleClass(element, className) {
+export function toggleClass(element:HTMLElement, className:string) {
   if (!element || !className) {
     return
   }
@@ -201,7 +202,7 @@ export function toggleClass(element, className) {
  * @param {string} type
  * @returns {Date}
  */
-export function getTime(type) {
+export function getTime(type:string) {
   if (type === 'start') {
     return new Date().getTime() - 3600 * 1000 * 24 * 90
   } else {
