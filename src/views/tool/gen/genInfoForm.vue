@@ -4,7 +4,7 @@
       <el-col :span="12">
         <el-form-item prop="tplCategory">
           <template #label>生成模板</template>
-          <el-select v-model="info.tplCategory" @change="tplSelectChange">
+          <el-select v-model="modelValueInner.tplCategory" @change="tplSelectChange">
             <el-option label="单表（增删改查）" value="crud" />
             <el-option label="树表（增删改查）" value="tree" />
             <el-option label="主子表（增删改查）" value="sub" />
@@ -20,7 +20,7 @@
               <el-icon><question-filled /></el-icon>
             </el-tooltip>
           </template>
-          <el-input v-model="info.packageName" />
+          <el-input v-model="modelValueInner.packageName" @change="handleChange" />
         </el-form-item>
       </el-col>
 
@@ -32,7 +32,7 @@
               <el-icon><question-filled /></el-icon>
             </el-tooltip>
           </template>
-          <el-input v-model="info.moduleName" />
+          <el-input v-model="modelValueInner.moduleName" @change="handleChange" />
         </el-form-item>
       </el-col>
 
@@ -44,7 +44,7 @@
               <el-icon><question-filled /></el-icon>
             </el-tooltip>
           </template>
-          <el-input v-model="info.businessName" />
+          <el-input v-model="modelValueInner.businessName" @change="handleChange" />
         </el-form-item>
       </el-col>
 
@@ -56,7 +56,7 @@
               <el-icon><question-filled /></el-icon>
             </el-tooltip>
           </template>
-          <el-input v-model="info.functionName" />
+          <el-input v-model="modelValueInner.functionName" @change="handleChange" />
         </el-form-item>
       </el-col>
 
@@ -69,10 +69,11 @@
             </el-tooltip>
           </template>
           <tree-select
-            v-model:value="info.parentMenuId"
+            v-model:value="modelValueInner.parentMenuId"
             :options="menuOptions"
             :obj-map="{ value: 'menuId', label: 'menuName', children: 'children' }"
-            placeholder="请选择系统菜单" />
+            placeholder="请选择系统菜单"
+            @change="handleChange" />
         </el-form-item>
       </el-col>
 
@@ -84,12 +85,16 @@
               <el-icon><question-filled /></el-icon>
             </el-tooltip>
           </template>
-          <el-radio v-model="info.genType" label="0">zip压缩包</el-radio>
-          <el-radio v-model="info.genType" label="1">自定义路径</el-radio>
+          <el-radio v-model="modelValueInner.genType" label="0" @change="handleChange"
+            >zip压缩包</el-radio
+          >
+          <el-radio v-model="modelValueInner.genType" label="1" @change="handleChange"
+            >自定义路径</el-radio
+          >
         </el-form-item>
       </el-col>
 
-      <el-col v-if="info.genType == '1'" :span="24">
+      <el-col v-if="modelValueInner.genType == '1'" :span="24">
         <el-form-item prop="genPath">
           <template #label>
             自定义路径
@@ -97,7 +102,7 @@
               <el-icon><question-filled /></el-icon>
             </el-tooltip>
           </template>
-          <el-input v-model="info.genPath">
+          <el-input v-model="modelValueInner.genPath">
             <template #append>
               <el-dropdown>
                 <el-button type="primary">
@@ -106,7 +111,7 @@
                 </el-button>
                 <template #dropdown>
                   <el-dropdown-menu>
-                    <el-dropdown-item @click="info.genPath = '/'"
+                    <el-dropdown-item @click="handleDropClick"
                       >恢复默认的生成基础路径</el-dropdown-item
                     >
                   </el-dropdown-menu>
@@ -118,9 +123,9 @@
       </el-col>
     </el-row>
 
-    <template v-if="info.tplCategory == 'tree'">
+    <template v-if="modelValueInner.tplCategory === 'tree'">
       <h4 class="form-header">其他信息</h4>
-      <el-row v-show="info.tplCategory == 'tree'">
+      <el-row v-show="modelValueInner.tplCategory === 'tree'">
         <el-col :span="12">
           <el-form-item>
             <template #label>
@@ -129,9 +134,12 @@
                 <el-icon><question-filled /></el-icon>
               </el-tooltip>
             </template>
-            <el-select v-model="info.treeCode" placeholder="请选择">
+            <el-select
+              v-model="modelValueInner.treeCode"
+              placeholder="请选择"
+              @change="handleChange">
               <el-option
-                v-for="(column, index) in info.columns"
+                v-for="(column, index) in modelValueInner.columns"
                 :key="index"
                 :label="column.columnName + '：' + column.columnComment"
                 :value="column.columnName"></el-option>
@@ -146,9 +154,12 @@
                 <el-icon><question-filled /></el-icon>
               </el-tooltip>
             </template>
-            <el-select v-model="info.treeParentCode" placeholder="请选择">
+            <el-select
+              v-model="modelValueInner.treeParentCode"
+              placeholder="请选择"
+              @change="handleChange">
               <el-option
-                v-for="(column, index) in info.columns"
+                v-for="(column, index) in modelValueInner.columns"
                 :key="index"
                 :label="column.columnName + '：' + column.columnComment"
                 :value="column.columnName"></el-option>
@@ -163,9 +174,12 @@
                 <el-icon><question-filled /></el-icon>
               </el-tooltip>
             </template>
-            <el-select v-model="info.treeName" placeholder="请选择">
+            <el-select
+              v-model="modelValueInner.treeName"
+              placeholder="请选择"
+              @change="handleChange">
               <el-option
-                v-for="(column, index) in info.columns"
+                v-for="(column, index) in modelValueInner.columns"
                 :key="index"
                 :label="column.columnName + '：' + column.columnComment"
                 :value="column.columnName"></el-option>
@@ -175,7 +189,7 @@
       </el-row>
     </template>
 
-    <template v-if="info.tplCategory == 'sub'">
+    <template v-if="modelValueInner.tplCategory === 'sub'">
       <h4 class="form-header">关联信息</h4>
       <el-row>
         <el-col :span="12">
@@ -186,7 +200,10 @@
                 <el-icon><question-filled /></el-icon>
               </el-tooltip>
             </template>
-            <el-select v-model="info.subTableName" placeholder="请选择" @change="subSelectChange">
+            <el-select
+              v-model="modelValueInner.subTableName"
+              placeholder="请选择"
+              @change="subSelectChange">
               <el-option
                 v-for="(table, index) in tables"
                 :key="index"
@@ -203,7 +220,10 @@
                 <el-icon><question-filled /></el-icon>
               </el-tooltip>
             </template>
-            <el-select v-model="info.subTableFkName" placeholder="请选择">
+            <el-select
+              v-model="modelValueInner.subTableFkName"
+              placeholder="请选择"
+              @change="handleChange">
               <el-option
                 v-for="(column, index) in subColumns"
                 :key="index"
@@ -217,24 +237,54 @@
   </el-form>
 </template>
 
-<script setup>
-  import { listMenu } from '@/api/system/menu'
+<script setup lang="ts" name="genInfoForm">
+  import { getCurrentInstance, ref, watch } from 'vue'
 
-  const subColumns = ref([])
+  import { listMenu } from '../../../api/system/menu'
+  import type { PropType } from 'vue'
+  interface IGenInfoForm {
+    tplCategory?: string
+    packageName?: string
+    moduleName?: string
+    businessName?: string
+    functionName?: string
+    parentMenuId?: number
+    genType?: string
+    genPath?: string
+    treeCode?: number
+    columns?: Array<any>
+    treeParentCode?: number
+    treeName?: string
+    subTableName?: string
+    subTableFkName?: string
+  }
+  interface IGenInfoTable {
+    columns: Array<any>
+    tableName: string
+  }
+  interface IGenInfoFormInst {
+    proxy?: any
+  }
+  const modelValueInner = ref<IGenInfoForm>({})
+  const subColumns = ref<Array<any>>([])
   const menuOptions = ref({})
-  const { proxy } = getCurrentInstance()
+  const { proxy } = getCurrentInstance() as IGenInfoFormInst
 
   const props = defineProps({
     info: {
-      type: Object,
-      default: null,
+      type: Object as PropType<IGenInfoForm>,
     },
     tables: {
-      type: Array,
-      default: null,
+      type: Array as PropType<Array<IGenInfoTable>>,
     },
   })
-
+  watch(
+    () => props.info,
+    () => {
+      props.info && (modelValueInner.value = props.info)
+    },
+    { deep: true, immediate: true }
+  )
   // 表单校验
   const rules = ref({
     tplCategory: [{ required: true, message: '请选择生成模板', trigger: 'blur' }],
@@ -243,37 +293,49 @@
     businessName: [{ required: true, message: '请输入生成业务名', trigger: 'blur' }],
     functionName: [{ required: true, message: '请输入生成功能名', trigger: 'blur' }],
   })
-  function subSelectChange() {
-    props.info.subTableFkName = ''
+  const emit = defineEmits(['update:info'])
+  const handleChange = (): void => {
+    emit('update:info', modelValueInner.value)
   }
-  function tplSelectChange(value) {
+  function subSelectChange() {
+    modelValueInner.value.subTableFkName = ''
+    handleChange()
+  }
+  function tplSelectChange(value: string) {
     if (value !== 'sub') {
-      props.info.subTableName = ''
-      props.info.subTableFkName = ''
+      modelValueInner.value.subTableName = ''
+      modelValueInner.value.subTableFkName = ''
+      handleChange()
     }
   }
-  function setSubTableColumns(value) {
+  function setSubTableColumns(value: string) {
     for (const item in props.tables) {
-      const name = props.tables[item].tableName
+      const itemTables = props.tables[item as keyof typeof props.tables] as IGenInfoTable
+      const name = itemTables.tableName
       if (value === name) {
-        subColumns.value = props.tables[item].columns
+        subColumns.value = itemTables.columns
         break
       }
     }
   }
   /** 查询菜单下拉树结构 */
   function getMenuTreeselect() {
-    listMenu().then(response => {
+    listMenu().then((response: { data: any }) => {
       menuOptions.value = proxy.handleTree(response.data, 'menuId')
     })
   }
 
   watch(
-    () => props.info.subTableName,
+    () => props.info && props.info.subTableName,
     val => {
-      setSubTableColumns(val)
+      if (val) {
+        setSubTableColumns(val)
+      }
     }
   )
-
+  const handleDropClick = () => {
+    modelValueInner.value.genPath = '/'
+    handleChange()
+  }
   getMenuTreeselect()
 </script>

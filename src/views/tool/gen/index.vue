@@ -112,40 +112,35 @@
               v-hasPermi="['tool:gen:preview']"
               type="text"
               icon="View"
-              @click="handlePreview(scope.row)"
-            ></el-button>
+              @click="handlePreview(scope.row)"></el-button>
           </el-tooltip>
           <el-tooltip content="编辑" placement="top">
             <el-button
               v-hasPermi="['tool:gen:edit']"
               type="text"
               icon="Edit"
-              @click="handleEditTable(scope.row)"
-            ></el-button>
+              @click="handleEditTable(scope.row)"></el-button>
           </el-tooltip>
           <el-tooltip content="删除" placement="top">
             <el-button
               v-hasPermi="['tool:gen:remove']"
               type="text"
               icon="Delete"
-              @click="handleDelete(scope.row)"
-            ></el-button>
+              @click="handleDelete(scope.row)"></el-button>
           </el-tooltip>
           <el-tooltip content="同步" placement="top">
             <el-button
               v-hasPermi="['tool:gen:edit']"
               type="text"
               icon="Refresh"
-              @click="handleSynchDb(scope.row)"
-            ></el-button>
+              @click="handleSynchDb(scope.row)"></el-button>
           </el-tooltip>
           <el-tooltip content="生成代码" placement="top">
             <el-button
               v-hasPermi="['tool:gen:code']"
               type="text"
               icon="Download"
-              @click="handleGenTable(scope.row)"
-            ></el-button>
+              @click="handleGenTable(scope.row)"></el-button>
           </el-tooltip>
         </template>
       </el-table-column>
@@ -171,18 +166,13 @@
           v-copyText="value"
           v-copyText:callback="copyTextSuccess"
           :label="key.substring(key.lastIndexOf('/') + 1, key.indexOf('.vm'))"
-            :name="key.substring(key.lastIndexOf('/')+1,key.indexOf('.vm'))"
-            <el-link
-            :underline="false"
-            icon="DocumentCopy"
-            style="float: right"
-            >&nbsp;复制</el-link
-          >
+          :name="key.substring(key.lastIndexOf('/') + 1, key.indexOf('.vm'))">
+          <el-link :underline="false" icon="DocumentCopy" style="float: right">&nbsp;复制</el-link>
           <pre>{{ value }}</pre>
         </el-tab-pane>
       </el-tabs>
     </el-dialog>
-    <import-table ref="importRef" @ok="handleQuery" />
+    <import-table ref="importRef" @ok="handleQuery"></import-table>
   </div>
 </template>
 
@@ -256,17 +246,17 @@
     }
     if (row.genType === '1') {
       genCode(row.tableName).then(() => {
-        proxy.$modal.msgSuccess(`成功生成到自定义路径：${  row.genPath}`)
+        proxy.$modal.msgSuccess(`成功生成到自定义路径：${row.genPath}`)
       })
     } else {
-      proxy.$download.zip(`/tool/gen/batchGenCode?tables=${  tbNames}`, 'ruoyi')
+      proxy.$download.zip(`/tool/gen/batchGenCode?tables=${tbNames}`, 'ruoyi')
     }
   }
   /** 同步数据库操作 */
   function handleSynchDb(row) {
     const tableName = row.tableName
     proxy.$modal
-      .confirm(`确认要强制同步"${  tableName  }"表结构吗？`)
+      .confirm(`确认要强制同步"${tableName}"表结构吗？`)
       .then(() => {
         return synchDb(tableName)
       })
@@ -310,7 +300,7 @@
   function handleEditTable(row) {
     const tableId = row.tableId || ids.value[0]
     router.push({
-      path: `/tool/gen-edit/index/${  tableId}`,
+      path: `/tool/gen-edit/index/${tableId}`,
       query: { pageNum: queryParams.value.pageNum },
     })
   }
@@ -318,7 +308,7 @@
   function handleDelete(row) {
     const tableIds = row.tableId || ids.value
     proxy.$modal
-      .confirm(`是否确认删除表编号为"${  tableIds  }"的数据项？`)
+      .confirm(`是否确认删除表编号为"${tableIds}"的数据项？`)
       .then(() => {
         return delTable(tableIds)
       })

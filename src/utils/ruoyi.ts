@@ -117,12 +117,11 @@ export function selectDictLabels(datas: any, value: string, separator: string) {
 }
 
 // 字符串格式化(%s )
-export function sprintf(str: string, ...argum) {
-  let args = [str].concat(argum),
-    flag = true,
-    i = 1
+export function sprintf(str: string, ...argum: any[]) {
+  const args = [str].concat(argum)
+  let flag = true
+  let i = 1
   str = str.replace(/%s/g, () => {
-    if (i > args.length) return
     const arg = args[i++]
     if (typeof arg === 'undefined') {
       flag = false

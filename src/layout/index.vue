@@ -4,7 +4,7 @@
       v-if="device === 'mobile' && sidebar.opened"
       class="drawer-bg"
       @click="handleClickOutside" />
-    <sidebar v-if="!sidebar.hide" class="sidebar-container" />
+    <SidebarComp v-if="!sidebar.hide" class="sidebar-container" />
     <div :class="{ hasTagsView: needTagsView, sidebarHide: sidebar.hide }" class="main-container">
       <div :class="{ 'fixed-header': fixedHeader }">
         <navbar @set-layout="setLayout" />
@@ -18,7 +18,7 @@
 
 <script setup>
   import { useWindowSize } from '@vueuse/core'
-  import sidebar from './components/Sidebar/index.vue'
+  import SidebarComp from './components/Sidebar/index.vue'
   import { AppMain, Navbar, Settings, TagsView } from './components'
 
   import useAppStore from '@/store/modules/app'

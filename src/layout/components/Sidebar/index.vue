@@ -28,7 +28,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup name="SidebarComp">
   import Logo from './Logo'
   import SidebarItem from './SidebarItem'
   import variables from '@/assets/styles/variables.module.scss'

@@ -26,14 +26,16 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+  import { computed, ref } from 'vue'
+  import type { PropType } from 'vue'
   const props = defineProps({
     showSearch: {
       type: Boolean,
       default: true,
     },
     columns: {
-      type: Array,
+      type: Object as PropType<any>,
     },
     search: {
       type: Boolean,
@@ -45,17 +47,17 @@
     },
   })
 
-  const emits = defineEmits(['update:showSearch', 'queryTable'])
+  const emits = defineEmits(['update:showSearch', 'queryTable', 'updateColumVis'])
 
   // 显隐数据
-  const value = ref([])
+  const value = ref<Array<number>>([])
   // 弹出层标题
   const title = ref('显示/隐藏')
   // 是否显示弹出层
   const open = ref(false)
 
   const style = computed(() => {
-    const ret = {}
+    const ret: { marginRight?: string } = {}
     if (props.gutter) {
       ret.marginRight = `${props.gutter / 2}px`
     }
@@ -73,10 +75,10 @@
   }
 
   // 右侧列表元素变化
-  function dataChange(data) {
+  function dataChange(data: Array<any>) {
     for (const item in props.columns) {
       const key = props.columns[item].key
-      props.columns[item].visible = !data.includes(key)
+      emits('updateColumVis', { vis: !data.includes(key), item })
     }
   }
 

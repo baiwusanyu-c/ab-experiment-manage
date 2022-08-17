@@ -131,6 +131,7 @@
           <right-toolbar
             v-model:showSearch="showSearch"
             :columns="columns"
+            @update-colum-vis="updateColumVis"
             @query-table="getList"></right-toolbar>
         </el-row>
 
@@ -717,7 +718,9 @@
       }
     })
   }
-
+  function updateColumVis(data) {
+    columns.value[data.item].visible = data.vis
+  }
   getTreeselect()
   getList()
 </script>

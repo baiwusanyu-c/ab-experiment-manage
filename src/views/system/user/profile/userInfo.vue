@@ -1,16 +1,16 @@
 <template>
-  <el-form ref="userRef" :model="user" :rules="rules" label-width="80px">
+  <el-form ref="userRef" :model="modelValueInner" :rules="rules" label-width="80px">
     <el-form-item label="用户昵称" prop="nickName">
-      <el-input v-model="user.nickName" maxlength="30" />
+      <el-input v-model="modelValueInner.nickName" maxlength="30" />
     </el-form-item>
     <el-form-item label="手机号码" prop="phonenumber">
-      <el-input v-model="user.phonenumber" maxlength="11" />
+      <el-input v-model="modelValueInner.phonenumber" maxlength="11" />
     </el-form-item>
     <el-form-item label="邮箱" prop="email">
-      <el-input v-model="user.email" maxlength="50" />
+      <el-input v-model="modelValueInner.email" maxlength="50" />
     </el-form-item>
     <el-form-item label="性别">
-      <el-radio-group v-model="user.sex">
+      <el-radio-group v-model="modelValueInner.sex">
         <el-radio label="0">男</el-radio>
         <el-radio label="1">女</el-radio>
       </el-radio-group>
@@ -22,16 +22,40 @@
   </el-form>
 </template>
 
-<script setup>
-  import { updateUserProfile } from '@/api/system/user'
+<script setup lang="ts">
+  import { getCurrentInstance, ref, watch } from 'vue'
+  import { updateUserProfile } from '../../../../api/system/user'
+  import type { PropType } from 'vue'
+
+  interface IUserForm {
+    nickName: string
+    phonenumber: string
+    email: string
+    sex: string
+  }
+  interface IUserFormInst {
+    proxy?: any
+  }
+  const modelValueInner = ref<IUserForm>({
+    nickName: '',
+    phonenumber: '',
+    email: '',
+    sex: '1',
+  })
 
   const props = defineProps({
     user: {
-      type: Object,
+      type: Object as PropType<IUserForm>,
     },
   })
-
-  const { proxy } = getCurrentInstance()
+  watch(
+    () => props.user,
+    () => {
+      props.user && (modelValueInner.value = props.user)
+    },
+    { deep: true, immediate: true }
+  )
+  const inst = getCurrentInstance() as IUserFormInst
 
   const rules = ref({
     nickName: [{ required: true, message: '用户昵称不能为空', trigger: 'blur' }],
@@ -47,16 +71,17 @@
 
   /** 提交按钮 */
   function submit() {
-    proxy.$refs.userRef.validate(valid => {
-      if (valid) {
-        updateUserProfile(props.user).then(() => {
-          proxy.$modal.msgSuccess('修改成功')
-        })
-      }
-    })
+    inst &&
+      inst.proxy.$refs.userRef.validate((valid: boolean) => {
+        if (valid) {
+          updateUserProfile(modelValueInner.value).then(() => {
+            inst && inst.proxy.$modal.msgSuccess('修改成功')
+          })
+        }
+      })
   }
   /** 关闭按钮 */
   function close() {
-    proxy.$tab.closePage()
+    inst && inst.proxy.$tab.closePage()
   }
 </script>
