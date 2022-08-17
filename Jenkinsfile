@@ -4,8 +4,8 @@ pipeline {
         stage('init project A/B-TEST'){
                 steps{
                     bat 'npm -v'
-                    bat 'pnpm -v'
-                    bat 'npm run init'
+                    bat 'npm config set registry https://registry.npm.taobao.org'
+                    bat 'npm i'
                 }
             }
         stage('build project A/B-TEST'){

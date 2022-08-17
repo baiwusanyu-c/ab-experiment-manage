@@ -5,7 +5,7 @@
     </div>
     <div class="setting-drawer-block-checbox">
       <div class="setting-drawer-block-checbox-item" @click="handleTheme('theme-dark')">
-        <img src="@/assets/images/dark.svg" alt="dark" />
+        <img src="@/assets/svg/dark.svg" alt="dark" />
         <div
           v-if="sideTheme === 'theme-dark'"
           class="setting-drawer-block-checbox-selectIcon"
@@ -27,7 +27,7 @@
         </div>
       </div>
       <div class="setting-drawer-block-checbox-item" @click="handleTheme('theme-light')">
-        <img src="@/assets/images/light.svg" alt="light" />
+        <img src="@/assets/svg/light.svg" alt="light" />
         <div
           v-if="sideTheme === 'theme-light'"
           class="setting-drawer-block-checbox-selectIcon"
