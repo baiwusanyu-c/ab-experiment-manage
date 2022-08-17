@@ -3,12 +3,18 @@ pipeline {
     stages {
         stage('init project A/B-TEST'){
                 steps{
-                    bat 'pnpm run init'
+                    bat 'npm -v'
+                }
+                steps{
+                    bat 'pnpm -v'
+                }
+                steps{
+                    bat 'npm run init'
                 }
             }
         stage('build project A/B-TEST'){
             steps{
-                bat 'pnpm run build:prod'
+                bat 'npm run build:prod'
             }
         }
     }
