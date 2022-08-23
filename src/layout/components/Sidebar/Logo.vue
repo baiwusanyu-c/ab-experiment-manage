@@ -36,7 +36,7 @@
 
 <script setup>
   import variables from '@/assets/styles/variables.module.scss'
-  import logo from '@/assets/images/logo.png'
+  import logo from '@/assets/images/cbd.png'
   import useSettingsStore from '@/store/modules/settings'
 
   defineProps({

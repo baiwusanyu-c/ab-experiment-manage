@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { getInfo, login, logout } from '../../api/login'
 import { getToken, removeToken, setToken } from '../../utils/auth'
-import defAva from '@/assets/images/profile.jpg'
+import defAva from '@/assets/images/cbd.png'
 const useUserStore = defineStore('user', {
   state: () => ({
     token: getToken(),
