@@ -13,7 +13,6 @@
     "build:prod": "vite build --mode production",
     "build:dev": "vite build --mode development",
     "build:stage": "vite build --mode staging",
-    "lint:ts": "eslint ./src --ext .vue,.js,.ts,.jsx,.tsx",
     "lint:ts-fix": "eslint --fix ./src --ext .vue,.js,.ts,.jsx,.tsx ",
     "prepare": "husky install",
     "preview": "vite preview",
