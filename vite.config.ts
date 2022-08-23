@@ -26,19 +26,6 @@ export default defineConfig(({ mode, command }) => {
       // https://cn.vitejs.dev/config/#resolve-extensions
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
     },
-    // vite 相关配置
-    server: {
-      port: 3000,
-      host: true,
-      proxy: {
-        // https://cn.vitejs.dev/config/#server-proxy
-        '/dev-api': {
-          target: 'http://192.168.117.177:8080',
-          changeOrigin: true,
-          rewrite: p => p.replace(/^\/dev-api/, ''),
-        },
-      },
-    },
     // 指定环境变量文件路径
     envDir: './env/',
     //fix:error:stdin>:7356:1: warning: "@charset" must be the first rule in the file

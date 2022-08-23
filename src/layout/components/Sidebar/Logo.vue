@@ -46,7 +46,7 @@
     },
   })
 
-  const title = ref('若依管理系统')
+  const title = ref('AB-TEST管理系统')
   const settingsStore = useSettingsStore()
   const sideTheme = computed(() => settingsStore.sideTheme)
 </script>
