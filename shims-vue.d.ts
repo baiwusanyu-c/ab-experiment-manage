@@ -10,7 +10,7 @@ declare module '*.vue' {
     // $https: any;
     // $urls: any;
     // $Message: any;
-    // $Modal: any;
+    $modal: any
   }
   // eslint-disable-next-line @typescript-eslint/ban-types
   const component: DefineComponent<{}, {}, Vue, any>

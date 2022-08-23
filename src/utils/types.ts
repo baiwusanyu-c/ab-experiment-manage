@@ -1,5 +1,6 @@
 import type { RouterOptions } from 'vue-router'
 import type { constantRoutes } from '../router'
+import type { ComponentPublicInstance } from 'vue'
 
 export interface IOption {
   [key: string]: any
@@ -26,4 +27,7 @@ export interface ITagView {
 }
 export interface IRouteLocation extends ITagView {
   query: any
+}
+export interface IComponentProxy extends ComponentPublicInstance {
+  $modal: any
 }
