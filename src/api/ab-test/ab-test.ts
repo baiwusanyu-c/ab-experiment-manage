@@ -21,3 +21,10 @@ export function listApplication() {
     method: 'post',
   })
 }
+
+export function getParameter() {
+  return request({
+    url: '/common/parameter/list',
+    method: 'post',
+  })
+}

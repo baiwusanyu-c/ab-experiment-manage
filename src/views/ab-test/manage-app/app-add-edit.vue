@@ -26,9 +26,11 @@
 
       <el-form-item label="应用类型" prop="appType">
         <el-select v-model="form.appType" placeholder="请选择应用类型">
-          <el-option label="微信小程序" :value="1" />
-          <el-option label="抖音小程序" :value="2" />
-          <el-option label="web/H5" :value="3" />
+          <el-option
+            v-for="item in appType"
+            :key="item.label + item.value"
+            :label="item.label"
+            :value="item.value"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="应用描述" prop="appDesc">
@@ -47,6 +49,7 @@
   // TODO: 应用类型需要接口对接获取数据
   import { getCurrentInstance, ref } from 'vue'
   import { addApplication } from '../../../api/ab-test/ab-test'
+  import useCommonParamsStore from '../../../store/modules/common-params'
   import type { FormInstance } from 'element-plus'
   import type { IAddApp } from '../../../api/ab-test/ab-test'
   import type { IComponentProxy } from '../../../utils/types'
@@ -95,6 +98,8 @@
   defineExpose({
     resetForm,
   })
+
+  const appType = useCommonParamsStore().createOption('APP_TYPE')
 </script>
 
 <style scoped lang="scss">
