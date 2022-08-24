@@ -14,3 +14,10 @@ export function addApplication(data: IAddApp) {
     data,
   })
 }
+
+export function listApplication() {
+  return request({
+    url: '/application/list',
+    method: 'post',
+  })
+}

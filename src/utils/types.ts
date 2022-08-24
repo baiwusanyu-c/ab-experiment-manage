@@ -30,4 +30,11 @@ export interface IRouteLocation extends ITagView {
 }
 export interface IComponentProxy extends ComponentPublicInstance {
   $modal: any
+  resetForm: Function
+}
+export interface IQueryParams {
+  appName?: string
+  appID?: string
+  pageNo: number
+  pageSize: number
 }
