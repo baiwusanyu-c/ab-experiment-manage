@@ -67,7 +67,7 @@
       </el-table-column>
     </el-table>
     <el-dialog v-model="showDialog" :title="titleDialog" width="800px" append-to-body>
-      <app-add-edit ref="appAddEdit" :type="typeDialog"> </app-add-edit>
+      <app-add-edit ref="appAddEdit" :type="typeDialog" @close="closeDialog"> </app-add-edit>
     </el-dialog>
   </div>
 </template>
@@ -125,6 +125,12 @@
     showDialog.value = true
     console.info(row)
   }
+  const closeDialog = () => {
+    showDialog.value = false
+  }
+  defineExpose({
+    closeDialog,
+  })
   /************************ 获取列表相关 ****************************/
 
   const appList = ref([])

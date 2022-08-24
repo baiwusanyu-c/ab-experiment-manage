@@ -9,7 +9,7 @@ export interface IAddApp {
 }
 export function addApplication(data: IAddApp) {
   return request({
-    url: '/application',
+    url: '/application/create',
     method: 'post',
     data,
   })

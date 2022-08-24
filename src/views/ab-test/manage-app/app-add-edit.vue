@@ -71,6 +71,7 @@
     ],
     appDesc: [{ min: 1, max: 1000, message: '长度最大支持1000个字符', trigger: 'blur' }],
   })
+  const emit = defineEmits(['close'])
   const submitForm = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
     await formEl.validate((valid: boolean) => {
@@ -78,6 +79,7 @@
         addApplication(form.value).then(res => {
           if (res) {
             ;(proxy as IComponentProxy).$modal.msgSuccess('创建成功')
+            emit('close')
           }
         })
       }
