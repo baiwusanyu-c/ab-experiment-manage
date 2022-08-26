@@ -10,12 +10,17 @@
   </section>
 </template>
 
-<script setup>
-  import useTagsViewStore from '@/store/modules/tagsView'
-
+<script setup lang="ts">
+  import { computed } from 'vue'
+  import { useRoute } from 'vue-router'
+  import useTagsViewStore from '../../store/modules/tagsView'
+  import useCommonParamsStore from '../../store/modules/common-params'
+  import type { ITagView } from '../../utils/types'
+  // 获取公共参数
+  useCommonParamsStore().reqParams()
   const tagsViewStore = useTagsViewStore()
   const routeInst = useRoute()
-  tagsViewStore.addCachedView(routeInst)
+  tagsViewStore.addCachedView(routeInst as ITagView)
   const cachedViews = computed(() => {
     return tagsViewStore.cachedViews
   })
