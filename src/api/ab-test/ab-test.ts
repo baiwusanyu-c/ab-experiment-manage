@@ -1,12 +1,6 @@
 import request from '../../utils/request'
+import type { IAddApp, IExpQueryParams } from '../../utils/types'
 
-// 创建应用
-export interface IAddApp {
-  appName: string
-  appType: number
-  appDesc: string
-  appKey: string
-}
 export function addApplication(data: IAddApp) {
   return request({
     url: '/application/create',
@@ -26,5 +20,13 @@ export function getParameter() {
   return request({
     url: '/common/parameter/list',
     method: 'post',
+  })
+}
+
+export function listExperiment(data: IExpQueryParams) {
+  return request({
+    url: '/experiment/list',
+    method: 'post',
+    data,
   })
 }

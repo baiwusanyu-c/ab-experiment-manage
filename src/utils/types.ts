@@ -32,9 +32,38 @@ export interface IComponentProxy extends ComponentPublicInstance {
   $modal: any
   resetForm: Function
 }
-export interface IQueryParams {
+export interface IAppQueryParams extends pageParams {
   appName?: string
   appID?: string
+}
+
+export interface pageParams {
   pageNo: number
   pageSize: number
+}
+
+export interface IExpQueryParams extends pageParams {
+  keyword?: string
+  status?: number
+  startTime?: string
+  endTime?: string
+  dateArr: Array<Date>
+}
+export interface IExpData {
+  experimentId: string
+  experimentName: string
+  appName: string
+  experimentType: number
+  experimentStatus: number
+  startTime: string
+  endTime: string
+  experimentTrafficWeight: number
+  createTime: string
+}
+// 创建应用
+export interface IAddApp {
+  appName: string
+  appType: number
+  appDesc: string
+  appKey: string
 }

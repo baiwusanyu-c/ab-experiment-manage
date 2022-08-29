@@ -73,15 +73,15 @@
 </template>
 
 <script lang="ts" name="app-list" setup>
-  // TODO:搜索字段对接
-  // TODO:应用列表字段对接
+  // TODO: 搜索字段对接
+  // TODO: 应用列表字段对接
   // TODO: 应用编辑接口对接
   // TODO: 应用编辑逻辑编写
   import { getCurrentInstance, nextTick, ref } from 'vue'
   import { listApplication } from '../../../api/ab-test/ab-test'
   import AppAddEdit from './app-add-edit.vue'
   import type { ComponentPublicInstance } from 'vue'
-  import type { IComponentProxy, IQueryParams } from '../../../utils/types'
+  import type { IAppQueryParams, IComponentProxy } from '../../../utils/types'
   interface IAppAddEdit extends ComponentPublicInstance {
     appAddEdit: {
       resetForm: Function
@@ -91,7 +91,7 @@
   /********************* 搜索相关逻辑 *******************************/
 
   const showSearch = ref<boolean>(true)
-  const queryParams = ref<IQueryParams>({
+  const queryParams = ref<IAppQueryParams>({
     pageNo: 1,
     pageSize: 10,
   })

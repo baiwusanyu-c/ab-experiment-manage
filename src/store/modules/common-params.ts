@@ -46,8 +46,8 @@ const useCommonParamsStore = defineStore('common-params', {
           })
       })
     },
-    getParams() {
-      return this.commonParams
+    getParams(attrKey: string) {
+      return this.commonParams[attrKey]
     },
     createOption(attrKey: string) {
       const option: Array<IOption> = []
