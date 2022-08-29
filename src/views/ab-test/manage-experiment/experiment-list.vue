@@ -283,7 +283,8 @@
     listExperiment(queryParams.value)
       .then((res: any) => {
         if (res) {
-          expList.value = res
+          expList.value = res.experiments
+          total.value = res.page.totalItems
         }
       })
       .finally(() => {
