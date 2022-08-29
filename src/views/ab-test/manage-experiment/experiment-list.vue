@@ -53,12 +53,12 @@
       <el-table-column label="所属应用" prop="appName" show-overflow-tooltip />
       <el-table-column label="实验类型" prop="experimentType" width="100">
         <template #default="scope">
-          <span>{{ expType[scope.row.experimentType] }}</span>
+          <span>{{ getOptionVal(expType, scope.row.experimentType) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="实验状态" prop="experimentStatus" width="100">
         <template #default="scope">
-          <span>{{ expStatus[scope.row.experimentStatus] }}</span>
+          <span>{{ getOptionVal(expStatus, scope.row.experimentStatus) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="开始时间" align="center" prop="startTime" width="180">
@@ -83,16 +83,20 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
-          <el-tooltip content="编辑" placement="top">
-            <el-button
-              v-hasPermi="['system:role:edit']"
-              type="text"
-              icon="Edit"
-              @click="handleEdit(scope.row)"></el-button>
-          </el-tooltip>
+          <span class='op-btn' v-hasPermi="['system:role:edit']" @click="handleEdit(scope.row)">发布</span>
+          <span class='op-btn' v-hasPermi="['system:role:edit']" @click="handleEdit(scope.row)">取消</span>
+          <span class='op-btn' v-hasPermi="['system:role:edit']" @click="handleEdit(scope.row)">编辑</span>
+          <span class='op-btn' v-hasPermi="['system:role:edit']" @click="handleEdit(scope.row)">查看报告</span>
         </template>
       </el-table-column>
     </el-table>
+    <pagination
+      v-show="total > 0"
+      v-model:page="queryParams.pageNo"
+      v-model:limit="queryParams.pageSize"
+      :total="total"
+      @pagination="getList" />
+
     <!--    <el-dialog v-model="showDialog" :title="titleDialog" width="800px" append-to-body>
       <app-add-edit ref="appAddEdit" :type="typeDialog" @close="closeDialog"> </app-add-edit>
     </el-dialog>-->
@@ -106,11 +110,14 @@
   // TODO: 实验新增逻辑编写
   // TODO: 实验编辑接口对接
   // TODO: 实验编辑逻辑编写
-  import { getCurrentInstance, nextTick, ref } from 'vue'
+  import { computed, getCurrentInstance, nextTick, ref } from 'vue'
+  import { useEventBus } from '@vueuse/core'
   import { listExperiment } from '../../../api/ab-test/ab-test'
   // import AppAddEdit from './app-add-edit.vue'
   import useCommonParamsStore from '../../../store/modules/common-params'
   import { toPrecision } from '../../../utils/ruoyi'
+  import store from '../../../store'
+  import type { IExpStatus, IExpType } from '../../../store/modules/common-params'
   import type { ComponentPublicInstance } from 'vue'
   import type { IComponentProxy, IExpData, IExpQueryParams } from '../../../utils/types'
   interface IAppAddEdit extends ComponentPublicInstance {
@@ -120,7 +127,7 @@
   }
   const inst = getCurrentInstance()
   /********************* 搜索相关逻辑 *******************************/
-  const expStatusList = useCommonParamsStore().createOption('EXPERIMENT_STATUS')
+  const expStatusList = useCommonParamsStore(store).createOption('EXPERIMENT_STATUS')
   const showSearch = ref<boolean>(true)
   const queryParams = ref<IExpQueryParams>({
     pageNo: 1,
@@ -171,8 +178,38 @@
   defineExpose({
     closeDialog,
   })
-  /************************ 获取列表相关 ****************************/
+  /************************ 获取公共参数相关 ****************************/
+  const expStatus = ref<IExpStatus>({
+    1: '',
+    2: '',
+    3: '',
+    4: '',
+    5: '',
+  })
 
+  const expType = ref<IExpType>({
+    1: '',
+    2: '',
+  })
+  const bus = useEventBus<string>('commonParams')
+  const setCommonParams = () => {
+    expType.value = useCommonParamsStore(store).getParams('EXPERIMENT_TYPE')
+    expStatus.value = useCommonParamsStore(store).getParams('EXPERIMENT_STATUS')
+  }
+  bus.on(setCommonParams)
+  setCommonParams()
+
+  const getOptionVal = computed(() => {
+    return function (data, key) {
+      if (key && data) {
+        return data[key]
+      }
+      return ''
+    }
+  })
+
+  /************************ 获取列表相关 ****************************/
+  const total = ref<number>(0)
   const expList = ref<Array<IExpData>>([
     {
       experimentId: 'string',
@@ -187,9 +224,6 @@
     },
   ])
   const loading = ref<boolean>(false)
-  //const expStatus = useCommonParamsStore().getParams('EXPERIMENT_STATUS')
-  //const expType = useCommonParamsStore().getParams('EXPERIMENT_TYPE')
-  //console.log(expType)
   const getList = () => {
     loading.value = true
     listExperiment(queryParams.value)
@@ -202,6 +236,6 @@
         loading.value = false
       })
   }
+  // getList()
 </script>
 
-<style scoped></style>

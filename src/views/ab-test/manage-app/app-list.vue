@@ -42,7 +42,7 @@
       <el-table-column type="index" width="50" />
       <el-table-column label="应用名称" prop="roleId" width="120" />
       <el-table-column label="应用ID" prop="roleName" :show-overflow-tooltip="true" width="150" />
-      <el-table-column label="App Name" prop="roleKey" :show-overflow-tooltip="true" width="150" />
+      <el-table-column label="App Key" prop="roleKey" :show-overflow-tooltip="true" width="150" />
       <el-table-column label="应用类型" prop="roleSort" width="100" />
       <el-table-column label="创建时间" align="center" prop="createTime">
         <template #default="scope">
