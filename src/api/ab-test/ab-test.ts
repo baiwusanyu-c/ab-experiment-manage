@@ -1,5 +1,5 @@
 import request from '../../utils/request'
-import type { IAddApp, IExpQueryParams } from '../../utils/types'
+import type { IAddApp, IAppQueryParams, IExpQueryParams } from '../../utils/types'
 
 export function addApplication(data: IAddApp) {
   return request({
@@ -9,10 +9,11 @@ export function addApplication(data: IAddApp) {
   })
 }
 
-export function listApplication() {
+export function listApplication(data: IAppQueryParams) {
   return request({
     url: '/application/list',
     method: 'post',
+    data,
   })
 }
 

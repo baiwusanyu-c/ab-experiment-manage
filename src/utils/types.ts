@@ -32,9 +32,8 @@ export interface IComponentProxy extends ComponentPublicInstance {
   $modal: any
   resetForm: Function
 }
-export interface IAppQueryParams extends pageParams {
-  appName?: string
-  appID?: string
+export interface IAppQueryParams {
+  searchValue?: string
 }
 
 export interface pageParams {
