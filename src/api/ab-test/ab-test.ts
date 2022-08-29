@@ -17,6 +17,14 @@ export function listApplication(data: IAppQueryParams) {
   })
 }
 
+export function detailApplication(data: { appId: string }) {
+  return request({
+    url: '/application/detail',
+    method: 'post',
+    data,
+  })
+}
+
 export function getParameter() {
   return request({
     url: '/common/parameter/list',

@@ -51,18 +51,19 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
-          <el-tooltip content="编辑" placement="top">
-            <el-button
-              v-hasPermi="['system:role:edit']"
-              type="text"
-              icon="Edit"
-              @click="handleEdit(scope.row)"></el-button>
-          </el-tooltip>
+          <span v-hasPermi="['system:role:edit']" class="op-btn" @click="handleEdit(scope.row)"
+            >编辑</span
+          >
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog v-model="showDialog" :title="titleDialog" width="800px" append-to-body>
-      <app-add-edit ref="appAddEdit" :type="typeDialog" @close="closeDialog"> </app-add-edit>
+    <el-dialog
+      v-model="showDialog"
+      :title="titleDialog"
+      width="800px"
+      append-to-body
+      @close="closeDialog">
+      <app-add-edit ref="appAddEdit" :type="typeDialog" :app-id="curAppId"> </app-add-edit>
     </el-dialog>
   </div>
 </template>
@@ -117,15 +118,19 @@
       ;(inst?.refs as unknown as IAppAddEdit).appAddEdit.resetForm(false)
     })
   }
-
+  const curAppId = ref<string>('')
   const handleEdit = (row: any) => {
     titleDialog.value = '编辑应用'
     typeDialog.value = 'edit'
     showDialog.value = true
-    console.info(row)
+    nextTick(() => {
+      ;(inst?.refs as unknown as IAppAddEdit).appAddEdit.resetForm(false)
+      curAppId.value = row.appId
+    })
   }
   const closeDialog = () => {
     showDialog.value = false
+    curAppId.value = ''
   }
   defineExpose({
     closeDialog,
@@ -161,7 +166,6 @@
     listApplication(queryParams.value)
       .then((res: any) => {
         if (res) {
-          debugger
           appList.value = res.data
         }
       })

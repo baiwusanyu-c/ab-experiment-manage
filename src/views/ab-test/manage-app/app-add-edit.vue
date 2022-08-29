@@ -46,13 +46,14 @@
 </template>
 
 <script lang="ts" name="app-add" setup>
-  // TODO: 应用类型需要接口对接获取数据
-  import { getCurrentInstance, ref } from 'vue'
-  import { addApplication } from '../../../api/ab-test/ab-test'
+  import { getCurrentInstance, ref, watch } from 'vue'
+  import { useEventBus } from '@vueuse/core'
+  import { addApplication, detailApplication } from '../../../api/ab-test/ab-test'
   import useCommonParamsStore from '../../../store/modules/common-params'
+  import store from '../../../store'
   import type { FormInstance } from 'element-plus'
   import type { IAddApp } from '../../../api/ab-test/ab-test'
-  import type { IComponentProxy } from '../../../utils/types'
+  import type { IComponentProxy, IOption } from '../../../utils/types'
   const proxy = getCurrentInstance()?.proxy
   const ruleFormRef = ref<FormInstance | null>(null)
 
@@ -99,7 +100,43 @@
     resetForm,
   })
 
-  const appType = useCommonParamsStore().createOption('APP_TYPE')
+  const appType = ref<Array<IOption>>([])
+  const bus = useEventBus<string>('commonParams')
+  const setCommonParams = () => {
+    appType.value = useCommonParamsStore(store).createOption('APP_TYPE')
+  }
+  bus.on(setCommonParams)
+  setCommonParams()
+
+  const props = defineProps({
+    type: {
+      type: String,
+      default: 'add',
+    },
+    appId: {
+      type: String,
+      default: '',
+    },
+  })
+  watch(
+    () => props.appId,
+    nVal => {
+      if (nVal) {
+        // 编辑时获取应用数据
+        getAppDetail()
+      }
+    }
+  )
+  /**
+   * 获取详情数据
+   */
+  const getAppDetail = () => {
+    detailApplication({ appId: props.appId }).then((res: any) => {
+      if (res) {
+        form.value = res.data
+      }
+    })
+  }
 </script>
 
 <style scoped lang="scss">
