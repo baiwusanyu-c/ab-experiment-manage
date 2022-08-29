@@ -77,6 +77,8 @@
   // TODO: 应用列表字段对接
   // TODO: 应用编辑接口对接
   // TODO: 应用编辑逻辑编写
+  // TODO: 应用详情接口对接
+  // TODO: 应用详情逻辑编写
   import { getCurrentInstance, nextTick, ref } from 'vue'
   import { listApplication } from '../../../api/ab-test/ab-test'
   import AppAddEdit from './app-add-edit.vue'

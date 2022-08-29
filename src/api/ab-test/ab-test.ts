@@ -30,3 +30,19 @@ export function listExperiment(data: IExpQueryParams) {
     data,
   })
 }
+
+export function cancelExperiment(data: { experimentId: number }) {
+  return request({
+    url: '/experiment/cancel',
+    method: 'post',
+    data,
+  })
+}
+
+export function publishExperiment(data: { experimentId: number }) {
+  return request({
+    url: '/experiment/publish',
+    method: 'post',
+    data,
+  })
+}

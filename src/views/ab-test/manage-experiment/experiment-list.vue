@@ -83,10 +83,24 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
-          <span class='op-btn' v-hasPermi="['system:role:edit']" @click="handleEdit(scope.row)">发布</span>
-          <span class='op-btn' v-hasPermi="['system:role:edit']" @click="handleEdit(scope.row)">取消</span>
-          <span class='op-btn' v-hasPermi="['system:role:edit']" @click="handleEdit(scope.row)">编辑</span>
-          <span class='op-btn' v-hasPermi="['system:role:edit']" @click="handleEdit(scope.row)">查看报告</span>
+          <span
+            v-hasPermi="['system:role:edit']"
+            class="op-btn"
+            @click="publishExp(scope.row.experimentId)"
+            >发布</span
+          >
+          <span
+            v-hasPermi="['system:role:edit']"
+            class="op-btn"
+            @click="cancelExp(scope.row.experimentId)"
+            >取消</span
+          >
+          <span v-hasPermi="['system:role:edit']" class="op-btn" @click="handleEdit(scope.row)"
+            >编辑</span
+          >
+          <span v-hasPermi="['system:role:edit']" class="op-btn" @click="handleEdit(scope.row)"
+            >查看报告</span
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -104,15 +118,21 @@
 </template>
 
 <script lang="ts" name="experiment-list" setup>
-  // TODO: 搜索字段对接
-  // TODO: 实验列表字段对接
+  // TODO: 搜索字段对接    pending...
+  // TODO: 实验列表字段对接 pending...
   // TODO: 实验新增接口对接
   // TODO: 实验新增逻辑编写
   // TODO: 实验编辑接口对接
   // TODO: 实验编辑逻辑编写
+  // TODO: 实验发布接口对接 pending...
+  // TODO: 实验发布逻辑编写 pending...
+  // TODO: 实验取消接口对接 pending...
+  // TODO: 实验取消逻辑编写 pending...
+  // TODO: 实验详情接口对接
+  // TODO: 实验详情逻辑编写
   import { computed, getCurrentInstance, nextTick, ref } from 'vue'
   import { useEventBus } from '@vueuse/core'
-  import { listExperiment } from '../../../api/ab-test/ab-test'
+  import { cancelExperiment, listExperiment, publishExperiment } from '../../../api/ab-test/ab-test'
   // import AppAddEdit from './app-add-edit.vue'
   import useCommonParamsStore from '../../../store/modules/common-params'
   import { toPrecision } from '../../../utils/ruoyi'
@@ -152,7 +172,7 @@
     ;(inst?.proxy as IComponentProxy).resetForm('queryRef')
     handleQuery()
   }
-  /********************* 新增、编辑相关逻辑 *******************************/
+  /********************* 新增、编辑、取消、发布相关逻辑 *******************************/
 
   const showDialog = ref<boolean>(false)
   const titleDialog = ref<string>('')
@@ -178,6 +198,40 @@
   defineExpose({
     closeDialog,
   })
+  /**
+   * 取消实验
+   */
+  const cancelExp = (experimentId: number) => {
+    ;(inst?.proxy as IComponentProxy).$modal
+      .confirm(`是否取消该实验？`)
+      .then(() => {
+        return cancelExperiment({ experimentId })
+      })
+      .then(() => {
+        getList()
+        ;(inst?.proxy as IComponentProxy).$modal.msgSuccess('取消成功')
+      })
+      .catch(err => {
+        console.error(err)
+      })
+  }
+  /**
+   * 发布实验
+   */
+  const publishExp = (experimentId: number) => {
+    ;(inst?.proxy as IComponentProxy).$modal
+      .confirm(`是否发布该实验？`)
+      .then(() => {
+        return publishExperiment({ experimentId })
+      })
+      .then(() => {
+        getList()
+        ;(inst?.proxy as IComponentProxy).$modal.msgSuccess('发布成功')
+      })
+      .catch(err => {
+        console.error(err)
+      })
+  }
   /************************ 获取公共参数相关 ****************************/
   const expStatus = ref<IExpStatus>({
     1: '',
@@ -238,4 +292,3 @@
   }
   // getList()
 </script>
-
