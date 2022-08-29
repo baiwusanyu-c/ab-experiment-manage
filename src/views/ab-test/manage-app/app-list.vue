@@ -76,14 +76,15 @@
 
   // TODO: 应用详情接口对接
   // TODO: 应用详情逻辑编写
-  import {computed, getCurrentInstance, nextTick, ref} from 'vue'
+  import { computed, getCurrentInstance, nextTick, ref } from 'vue'
+  import { useEventBus } from '@vueuse/core'
   import { listApplication } from '../../../api/ab-test/ab-test'
+  import useCommonParamsStore from '../../../store/modules/common-params'
+  import store from '../../../store'
   import AppAddEdit from './app-add-edit.vue'
+  import type { IAppType } from '../../../store/modules/common-params'
   import type { ComponentPublicInstance } from 'vue'
   import type { IAppQueryParams, IComponentProxy } from '../../../utils/types'
-  import useCommonParamsStore, {IAppType, IExpStatus, IExpType} from "../../../store/modules/common-params";
-  import {useEventBus} from "@vueuse/core";
-  import store from "../../../store";
   interface IAppAddEdit extends ComponentPublicInstance {
     appAddEdit: {
       resetForm: Function
