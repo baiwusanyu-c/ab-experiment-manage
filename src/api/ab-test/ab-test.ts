@@ -9,6 +9,14 @@ export function addApplication(data: IAddApp) {
   })
 }
 
+export function editApplication(data: IAddApp) {
+  return request({
+    url: '/application/update',
+    method: 'post',
+    data,
+  })
+}
+
 export function listApplication(data: IAppQueryParams) {
   return request({
     url: '/application/list',

@@ -63,20 +63,13 @@
       width="800px"
       append-to-body
       @close="closeDialog">
-      <app-add-edit ref="appAddEdit" :type="typeDialog" :app-id="curAppId"> </app-add-edit>
+      <app-add-edit ref="appAddEdit" @close="closeDialog" :type="typeDialog" :app-id="curAppId">
+      </app-add-edit>
     </el-dialog>
   </div>
 </template>
 
 <script lang="ts" name="app-list" setup>
-  // TODO: 搜索字段对接 complete
-  // TODO: 应用列表字段对接 complete
-
-  // TODO: 应用编辑接口对接
-  // TODO: 应用编辑逻辑编写
-
-  // TODO: 应用详情接口对接
-  // TODO: 应用详情逻辑编写
   import { computed, getCurrentInstance, nextTick, ref } from 'vue'
   import { useEventBus } from '@vueuse/core'
   import { listApplication } from '../../../api/ab-test/ab-test'
@@ -128,9 +121,12 @@
       curAppId.value = row.appId
     })
   }
-  const closeDialog = () => {
+  const closeDialog = (isUpdate: false) => {
     showDialog.value = false
     curAppId.value = ''
+    if (isUpdate) {
+      getList()
+    }
   }
   defineExpose({
     closeDialog,

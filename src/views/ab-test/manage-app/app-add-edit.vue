@@ -48,7 +48,7 @@
 <script lang="ts" name="app-add" setup>
   import { getCurrentInstance, ref, watch } from 'vue'
   import { useEventBus } from '@vueuse/core'
-  import { addApplication, detailApplication } from '../../../api/ab-test/ab-test'
+  import { addApplication, detailApplication, editApplication } from '../../../api/ab-test/ab-test'
   import useCommonParamsStore from '../../../store/modules/common-params'
   import store from '../../../store'
   import type { FormInstance } from 'element-plus'
@@ -62,6 +62,7 @@
     appType: 1,
     appDesc: '',
     appKey: '',
+    appId: '',
   })
   const rules = ref({
     appName: [
@@ -80,12 +81,22 @@
     if (!formEl) return
     await formEl.validate((valid: boolean) => {
       if (valid) {
-        addApplication(form.value).then(res => {
-          if (res) {
-            ;(proxy as IComponentProxy).$modal.msgSuccess('创建成功')
-            emit('close')
-          }
-        })
+        if (props.type === 'add') {
+          addApplication(form.value).then(res => {
+            if (res) {
+              ;(proxy as IComponentProxy).$modal.msgSuccess('创建成功')
+              emit('close', true)
+            }
+          })
+        }
+        if (props.type === 'edit') {
+          editApplication(form.value).then(res => {
+            if (res) {
+              ;(proxy as IComponentProxy).$modal.msgSuccess('编辑成功')
+              emit('close', true)
+            }
+          })
+        }
       }
     })
   }

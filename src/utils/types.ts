@@ -65,4 +65,5 @@ export interface IAddApp {
   appType: number
   appDesc: string
   appKey: string
+  appId?: number | string
 }
