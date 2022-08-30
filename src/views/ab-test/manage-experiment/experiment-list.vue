@@ -144,7 +144,7 @@
   // TODO: 实验取消逻辑编写 complete
   // TODO: 实验详情接口对接
   // TODO: 实验详情逻辑编写
-  import { computed, getCurrentInstance, nextTick, ref } from 'vue'
+  import { computed, getCurrentInstance, ref } from 'vue'
   import { useEventBus } from '@vueuse/core'
   import { useRouter } from 'vue-router'
   import { cancelExperiment, listExperiment, publishExperiment } from '../../../api/ab-test/ab-test'
@@ -152,13 +152,7 @@
   import { parseTime, toPrecision } from '../../../utils/ruoyi'
   import store from '../../../store'
   import type { IExpStatus, IExpType } from '../../../store/modules/common-params'
-  import type { ComponentPublicInstance } from 'vue'
   import type { IComponentProxy, IExpData, IExpQueryParams, IOption } from '../../../utils/types'
-  interface IAppAddEdit extends ComponentPublicInstance {
-    appAddEdit: {
-      resetForm: Function
-    }
-  }
   const inst = getCurrentInstance()
   /********************* 搜索相关逻辑 *******************************/
 
