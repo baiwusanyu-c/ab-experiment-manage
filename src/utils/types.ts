@@ -67,3 +67,37 @@ export interface IAddApp {
   appKey: string
   appId?: number | string
 }
+
+export interface IExpBaseInfo {
+  experimentName?: string
+  experimentDesc?: string
+  experimentKey?: string
+  appId?: string | number
+  experimentType?: string | number
+  startTime?: string
+  endTime?: string
+}
+
+export interface IVersionInfo {
+  experimentTrafficWeight?: number
+  versions?: Array<IVersionInfoItem>
+}
+
+export interface IVersionInfoItem {
+  versionName: string
+  versionDesc: string
+  versionType: number
+  versionTrafficWeight: number
+  versionParams: IVersionParams
+  whitelist: string
+}
+
+export interface IVersionParams {
+  paramName: string
+  paramType: number
+  paramValue: string
+}
+export interface IExpAddEditModel {
+  baseInfo?: IExpBaseInfo
+}
+export declare type TExpAddEditFrom = IExpBaseInfo & IVersionInfo
