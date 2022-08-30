@@ -4,7 +4,7 @@
  */
 
 // 日期格式化
-export function parseTime(time: unknown, pattern: string) {
+export function parseTime(time: unknown, pattern?: string) {
   if (arguments.length === 0 || !time) {
     return null
   }

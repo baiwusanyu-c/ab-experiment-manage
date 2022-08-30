@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryRef" :model="queryParams" :inline="true">
-      <el-form-item label="应用名称" prop="searchValue">
+      <el-form-item label="应用名称/AppKey" prop="searchValue">
         <el-input
           v-model="queryParams.searchValue"
-          placeholder="请输入应用名称"
+          placeholder="请输入应用名称/AppKey"
           clearable
           maxlength="50"
           style="width: 240px"
@@ -63,7 +63,7 @@
       width="800px"
       append-to-body
       @close="closeDialog">
-      <app-add-edit ref="appAddEdit" @close="closeDialog" :type="typeDialog" :app-id="curAppId">
+      <app-add-edit ref="appAddEdit" :type="typeDialog" :app-id="curAppId" @close="closeDialog">
       </app-add-edit>
     </el-dialog>
   </div>

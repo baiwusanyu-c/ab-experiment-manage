@@ -73,7 +73,7 @@
       </el-table-column>
       <el-table-column label="流量分配" prop="experimentTrafficWeight" width="100">
         <template #default="scope">
-          <span>{{ toPrecision(scope.row.experimentTrafficWeight * 100, 2) }}%</span>
+          <span>{{ toPrecision(scope.row.experimentTrafficWeight * 10, 2) }}%</span>
         </template>
       </el-table-column>
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
@@ -84,21 +84,39 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
           <span
+            v-if="scope.row.experimentStatus === '1'"
             v-hasPermi="['system:role:edit']"
             class="op-btn"
             @click="publishExp(scope.row.experimentId)"
             >发布</span
           >
           <span
+            v-if="scope.row.experimentStatus === '2' || scope.row.experimentStatus === '3'"
             v-hasPermi="['system:role:edit']"
             class="op-btn"
             @click="cancelExp(scope.row.experimentId)"
             >取消</span
           >
-          <span v-hasPermi="['system:role:edit']" class="op-btn" @click="handleEdit(scope.row)"
+          <span
+            v-if="
+              scope.row.experimentStatus === '1' ||
+              scope.row.experimentStatus === '2' ||
+              scope.row.experimentStatus === '3'
+            "
+            v-hasPermi="['system:role:edit']"
+            class="op-btn"
+            @click="handleEdit(scope.row)"
             >编辑</span
           >
-          <span v-hasPermi="['system:role:edit']" class="op-btn" @click="handleEdit(scope.row)"
+          <span
+            v-if="
+              scope.row.experimentStatus === '3' ||
+              scope.row.experimentStatus === '4' ||
+              scope.row.experimentStatus === '5'
+            "
+            v-hasPermi="['system:role:edit']"
+            class="op-btn"
+            @click="handleEdit(scope.row)"
             >查看报告</span
           >
         </template>
@@ -106,40 +124,36 @@
     </el-table>
     <pagination
       v-show="total > 0"
-      v-model:page="queryParams.pageNo"
+      v-model:page="queryParams.pageNum"
       v-model:limit="queryParams.pageSize"
       :total="total"
       @pagination="getList" />
-
-    <!--    <el-dialog v-model="showDialog" :title="titleDialog" width="800px" append-to-body>
-      <app-add-edit ref="appAddEdit" :type="typeDialog" @close="closeDialog"> </app-add-edit>
-    </el-dialog>-->
   </div>
 </template>
 
 <script lang="ts" name="experiment-list" setup>
-  // TODO: 搜索字段对接    pending...
-  // TODO: 实验列表字段对接 pending...
+  // TODO: 搜索字段对接    complete
+  // TODO: 实验列表字段对接 complete
   // TODO: 实验新增接口对接
   // TODO: 实验新增逻辑编写
   // TODO: 实验编辑接口对接
   // TODO: 实验编辑逻辑编写
-  // TODO: 实验发布接口对接 pending...
-  // TODO: 实验发布逻辑编写 pending...
-  // TODO: 实验取消接口对接 pending...
-  // TODO: 实验取消逻辑编写 pending...
+  // TODO: 实验发布接口对接 complete
+  // TODO: 实验发布逻辑编写 complete
+  // TODO: 实验取消接口对接 complete
+  // TODO: 实验取消逻辑编写 complete
   // TODO: 实验详情接口对接
   // TODO: 实验详情逻辑编写
   import { computed, getCurrentInstance, nextTick, ref } from 'vue'
   import { useEventBus } from '@vueuse/core'
+  import { useRouter } from 'vue-router'
   import { cancelExperiment, listExperiment, publishExperiment } from '../../../api/ab-test/ab-test'
-  // import AppAddEdit from './app-add-edit.vue'
   import useCommonParamsStore from '../../../store/modules/common-params'
-  import { toPrecision } from '../../../utils/ruoyi'
+  import { parseTime, toPrecision } from '../../../utils/ruoyi'
   import store from '../../../store'
   import type { IExpStatus, IExpType } from '../../../store/modules/common-params'
   import type { ComponentPublicInstance } from 'vue'
-  import type { IComponentProxy, IExpData, IExpQueryParams } from '../../../utils/types'
+  import type { IComponentProxy, IExpData, IExpQueryParams, IOption } from '../../../utils/types'
   interface IAppAddEdit extends ComponentPublicInstance {
     appAddEdit: {
       resetForm: Function
@@ -147,10 +161,10 @@
   }
   const inst = getCurrentInstance()
   /********************* 搜索相关逻辑 *******************************/
-  const expStatusList = useCommonParamsStore(store).createOption('EXPERIMENT_STATUS')
+
   const showSearch = ref<boolean>(true)
   const queryParams = ref<IExpQueryParams>({
-    pageNo: 1,
+    pageNum: 1,
     pageSize: 10,
     keyword: '',
     status: 1,
@@ -161,10 +175,10 @@
 
   const handleQuery = () => {
     if (queryParams.value.dateArr?.length > 0) {
-      queryParams.value.startTime = queryParams.value.dateArr[0].toDateString()
-      queryParams.value.endTime = queryParams.value.dateArr[1].toDateString()
+      queryParams.value.startTime = parseTime(queryParams.value.dateArr[0].toDateString())
+      queryParams.value.endTime = parseTime(queryParams.value.dateArr[1].toDateString())
     }
-    queryParams.value.pageNo = 1
+    queryParams.value.pageNum = 1
     getList()
   }
 
@@ -174,30 +188,15 @@
   }
   /********************* 新增、编辑、取消、发布相关逻辑 *******************************/
 
-  const showDialog = ref<boolean>(false)
-  const titleDialog = ref<string>('')
-  const typeDialog = ref<string>('add')
+  const router = useRouter()
   const handleAdd = () => {
-    titleDialog.value = '新增应用'
-    typeDialog.value = 'add'
-    showDialog.value = true
-    nextTick(() => {
-      ;(inst?.refs as unknown as IAppAddEdit).appAddEdit.resetForm(false)
-    })
+    router.push('experiment-add')
   }
 
-  const handleEdit = (row: any) => {
-    titleDialog.value = '编辑应用'
-    typeDialog.value = 'edit'
-    showDialog.value = true
-    console.info(row)
+  const handleEdit = (row: IExpData) => {
+    router.push(`experiment-edit?expId=${row.experimentId}`)
   }
-  const closeDialog = () => {
-    showDialog.value = false
-  }
-  defineExpose({
-    closeDialog,
-  })
+
   /**
    * 取消实验
    */
@@ -245,10 +244,12 @@
     1: '',
     2: '',
   })
+  const expStatusList = ref<Array<IOption>>([])
   const bus = useEventBus<string>('commonParams')
   const setCommonParams = () => {
     expType.value = useCommonParamsStore(store).getParams('EXPERIMENT_TYPE')
     expStatus.value = useCommonParamsStore(store).getParams('EXPERIMENT_STATUS')
+    expStatusList.value = useCommonParamsStore(store).createOption('EXPERIMENT_STATUS')
   }
   bus.on(setCommonParams)
   setCommonParams()
@@ -266,7 +267,7 @@
   const total = ref<number>(0)
   const expList = ref<Array<IExpData>>([
     {
-      experimentId: 'string',
+      experimentId: '1',
       experimentName: '示例实验1998',
       appName: '实例应用微信小程序',
       experimentType: 1,
@@ -280,16 +281,20 @@
   const loading = ref<boolean>(false)
   const getList = () => {
     loading.value = true
-    listExperiment(queryParams.value)
+    const params = {
+      ...queryParams.value,
+    }
+    Reflect.deleteProperty(params, 'dateArr')
+    listExperiment(params)
       .then((res: any) => {
         if (res) {
-          expList.value = res.experiments
-          total.value = res.page.totalItems
+          expList.value = res.rows
+          total.value = res.total
         }
       })
       .finally(() => {
         loading.value = false
       })
   }
-  // getList()
+  getList()
 </script>

@@ -37,7 +37,7 @@ export interface IAppQueryParams {
 }
 
 export interface pageParams {
-  pageNo: number
+  pageNum: number
   pageSize: number
 }
 
