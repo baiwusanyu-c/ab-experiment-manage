@@ -251,7 +251,7 @@ export function debounce(func: Function, wait: number, immediate: boolean) {
  * @param {Object} source
  * @returns {Object}
  */
-export function deepClone(source: IOption) {
+export function deepClone(source: any) {
   if (!source && typeof source !== 'object') {
     // @ts-ignore
     throw new Error('error arguments', 'deepClone')

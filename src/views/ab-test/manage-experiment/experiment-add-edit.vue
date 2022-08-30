@@ -1,7 +1,6 @@
 <template>
   <div class="app-container">
     <div class="exp-add-container">
-      {{ form.baseInfo }}
       <el-steps :active="curStep" align-center>
         <el-step title="Step 1 输入实验基本信息" />
         <el-step title="Step 2 设置实验版本" />
@@ -9,7 +8,7 @@
       </el-steps>
       <div class="exp-add-form">
         <base-info v-if="curStep === 1" v-model="form.baseInfo"> </base-info>
-        <version-info v-if="curStep === 2"></version-info>
+        <version-info v-if="curStep === 2" v-model="form.versions"></version-info>
         <target-audience v-if="curStep === 3"></target-audience>
       </div>
       <div class="exp-btn-group">
@@ -24,6 +23,7 @@
 
 <script lang="ts" setup name="experiment-add-edit">
   // TODO：第二部和第三部之间数据变化
+  // TODO：子表单校验阻断提交
   import { getCurrentInstance, nextTick, ref } from 'vue'
   import cache from '../../../plugins/cache'
   import BaseInfo from './base-info.vue'

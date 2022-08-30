@@ -69,17 +69,15 @@ export interface IAddApp {
 }
 
 export interface IExpBaseInfo {
-  experimentName?: string
-  experimentDesc?: string
-  experimentKey?: string
-  appId?: string | number
-  experimentType?: string | number
-  startTime?: string
-  endTime?: string
+  experimentName?: string // 🐶
+  experimentDesc?: string // 🐶
+  experimentKey?: string // 🐶
+  appId?: string | number // 🐶
+  experimentType?: string | number // 🐶
+  startTime?: string // 🐶
+  endTime?: string // 🐶
 }
-
 export interface IVersionInfo {
-  experimentTrafficWeight?: number
   versions?: Array<IVersionInfoItem>
 }
 
@@ -87,9 +85,7 @@ export interface IVersionInfoItem {
   versionName: string
   versionDesc: string
   versionType: number
-  versionTrafficWeight: number
-  versionParams: IVersionParams
-  whitelist: string
+  versionParams: Array<IVersionParams>
 }
 
 export interface IVersionParams {
@@ -97,7 +93,22 @@ export interface IVersionParams {
   paramType: number
   paramValue: string
 }
+
+export interface IAudienceInfo {
+  experimentTrafficWeight?: number
+  whitelist: string
+  versionTrafficWeight: number
+}
+
 export interface IExpAddEditModel {
   baseInfo?: IExpBaseInfo
+  versions?: Array<IVersionInfoItem>
 }
-export declare type TExpAddEditFrom = IExpBaseInfo & IVersionInfo
+export declare type TExpAddEditFrom = IExpBaseInfo & IVersionInfo & IAudienceInfo
+
+export interface IModal {
+  $modal:
+    {
+      msgError:Function
+    }
+}
