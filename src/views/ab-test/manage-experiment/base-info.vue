@@ -14,6 +14,7 @@
           type="text"
           autocomplete="off"
           maxlength="50"
+          @blur="handleChange"
           @change="handleChange" />
       </el-form-item>
       <el-form-item label="实验ID" prop="experimentKey">
@@ -23,6 +24,7 @@
           type="text"
           autocomplete="off"
           maxlength="100"
+          @blur="handleChange"
           @change="handleChange" />
       </el-form-item>
       <el-form-item label="实验描述" prop="experimentDesc">
@@ -64,6 +66,7 @@
 <script lang="ts" setup name="base-info">
   import { getCurrentInstance, nextTick, ref, watch } from 'vue'
   import { listApplication } from '../../../api/ab-test/ab-test'
+  import type { FormInstance } from 'element-plus'
   import type { PropType } from 'vue'
   import type { IExpBaseInfo } from '../../../utils/types'
   const { proxy } = getCurrentInstance()
@@ -89,17 +92,30 @@
       type: Object as PropType<IExpBaseInfo>,
     },
   })
-  const emit = defineEmits(['update:modelValue'])
+  const emit = defineEmits(['update:modelValue', 'next'])
+  const ruleFormRef = ref<FormInstance | null>(null)
   const handleChange = () => {
-    emit('update:modelValue', baseInfoForm.value)
-    nextTick(() => {
-      ;(proxy.$parent as { cacheForm: Function }).cacheForm()
+    ruleFormRef.value?.validate((isValid: boolean) => {
+      if (isValid) {
+        emit('next', false)
+        emit('update:modelValue', baseInfoForm.value)
+        nextTick(() => {
+          ;(proxy.$parent as { cacheForm: Function }).cacheForm()
+        })
+      } else {
+        emit('next', true)
+      }
     })
   }
   watch(
     () => props.modelValue,
     () => {
-      props.modelValue && (baseInfoForm.value = props.modelValue)
+      if (props.modelValue) {
+        baseInfoForm.value = props.modelValue
+        nextTick(() => {
+          emit('next', false)
+        })
+      }
     },
     { deep: true, immediate: true }
   )
@@ -113,4 +129,5 @@
     })
   }
   getList()
+  emit('next', true)
 </script>

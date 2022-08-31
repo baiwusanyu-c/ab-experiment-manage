@@ -70,6 +70,7 @@
           @change="handleChange" />
       </div>
     </div>
+    <span v-show="showErr" class="version-err">{{ errInfo }}</span>
   </div>
 </template>
 
@@ -78,7 +79,7 @@
   import { useEventBus } from '@vueuse/core'
   import useCommonParamsStore from '../../../store/modules/common-params'
   import store from '../../../store'
-  import type { IComponentProxy, IModal, IOption, IVersionInfoItem } from '../../../utils/types'
+  import type { IComponentProxy, IOption, IVersionInfoItem } from '../../../utils/types'
   import type { PropType } from 'vue'
 
   const inst = getCurrentInstance()
@@ -114,11 +115,14 @@
       type: Array as PropType<IVersionInfoItem>,
     },
   })
-  const emit = defineEmits(['update:modelValue'])
+  const emit = defineEmits(['update:modelValue', 'next'])
+  emit('next', true)
   const handleChange = () => {
     if (!verFrom()) {
+      emit('next', true)
       return
     }
+    emit('next', false)
     emit('update:modelValue', versionsForm.value)
     nextTick(() => {
       ;(inst.proxy.$parent as { cacheForm: Function }).cacheForm()
@@ -144,30 +148,39 @@
   /**
    * 校验参数
    */
+  const showErr = ref<boolean>(false)
+  const errInfo = ref<string>('')
   const verFrom = () => {
+    showErr.value = false
+    errInfo.value = ''
     let check = true
     try {
       versionsForm.value.forEach(value => {
         if (!value.versionName) {
-          ;(inst.proxy as IModal).$modal.msgError(`存在未填写的版本名称，请检查`)
+          showErr.value = true
+          errInfo.value = `存在未填写的版本名称，请检查`
           throw 'error'
         }
         if (value.versionParams.length === 0) {
-          ;(inst.proxy as IModal).$modal.msgError(`请填写版本参数`)
+          showErr.value = true
+          errInfo.value = `请填写版本参数`
           throw 'error'
         }
         if (value.versionParams.length > 0) {
           value.versionParams.forEach(param => {
             if (!param.paramName) {
-              ;(inst.proxy as IModal).$modal.msgError(`存在未填写的参数名，请检查`)
+              showErr.value = true
+              errInfo.value = `存在未填写的参数名，请检查`
               throw 'error'
             }
             if (!param.paramType) {
-              ;(inst.proxy as IModal).$modal.msgError(`存在未填写的参数类别，请检查`)
+              showErr.value = true
+              errInfo.value = `存在未填写的参数类别，请检查`
               throw 'error'
             }
             if (!param.paramValue) {
-              ;(inst.proxy as IModal).$modal.msgError(`存在未填写的参数值，请检查`)
+              showErr.value = true
+              errInfo.value = `存在未填写的参数值，请检查`
               throw 'error'
             }
           })
@@ -175,11 +188,13 @@
       })
       versionParamList.value.forEach(param => {
         if (!param.paramName) {
-          ;(inst.proxy as IModal).$modal.msgError(`存在未填写的参数名，请检查`)
+          showErr.value = true
+          errInfo.value = `存在未填写的参数名，请检查`
           throw 'error'
         }
         if (!param.paramType) {
-          ;(inst.proxy as IModal).$modal.msgError(`存在未填写的参数类别，请检查`)
+          showErr.value = true
+          errInfo.value = `存在未填写的参数类别，请检查`
           throw 'error'
         }
       })
@@ -278,8 +293,12 @@
   setCommonParams()
 </script>
 <style lang="scss">
+  .version-err {
+    font-size: 12px;
+    color: #f56c6c;
+  }
   .version-Item-container {
-    margin: 2rem 0;
+    margin-top: 2rem;
     width: 800px;
     overflow-x: auto;
     white-space: nowrap;

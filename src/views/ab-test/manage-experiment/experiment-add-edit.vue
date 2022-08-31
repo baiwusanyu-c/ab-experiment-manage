@@ -7,18 +7,26 @@
         <el-step title="Step 3 设置目标受众" />
       </el-steps>
       <div class="exp-add-form">
-        <base-info v-if="curStep === 1" v-model="form.baseInfo"> </base-info>
-        <version-info v-if="curStep === 2" v-model="form.versions"></version-info>
+        <base-info v-if="curStep === 1" v-model="form.baseInfo" @next="handleCanNext"> </base-info>
+        <version-info
+          v-if="curStep === 2"
+          v-model="form.versions"
+          @next="handleCanNext"></version-info>
         <target-audience
           v-if="curStep === 3"
           v-model:versions="form.versions"
-          v-model:audience="form.audience">
+          v-model:audience="form.audience"
+          @next="handleCanNext">
         </target-audience>
       </div>
       <div class="exp-btn-group">
         <el-button v-show="curStep !== 1" type="primary" @click="prevStep">上一步</el-button>
-        <el-button v-show="curStep !== 3" type="primary" @click="nextStep">下一步</el-button>
-        <el-button v-show="curStep === 3" type="primary" @click="handleSubmit">提交</el-button>
+        <el-button v-show="curStep !== 3" :disabled="isCanNext" type="primary" @click="nextStep"
+          >下一步</el-button
+        >
+        <el-button v-show="curStep === 3" :disabled="isCanNext" type="primary" @click="handleSubmit"
+          >提交</el-button
+        >
         <el-button icon="Refresh" @click="handleCancel">取消</el-button>
       </div>
     </div>
@@ -26,7 +34,6 @@
 </template>
 
 <script lang="ts" setup name="experiment-add-edit">
-  // TODO：子表单校验阻断提交
   import { getCurrentInstance, nextTick, ref } from 'vue'
   import cache from '../../../plugins/cache'
   import BaseInfo from './base-info.vue'
@@ -36,7 +43,7 @@
 
   const inst = getCurrentInstance()
   const form = ref<IExpAddEditModel>({})
-  const curStep = ref(3)
+  const curStep = ref(2)
   const nextStep = () => {
     curStep.value++
   }
@@ -81,6 +88,10 @@
     }
   }
   init()
+  const isCanNext = ref<boolean>(false)
+  const handleCanNext = (next: boolean) => {
+    isCanNext.value = next
+  }
 </script>
 <style lang="scss">
   .exp-add-container {
