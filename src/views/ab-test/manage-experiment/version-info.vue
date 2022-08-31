@@ -4,14 +4,15 @@
     <div class="version-Item-container">
       <div class="version-Item version-Item--params">
         <div style="height: 160px"></div>
-        <div style="width: 100%"> <p class="op-btn" @click="addVersionListParams">添加参数</p></div>
-        <div
-          v-for="(paramsItem, index) in versionParamList"
-          class="version-params">
+        <div style="width: 100%"><p class="op-btn" @click="addVersionListParams">添加参数</p></div>
+        <div v-for="(paramsItem, index) in versionParamList" class="version-params">
           <div class="version-Item--title">
-            <el-tooltip content="实验参数删除，会在提交后生效" placement="top" :disabled="index === 0">
+            <el-tooltip
+              content="实验参数删除，会在提交后生效"
+              placement="top"
+              :disabled="index === 0">
               <el-icon color="#409eff" style="{'cursor': index !== 0 ? 'pointer' : ''}">
-                <Delete v-if="index !== 0" @click="delVersionListParams(index)"/>
+                <Delete v-if="index !== 0" @click="delVersionListParams(index)" />
               </el-icon>
             </el-tooltip>
           </div>
@@ -20,10 +21,13 @@
               v-model="paramsItem.paramName"
               placeholder="参数名称"
               type="text"
-              @change="handleParamsChange"
               autocomplete="off"
-              maxlength="50" />
-            <el-select v-model="paramsItem.paramType" placeholder="请选择所属应用"  @change="handleParamsChange">
+              maxlength="50"
+              @change="handleParamsChange" />
+            <el-select
+              v-model="paramsItem.paramType"
+              placeholder="请选择所属应用"
+              @change="handleParamsChange">
               <el-option
                 v-for="item in paramsTypeList"
                 :label="item.label"
@@ -32,9 +36,7 @@
           </div>
         </div>
       </div>
-      <div
-        v-for="(versionItem, index) in versionsForm"
-        class="version-Item">
+      <div v-for="(versionItem, index) in versionsForm" class="version-Item">
         <div class="version-Item--title">
           <div></div>
           <el-tooltip v-if="index !== 0" content="实验版本删除，会在提交后生效" placement="top">
@@ -44,28 +46,28 @@
           </el-tooltip>
         </div>
         <el-input
-          @change="handleChange"
           v-model="versionItem.versionName"
           placeholder="请输入版本名称"
           type="text"
           autocomplete="off"
-          maxlength="50" />
+          maxlength="50"
+          @change="handleChange" />
 
         <el-input
-          @change="handleChange"
           v-model="versionItem.versionDesc"
           placeholder="请输入版本描述"
           type="textarea"
           maxlength="1000"
-          rows="4" />
+          rows="4"
+          @change="handleChange" />
         <el-input
-          @change="handleChange"
           v-for="paramsItem in versionItem.versionParams"
           v-model="paramsItem.paramValue"
           class="params-val"
           placeholder="请输入参数值"
           type="text"
-          autocomplete="off" />
+          autocomplete="off"
+          @change="handleChange" />
       </div>
     </div>
   </div>
@@ -73,18 +75,12 @@
 
 <script lang="ts" setup name="version-info">
   import { getCurrentInstance, nextTick, ref, watch } from 'vue'
-  import type {
-    IComponentProxy,
-    IOption,
-    IVersionInfoItem,
-  } from '../../../utils/types'
+  import { useEventBus } from '@vueuse/core'
+  import useCommonParamsStore from '../../../store/modules/common-params'
+  import store from '../../../store'
+  import type { IComponentProxy, IModal, IOption, IVersionInfoItem } from '../../../utils/types'
   import type { PropType } from 'vue'
-  import { useEventBus } from "@vueuse/core";
-  import useCommonParamsStore from "../../../store/modules/common-params";
-  import store from "../../../store";
-  import { IModal } from "../../../utils/types";
-  import { param } from "../../../utils";
-  // TODO:  校验。。。
+
   const inst = getCurrentInstance()
   // 默认两个版本
   const versionsForm = ref<Array<IVersionInfoItem>>([
@@ -120,7 +116,7 @@
   })
   const emit = defineEmits(['update:modelValue'])
   const handleChange = () => {
-    if(! verFrom()){
+    if (!verFrom()) {
       return
     }
     emit('update:modelValue', versionsForm.value)
@@ -135,9 +131,9 @@
     },
     { deep: true, immediate: true }
   )
-  const handleParamsChange = () =>{
-    versionParamList.value.forEach((val,index)=>{
-      versionsForm.value.forEach(ver =>{
+  const handleParamsChange = () => {
+    versionParamList.value.forEach((val, index) => {
+      versionsForm.value.forEach(ver => {
         ver.versionParams[index].paramName = val.paramName
         ver.versionParams[index].paramType = val.paramType
       })
@@ -148,10 +144,10 @@
   /**
    * 校验参数
    */
-  const verFrom = () =>{
+  const verFrom = () => {
     let check = true
     try {
-      versionsForm.value.forEach((value) => {
+      versionsForm.value.forEach(value => {
         if (!value.versionName) {
           ;(inst.proxy as IModal).$modal.msgError(`存在未填写的版本名称，请检查`)
           throw 'error'
@@ -177,17 +173,13 @@
           })
         }
       })
-      versionParamList.value.forEach((param) => {
+      versionParamList.value.forEach(param => {
         if (!param.paramName) {
           ;(inst.proxy as IModal).$modal.msgError(`存在未填写的参数名，请检查`)
           throw 'error'
         }
         if (!param.paramType) {
           ;(inst.proxy as IModal).$modal.msgError(`存在未填写的参数类别，请检查`)
-          throw 'error'
-        }
-        if (!param.paramValue) {
-          ;(inst.proxy as IModal).$modal.msgError(`存在未填写的参数值，请检查`)
           throw 'error'
         }
       })
@@ -235,22 +227,18 @@
    * 添加参数
    */
   const addVersionListParams = () => {
-    versionParamList.value.push(
-      {
+    versionParamList.value.push({
+      paramName: '',
+      paramType: 1,
+      paramValue: '',
+    })
+    // 新添加的参数应该给每个实验版本添加
+    versionsForm.value.forEach(val => {
+      val.versionParams.push({
         paramName: '',
         paramType: 1,
         paramValue: '',
-      }
-    )
-    // 新添加的参数应该给每个实验版本添加
-    versionsForm.value.forEach(val => {
-      val.versionParams.push(
-        {
-          paramName: '',
-          paramType: 1,
-          paramValue: '',
-        }
-      )
+      })
     })
     handleChange()
   }

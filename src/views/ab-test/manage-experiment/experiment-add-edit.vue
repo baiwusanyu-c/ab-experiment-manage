@@ -9,7 +9,11 @@
       <div class="exp-add-form">
         <base-info v-if="curStep === 1" v-model="form.baseInfo"> </base-info>
         <version-info v-if="curStep === 2" v-model="form.versions"></version-info>
-        <target-audience v-if="curStep === 3"></target-audience>
+        <target-audience
+          v-if="curStep === 3"
+          v-model:versions="form.versions"
+          v-model:audience="form.audience">
+        </target-audience>
       </div>
       <div class="exp-btn-group">
         <el-button v-show="curStep !== 1" type="primary" @click="prevStep">上一步</el-button>
@@ -22,7 +26,6 @@
 </template>
 
 <script lang="ts" setup name="experiment-add-edit">
-  // TODO：第二部和第三部之间数据变化
   // TODO：子表单校验阻断提交
   import { getCurrentInstance, nextTick, ref } from 'vue'
   import cache from '../../../plugins/cache'
@@ -33,7 +36,7 @@
 
   const inst = getCurrentInstance()
   const form = ref<IExpAddEditModel>({})
-  const curStep = ref(1)
+  const curStep = ref(3)
   const nextStep = () => {
     curStep.value++
   }
