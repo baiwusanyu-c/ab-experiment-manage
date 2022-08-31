@@ -86,7 +86,12 @@
   watch(
     () => props.audience,
     () => {
-      props.audience && (audienceForm.value = props.audience)
+      if (props.audience) {
+        audienceForm.value = props.audience
+        nextTick(() => {
+          emit('next', false)
+        })
+      }
     },
     { deep: true, immediate: true }
   )
@@ -121,7 +126,9 @@
         showErrWhite.value = true
         errWhite.value = '白名单用户填写格式错误，请以英文逗号好分隔，用户名不支持特殊字符'
       }
-      whiteList = whiteList.concat(val.whitelist.split(','))
+      if (val.whitelist) {
+        whiteList = whiteList.concat(val.whitelist.split(','))
+      }
     })
     // 校验流量分配
     if (versionTrafficWeight !== 100) {

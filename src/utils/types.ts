@@ -30,6 +30,7 @@ export interface IRouteLocation extends ITagView {
 }
 export interface IComponentProxy extends ComponentPublicInstance {
   $modal: any
+  $tab: any
   resetForm: Function
 }
 export interface IAppQueryParams {
@@ -76,6 +77,7 @@ export interface IExpBaseInfo {
   experimentType?: string | number
   startTime?: string
   endTime?: string
+  dateArr?: Array<string>
 }
 export interface IVersionInfo {
   versions?: Array<IVersionInfoItem>

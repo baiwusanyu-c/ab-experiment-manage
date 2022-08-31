@@ -24,6 +24,7 @@
           type="text"
           autocomplete="off"
           maxlength="100"
+          :disabled="isEdit !== 'false'"
           @blur="handleChange"
           @change="handleChange" />
       </el-form-item>
@@ -36,7 +37,11 @@
           @change="handleChange" />
       </el-form-item>
       <el-form-item label="所属应用" prop="appId">
-        <el-select v-model="baseInfoForm.appId" placeholder="请选择所属应用" @change="handleChange">
+        <el-select
+          v-model="baseInfoForm.appId"
+          placeholder="请选择所属应用"
+          :disabled="isEdit !== 'false'"
+          @change="handleChange">
           <el-option
             v-for="item in appList"
             :key="item.appId + item.appName"
@@ -45,7 +50,11 @@
         </el-select>
       </el-form-item>
       <el-form-item label="实验类型" prop="experimentType">
-        <el-radio-group v-model="baseInfoForm.experimentType" class="ml-4" @change="handleChange">
+        <el-radio-group
+          v-model="baseInfoForm.experimentType"
+          class="ml-4"
+          :disabled="isEdit !== 'false'"
+          @change="handleChange">
           <el-radio :label="1" size="large">客户端</el-radio>
           <el-radio :label="2" size="large">服务端</el-radio>
         </el-radio-group>
@@ -90,6 +99,10 @@
   const props = defineProps({
     modelValue: {
       type: Object as PropType<IExpBaseInfo>,
+    },
+    isEdit: {
+      type: String,
+      default: '',
     },
   })
   const emit = defineEmits(['update:modelValue', 'next'])

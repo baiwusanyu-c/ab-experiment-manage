@@ -132,18 +132,6 @@
 </template>
 
 <script lang="ts" name="experiment-list" setup>
-  // TODO: 搜索字段对接    complete
-  // TODO: 实验列表字段对接 complete
-  // TODO: 实验新增接口对接
-  // TODO: 实验新增逻辑编写
-  // TODO: 实验编辑接口对接
-  // TODO: 实验编辑逻辑编写
-  // TODO: 实验发布接口对接 complete
-  // TODO: 实验发布逻辑编写 complete
-  // TODO: 实验取消接口对接 complete
-  // TODO: 实验取消逻辑编写 complete
-  // TODO: 实验详情接口对接
-  // TODO: 实验详情逻辑编写
   import { computed, getCurrentInstance, ref } from 'vue'
   import { useEventBus } from '@vueuse/core'
   import { useRouter } from 'vue-router'
@@ -169,8 +157,8 @@
 
   const handleQuery = () => {
     if (queryParams.value.dateArr?.length > 0) {
-      queryParams.value.startTime = parseTime(queryParams.value.dateArr[0].toDateString())
-      queryParams.value.endTime = parseTime(queryParams.value.dateArr[1].toDateString())
+      queryParams.value.startTime = parseTime(queryParams.value.dateArr[0])
+      queryParams.value.endTime = parseTime(queryParams.value.dateArr[1])
     }
     queryParams.value.pageNum = 1
     getList()
@@ -188,7 +176,7 @@
   }
 
   const handleEdit = (row: IExpData) => {
-    router.push(`experiment-edit?expId=${row.experimentId}`)
+    router.push(`experiment-edit?expId=${row.experimentId}&isEdit=true`)
   }
 
   /**

@@ -131,7 +131,12 @@
   watch(
     () => props.modelValue,
     () => {
-      props.modelValue && (versionsForm.value = props.modelValue)
+      if (props.modelValue) {
+        versionsForm.value = props.modelValue
+        nextTick(() => {
+          emit('next', false)
+        })
+      }
     },
     { deep: true, immediate: true }
   )

@@ -1,5 +1,5 @@
 import request from '../../utils/request'
-import type { IAddApp, IAppQueryParams, IExpQueryParams } from '../../utils/types'
+import type { IAddApp, IAppQueryParams, IExpQueryParams, TExpAddEditFrom } from '../../utils/types'
 
 export function addApplication(data: IAddApp) {
   return request({
@@ -59,6 +59,30 @@ export function cancelExperiment(data: { experimentId: number }) {
 export function publishExperiment(data: { experimentId: number }) {
   return request({
     url: '/experiment/publish',
+    method: 'post',
+    data,
+  })
+}
+
+export function createExperiment(data: TExpAddEditFrom) {
+  return request({
+    url: '/experiment/create',
+    method: 'post',
+    data,
+  })
+}
+
+export function editExperiment(data: TExpAddEditFrom) {
+  return request({
+    url: '/experiment/update',
+    method: 'post',
+    data,
+  })
+}
+
+export function detailExperiment(data: { experimentId: string | number }) {
+  return request({
+    url: 'experiment/detail',
     method: 'post',
     data,
   })
