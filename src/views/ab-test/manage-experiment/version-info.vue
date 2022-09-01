@@ -70,7 +70,7 @@
           @change="handleChange" />
       </div>
     </div>
-    <span v-show="showErr" class="version-err">{{ errInfo }}</span>
+    <span class="version-err">{{ errInfo }}</span>
   </div>
 </template>
 
@@ -110,66 +110,16 @@
       ],
     },
   ])
-
-  /************************ 双向绑定相关 ****************************/
-
-  const props = defineProps({
-    modelValue: {
-      type: Array as PropType<IVersionInfoItem>,
-    },
-  })
-  const emit = defineEmits(['update:modelValue', 'next'])
-  emit('next', true)
-  const handleChange = () => {
-    if (!verFrom()) {
-      emit('next', true)
-      return
-    }
-    emit('next', false)
-    emit('update:modelValue', versionsForm.value)
-    nextTick(() => {
-      ;(inst.proxy.$parent as { cacheForm: Function }).cacheForm()
-    })
-  }
-  watch(
-    () => props.modelValue,
-    () => {
-      if (props.modelValue) {
-        versionsForm.value = props.modelValue
-        nextTick(() => {
-          emit('next', false)
-        })
-      }
-    },
-    { deep: true, immediate: true }
-  )
-
-  /**
-   * 参数名称、类别填写后，触发change
-   */
-  const handleParamsChange = () => {
-    versionParamList.value.forEach((val, index) => {
-      versionsForm.value.forEach(ver => {
-        ver.versionParams[index].paramName = val.paramName
-        ver.versionParams[index].paramType = val.paramType
-      })
-    })
-    handleChange()
-  }
-
   /************************ 表单校验 ****************************/
 
   /**
    * 校验参数
    */
-  const showErr = ref<boolean>(false)
   const errInfo = ref<string>('')
   const verFrom = () => {
-    showErr.value = false
     errInfo.value = ''
     let check = true
     const throwErr = msg => {
-      showErr.value = true
       errInfo.value = msg
       throw 'error'
     }
@@ -207,6 +157,56 @@
       check = false
     }
     return check
+  }
+
+  /************************ 双向绑定相关 ****************************/
+
+  const props = defineProps({
+    modelValue: {
+      type: Array as PropType<IVersionInfoItem>,
+    },
+  })
+  const emit = defineEmits(['update:modelValue', 'next'])
+  emit('next', true)
+  const handleChange = () => {
+    if (!verFrom()) {
+      emit('next', true)
+      return
+    }
+    emit('next', false)
+    emit('update:modelValue', versionsForm.value)
+    nextTick(() => {
+      ;(inst.proxy.$parent as { cacheForm: Function }).cacheForm()
+    })
+  }
+  watch(
+    () => props.modelValue,
+    () => {
+      if (props.modelValue) {
+        versionsForm.value = props.modelValue
+        nextTick(() => {
+          if (!verFrom()) {
+            emit('next', true)
+            return
+          }
+          emit('next', false)
+        })
+      }
+    },
+    { deep: true, immediate: true }
+  )
+
+  /**
+   * 参数名称、类别填写后，触发change
+   */
+  const handleParamsChange = () => {
+    versionParamList.value.forEach((val, index) => {
+      versionsForm.value.forEach(ver => {
+        ver.versionParams[index].paramName = val.paramName
+        ver.versionParams[index].paramType = val.paramType
+      })
+    })
+    handleChange()
   }
 
   /************************ 版本表单相关逻辑 ****************************/
@@ -311,6 +311,8 @@
   .version-err {
     font-size: 12px;
     color: #f56c6c;
+    display: inline-block;
+    height: 20px
   }
   .version-Item-container {
     margin-top: 2rem;

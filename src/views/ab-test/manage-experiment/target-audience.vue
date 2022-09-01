@@ -39,13 +39,13 @@
           type="text"
           auto-complete="off"
           placeholder="请输入白名单"
+          @input="handleChange"
           @change="handleChange" />
       </div>
       <span
-        v-show="showErrWhite"
         class="target-audience-err"
-        style="margin-top: 20px; display: inline-block"
-        >{{ errWhite }}</span
+        style="margin-top: 20px; display: inline-block;height: 20px"
+        >{{ errWhite}}</span
       >
     </div>
   </div>
@@ -66,6 +66,46 @@
       type: Array as PropType<IVersionInfoItem>,
     },
   })
+  /************************ 表单校验相关 ****************************/
+
+  const showErrVer = ref<boolean>(false)
+  const errWhite = ref<string>('')
+  const reg = /^[0-9a-zA-Z]+(,[0-9a-zA-Z]+)*$/
+  const verFrom = () => {
+    let check = true
+    showErrVer.value = false
+    showErrVer.value = false
+    let versionTrafficWeight = 0
+    errWhite.value = ''
+    let whiteList = []
+    versionsForm.value.forEach(val => {
+      versionTrafficWeight = (val.versionTrafficWeight * 10 + versionTrafficWeight * 10) / 10
+      if(!val.whitelist) return
+      // 校验白名单格式
+      if (!reg.test(val.whitelist)) {
+        check = false
+        errWhite.value = '白名单用户填写格式错误，请以英文逗号好分隔，用户名不支持特殊字符'
+      }
+      // 将所有白名单组合成一个数组，用于后面去重判断是否存在重复
+      if (val.whitelist) {
+        whiteList = whiteList.concat(val.whitelist.split(','))
+      }
+    })
+    // 校验流量分配
+    if (versionTrafficWeight !== 100) {
+      showErrVer.value = true
+      check = false
+    }
+    // 校验是否存在重复用户
+    const len = whiteList.length
+    const setArr = Array.from(new Set([...whiteList]))
+    if (len !== setArr.length) {
+      errWhite.value = '白名单用户填写格式错误，各版本之间存在相同用户名'
+      check = false
+    }
+    return check
+  }
+
   /************************ 双向绑定相关 ****************************/
 
   const emit = defineEmits(['update:audience', 'update:versions', 'next'])
@@ -90,6 +130,10 @@
       if (props.audience) {
         audienceForm.value = props.audience
         nextTick(() => {
+          if (!verFrom()) {
+            emit('next', true)
+            return
+          }
           emit('next', false)
         })
       }
@@ -110,46 +154,7 @@
     })
   }
 
-  /************************ 表单校验相关 ****************************/
 
-  const showErrVer = ref<boolean>(false)
-  const showErrWhite = ref<boolean>(false)
-  const errWhite = ref<string>('')
-  const reg = /^[0-9a-zA-Z]+(,[0-9a-zA-Z]+)*$/
-  const verFrom = () => {
-    let check = true
-    showErrVer.value = false
-    showErrVer.value = false
-    let versionTrafficWeight = 0
-    errWhite.value = ''
-    let whiteList = []
-    versionsForm.value.forEach(val => {
-      versionTrafficWeight = (val.versionTrafficWeight * 10 + versionTrafficWeight * 10) / 10
-      // 校验白名单格式
-      if (!reg.test(val.whitelist)) {
-        showErrWhite.value = true
-        errWhite.value = '白名单用户填写格式错误，请以英文逗号好分隔，用户名不支持特殊字符'
-      }
-      // 将所有白名单组合成一个数组，用于后面去重判断是否存在重复
-      if (val.whitelist) {
-        whiteList = whiteList.concat(val.whitelist.split(','))
-      }
-    })
-    // 校验流量分配
-    if (versionTrafficWeight !== 100) {
-      showErrVer.value = true
-      check = false
-    }
-    // 校验是否存在重复用户
-    const len = whiteList.length
-    const setArr = Array.from(new Set([...whiteList]))
-    if (len !== setArr.length) {
-      showErrWhite.value = true
-      errWhite.value = '白名单用户填写格式错误，各版本之间存在相同用户名'
-      check = false
-    }
-    return check
-  }
 </script>
 <style lang="scss">
   .version-flow {

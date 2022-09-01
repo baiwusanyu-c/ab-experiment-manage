@@ -12,6 +12,7 @@
       </el-form-item>
       <el-form-item label="实验状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择应用类型">
+          <el-option label="全部" :value="0"></el-option>
           <el-option
             v-for="item in expStatusList"
             :key="item.label + item.value"
@@ -150,7 +151,7 @@
     pageNum: 1,
     pageSize: 10,
     keyword: '',
-    status: 1,
+    status: 0,
     startTime: '',
     endTime: '',
     dateArr: [],

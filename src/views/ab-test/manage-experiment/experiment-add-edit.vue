@@ -178,6 +178,6 @@
     width: 100%;
   }
   .exp-add-form {
-    margin: 6rem 0;
+    margin: 4rem 0;
   }
 </style>
