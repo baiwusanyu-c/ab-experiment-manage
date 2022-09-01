@@ -43,8 +43,8 @@ export interface pageParams {
 }
 
 export interface IExpQueryParams extends pageParams {
-  keyword?: string
-  status?: number
+  searchValue?: string
+  experimentStatus?: number | string
   startTime?: string
   endTime?: string
   dateArr: Array<Date>

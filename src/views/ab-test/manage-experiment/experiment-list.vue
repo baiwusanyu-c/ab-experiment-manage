@@ -1,18 +1,18 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryRef" :model="queryParams" :inline="true">
-      <el-form-item label="实验名称" prop="keyword">
+      <el-form-item label="实验名称" prop="searchValue">
         <el-input
-          v-model="queryParams.keyword"
+          v-model="queryParams.searchValue"
           placeholder="请输入实验名称"
           clearable
           maxlength="50"
           style="width: 240px"
           @keyup.enter="handleQuery" />
       </el-form-item>
-      <el-form-item label="实验状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择应用类型">
-          <el-option label="全部" :value="0"></el-option>
+      <el-form-item label="实验状态" prop="experimentStatus">
+        <el-select v-model="queryParams.experimentStatus" placeholder="请选择应用类型">
+          <el-option label="全部" value=""></el-option>
           <el-option
             v-for="item in expStatusList"
             :key="item.label + item.value"
@@ -150,8 +150,8 @@
   const queryParams = ref<IExpQueryParams>({
     pageNum: 1,
     pageSize: 10,
-    keyword: '',
-    status: 0,
+    searchValue: '',
+    experimentStatus: '',
     startTime: '',
     endTime: '',
     dateArr: [],
@@ -227,8 +227,9 @@
   const getList = () => {
     loading.value = true
     const params = {
-      ...queryParams.value,
+      ...JSON.parse(JSON.stringify(queryParams.value)),
     }
+    Reflect.deleteProperty(params, 'dateArr')
     listExperiment(params)
       .then((res: any) => {
         if (res) {
