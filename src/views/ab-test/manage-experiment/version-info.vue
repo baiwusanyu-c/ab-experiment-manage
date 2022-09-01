@@ -110,6 +110,9 @@
       ],
     },
   ])
+
+  /************************ 双向绑定相关 ****************************/
+
   const props = defineProps({
     modelValue: {
       type: Array as PropType<IVersionInfoItem>,
@@ -140,6 +143,10 @@
     },
     { deep: true, immediate: true }
   )
+
+  /**
+   * 参数名称、类别填写后，触发change
+   */
   const handleParamsChange = () => {
     versionParamList.value.forEach((val, index) => {
       versionsForm.value.forEach(ver => {
@@ -150,6 +157,8 @@
     handleChange()
   }
 
+  /************************ 表单校验 ****************************/
+
   /**
    * 校验参数
    */
@@ -159,48 +168,39 @@
     showErr.value = false
     errInfo.value = ''
     let check = true
+    const throwErr = (msg) =>{
+      showErr.value = true
+      errInfo.value = msg
+      throw 'error'
+    }
     try {
       versionsForm.value.forEach(value => {
         if (!value.versionName) {
-          showErr.value = true
-          errInfo.value = `存在未填写的版本名称，请检查`
-          throw 'error'
+          throwErr(`存在未填写的版本名称，请检查`)
         }
         if (value.versionParams.length === 0) {
-          showErr.value = true
-          errInfo.value = `请填写版本参数`
-          throw 'error'
+          throwErr(`请填写版本参数`)
         }
         if (value.versionParams.length > 0) {
           value.versionParams.forEach(param => {
             if (!param.paramName) {
-              showErr.value = true
-              errInfo.value = `存在未填写的参数名，请检查`
-              throw 'error'
+              throwErr(`存在未填写的参数名，请检查`)
             }
             if (!param.paramType) {
-              showErr.value = true
-              errInfo.value = `存在未填写的参数类别，请检查`
-              throw 'error'
+              throwErr(`存在未填写的参数类别，请检查`)
             }
             if (!param.paramValue) {
-              showErr.value = true
-              errInfo.value = `存在未填写的参数值，请检查`
-              throw 'error'
+              throwErr(`存在未填写的参数值，请检查`)
             }
           })
         }
       })
       versionParamList.value.forEach(param => {
         if (!param.paramName) {
-          showErr.value = true
-          errInfo.value = `存在未填写的参数名，请检查`
-          throw 'error'
+          throwErr(`存在未填写的参数名，请检查`)
         }
         if (!param.paramType) {
-          showErr.value = true
-          errInfo.value = `存在未填写的参数类别，请检查`
-          throw 'error'
+          throwErr(`存在未填写的参数类别，请检查`)
         }
       })
     } catch (e) {
@@ -208,6 +208,9 @@
     }
     return check
   }
+
+  /************************ 版本表单相关逻辑 ****************************/
+
   /**
    * 添加实验版本
    */
@@ -243,6 +246,9 @@
         console.error(err)
       })
   }
+
+  /************************ 参数表单相关逻辑 ****************************/
+
   /**
    * 添加参数
    */
@@ -280,6 +286,8 @@
       })
   }
 
+  /************************ 初始化版本参数表单，根据版本表单填充参数名 ****************************/
+
   const versionParamList = ref<Array<IOption>>([])
   const initVersionParam = () => {
     versionParamList.value = []
@@ -288,6 +296,8 @@
     })
   }
   initVersionParam()
+
+  /************************ 获取公共参数相关 ****************************/
 
   const bus = useEventBus<string>('commonParams')
   const paramsTypeList = ref<Array<IOption>>([])

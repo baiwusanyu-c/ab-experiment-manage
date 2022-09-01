@@ -105,6 +105,8 @@
       default: '',
     },
   })
+  /************************ 双向绑定相关 ****************************/
+
   const emit = defineEmits(['update:modelValue', 'next'])
   const ruleFormRef = ref<FormInstance | null>(null)
   const handleChange = () => {
@@ -120,6 +122,7 @@
       }
     })
   }
+
   watch(
     () => props.modelValue,
     () => {
@@ -132,6 +135,8 @@
     },
     { deep: true, immediate: true }
   )
+
+  /************************ 获取列表相关 ****************************/
 
   const appList = ref([])
   const getList = () => {

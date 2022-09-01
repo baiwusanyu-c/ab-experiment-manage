@@ -66,6 +66,7 @@
       type: Array as PropType<IVersionInfoItem>,
     },
   })
+  /************************ 双向绑定相关 ****************************/
 
   const emit = defineEmits(['update:audience', 'update:versions', 'next'])
   emit('next', true)
@@ -108,6 +109,9 @@
       ;(inst.proxy.$parent as { cacheForm: Function }).cacheForm()
     })
   }
+
+  /************************ 表单校验相关 ****************************/
+
   const showErrVer = ref<boolean>(false)
   const showErrWhite = ref<boolean>(false)
   const errWhite = ref<string>('')
@@ -126,6 +130,7 @@
         showErrWhite.value = true
         errWhite.value = '白名单用户填写格式错误，请以英文逗号好分隔，用户名不支持特殊字符'
       }
+      // 将所有白名单组合成一个数组，用于后面去重判断是否存在重复
       if (val.whitelist) {
         whiteList = whiteList.concat(val.whitelist.split(','))
       }

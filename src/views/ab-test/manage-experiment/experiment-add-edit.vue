@@ -25,8 +25,8 @@
         </target-audience>
       </div>
       <div class="exp-btn-group">
-        <el-button v-show="curStep !== 1" type="primary" @click="prevStep">上一步</el-button>
-        <el-button v-show="curStep !== 3" :disabled="isCanNext" type="primary" @click="nextStep"
+        <el-button v-show="curStep !== 1" type="primary" @click="curStep--">上一步</el-button>
+        <el-button v-show="curStep !== 3" :disabled="isCanNext" type="primary" @click="curStep++"
           >下一步</el-button
         >
         <el-button v-show="curStep === 3" :disabled="isCanNext" type="primary" @click="handleSubmit"
@@ -42,39 +42,33 @@
   import { getCurrentInstance, nextTick, ref } from 'vue'
   import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
   import cache from '../../../plugins/cache'
-  import { parseTime } from '../../../utils/ruoyi'
   import { createExperiment, detailExperiment, editExperiment } from '../../../api/ab-test/ab-test'
   import BaseInfo from './base-info.vue'
   import VersionInfo from './version-info.vue'
   import TargetAudience from './target-audience.vue'
   import type { IComponentProxy, IExpAddEditModel } from '../../../utils/types'
+  import { useAbtest } from "../../../hook/use-abtest";
   const inst = getCurrentInstance()
   const form = ref<IExpAddEditModel>({})
   const curStep = ref(1)
-  const nextStep = () => {
-    curStep.value++
-  }
-  const prevStep = () => {
-    curStep.value--
-  }
   // 下一步、提交按钮限制
   const isCanNext = ref<boolean>(false)
   const handleCanNext = (next: boolean) => {
     isCanNext.value = next
   }
+
+  /************************ 表单缓存、提交、取消 ****************************/
+
   const router = useRouter()
+  const { handleDateArr } = useAbtest()
   const handleSubmit = () => {
-    const params = {
+    let params = {
       ...form.value.baseInfo,
       ...form.value.audience,
       versions: form.value.versions,
     }
-    if (params.dateArr?.length > 0) {
-      params.startTime = parseTime(params.dateArr[0])
-      params.endTime = parseTime(params.dateArr[1])
-    }
+    params = handleDateArr(params)
     params.experimentTrafficWeight = params.experimentTrafficWeight / 10
-    Reflect.deleteProperty(params, 'dateArr')
     if (route.query.isEdit) {
       editExperiment(params).then(res => {
         if (res) {
@@ -89,15 +83,14 @@
       })
     }
   }
+
   const submitSuccess = (msg: string, path: string) => {
     ;(inst.proxy as IComponentProxy).$modal.msgSuccess(msg)
     handleCancel(false)
     ;(inst.proxy as IComponentProxy).$tab.closePage({ path })
     router.push('/ab-test/manage-experiment/experiment-list')
-    /*setTimeout(() => {
-      location.reload()
-    },500)*/
   }
+
   const handleCancel = (isReload = true) => {
     if (!isReload) {
       resetForm()
@@ -115,24 +108,32 @@
         console.error(err)
       })
   }
+
   const resetForm = () => {
     cache.session.remove('expAddEditForm')
     form.value = {}
   }
+
   onBeforeRouteLeave(() => {
     resetForm()
   })
+
   // 缓存表单
   const cacheForm = () => {
     cache.session.setJSON('expAddEditForm', form.value)
   }
+
   // 获取缓存表单数据
   const getCacheFrom = () => {
     return cache.session.getJSON('expAddEditForm')
   }
+
   defineExpose({
     cacheForm,
   })
+
+  /************************ 获取列表相关 ****************************/
+
   const route = useRoute()
   const expId = ref<string>('')
   const isEdit = ref<string>('false')
@@ -149,6 +150,7 @@
       }
     })
   }
+
   const init = () => {
     isEdit.value = 'false'
     expId.value = ''

@@ -52,8 +52,26 @@
   import useCommonParamsStore from '../../../store/modules/common-params'
   import store from '../../../store'
   import type { FormInstance } from 'element-plus'
-  import type { IAddApp } from '../../../api/ab-test/ab-test'
-  import type { IComponentProxy, IOption } from '../../../utils/types'
+  import type { IComponentProxy, IOption, IAddApp } from '../../../utils/types'
+  const props = defineProps({
+    type: {
+      type: String,
+      default: 'add',
+    },
+    appId: {
+      type: String,
+      default: '',
+    },
+  })
+  watch(
+    () => props.appId,
+    nVal => {
+      if (nVal) {
+        // 编辑时获取应用数据
+        getAppDetail()
+      }
+    }
+  )
   const proxy = getCurrentInstance()?.proxy
   const ruleFormRef = ref<FormInstance | null>(null)
 
@@ -119,25 +137,6 @@
   bus.on(setCommonParams)
   setCommonParams()
 
-  const props = defineProps({
-    type: {
-      type: String,
-      default: 'add',
-    },
-    appId: {
-      type: String,
-      default: '',
-    },
-  })
-  watch(
-    () => props.appId,
-    nVal => {
-      if (nVal) {
-        // 编辑时获取应用数据
-        getAppDetail()
-      }
-    }
-  )
   /**
    * 获取详情数据
    */

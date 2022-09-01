@@ -87,14 +87,14 @@
             v-if="scope.row.experimentStatus === '1'"
             v-hasPermi="['system:role:edit']"
             class="op-btn"
-            @click="publishExp(scope.row.experimentId)"
+            @click="publishAndCancelExp(scope.row.experimentId,0)"
             >发布</span
           >
           <span
             v-if="scope.row.experimentStatus === '2' || scope.row.experimentStatus === '3'"
             v-hasPermi="['system:role:edit']"
             class="op-btn"
-            @click="cancelExp(scope.row.experimentId)"
+            @click="publishAndCancelExp(scope.row.experimentId,1)"
             >取消</span
           >
           <span
@@ -141,6 +141,7 @@
   import store from '../../../store'
   import type { IExpStatus, IExpType } from '../../../store/modules/common-params'
   import type { IComponentProxy, IExpData, IExpQueryParams, IOption } from '../../../utils/types'
+  import { useAbtest } from "../../../hook/use-abtest";
   const inst = getCurrentInstance()
   /********************* 搜索相关逻辑 *******************************/
 
@@ -155,11 +156,9 @@
     dateArr: [],
   })
 
+  const { handleDateArr } = useAbtest()
   const handleQuery = () => {
-    if (queryParams.value.dateArr?.length > 0) {
-      queryParams.value.startTime = parseTime(queryParams.value.dateArr[0])
-      queryParams.value.endTime = parseTime(queryParams.value.dateArr[1])
-    }
+    queryParams.value = handleDateArr(queryParams.value)
     queryParams.value.pageNum = 1
     getList()
   }
@@ -178,54 +177,29 @@
   const handleEdit = (row: IExpData) => {
     router.push(`experiment-edit?expId=${row.experimentId}&isEdit=true`)
   }
-
   /**
-   * 取消实验
+   * 发布、取消实验
    */
-  const cancelExp = (experimentId: number) => {
+  const publishAndCancelExp = (experimentId: number,type:number) => {
     ;(inst?.proxy as IComponentProxy).$modal
-      .confirm(`是否取消该实验？`)
+      .confirm(`是否${type === 1 ? '取消' : '发布'}该实验？`)
       .then(() => {
-        return cancelExperiment({ experimentId })
-      })
-      .then(() => {
-        getList()
-        ;(inst?.proxy as IComponentProxy).$modal.msgSuccess('取消成功')
-      })
-      .catch(err => {
-        console.error(err)
-      })
-  }
-  /**
-   * 发布实验
-   */
-  const publishExp = (experimentId: number) => {
-    ;(inst?.proxy as IComponentProxy).$modal
-      .confirm(`是否发布该实验？`)
-      .then(() => {
+        if(type === 1){
+          return cancelExperiment({ experimentId })
+        }
         return publishExperiment({ experimentId })
       })
       .then(() => {
         getList()
-        ;(inst?.proxy as IComponentProxy).$modal.msgSuccess('发布成功')
+        ;(inst?.proxy as IComponentProxy).$modal.msgSuccess(`${type === 1 ? '取消' : '发布'}成功`)
       })
       .catch(err => {
         console.error(err)
       })
   }
   /************************ 获取公共参数相关 ****************************/
-  const expStatus = ref<IExpStatus>({
-    1: '',
-    2: '',
-    3: '',
-    4: '',
-    5: '',
-  })
-
-  const expType = ref<IExpType>({
-    1: '',
-    2: '',
-  })
+  const expStatus = ref<IExpStatus>({})
+  const expType = ref<IExpType>({})
   const expStatusList = ref<Array<IOption>>([])
   const bus = useEventBus<string>('commonParams')
   const setCommonParams = () => {
@@ -247,26 +221,13 @@
 
   /************************ 获取列表相关 ****************************/
   const total = ref<number>(0)
-  const expList = ref<Array<IExpData>>([
-    {
-      experimentId: '1',
-      experimentName: '示例实验1998',
-      appName: '实例应用微信小程序',
-      experimentType: 1,
-      experimentStatus: 2,
-      startTime: '2022-8-10 10:10:00',
-      endTime: '2077-11-10 10:10:00',
-      experimentTrafficWeight: 0.5666,
-      createTime: '2022-8-10 10:10:00',
-    },
-  ])
+  const expList = ref<Array<IExpData>>([])
   const loading = ref<boolean>(false)
   const getList = () => {
     loading.value = true
     const params = {
       ...queryParams.value,
     }
-    Reflect.deleteProperty(params, 'dateArr')
     listExperiment(params)
       .then((res: any) => {
         if (res) {

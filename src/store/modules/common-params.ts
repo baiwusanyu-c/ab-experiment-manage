@@ -3,29 +3,29 @@ import { useEventBus } from '@vueuse/core'
 import { getParameter } from '../../api/ab-test/ab-test'
 import type { IOption } from '../../utils/types'
 export interface IExpType {
-  1: string // 客户端
-  2: string // 服务端
+  1?: string // 客户端
+  2?: string // 服务端
 }
 export interface IVerType {
-  1: string // 客户端
-  2: string // 服务端
+  1?: string // 客户端
+  2?: string // 服务端
 }
 export interface IParamType {
-  1: string // string
-  2: string // number
-  3: string // boolean
+  1?: string // string
+  2?: string // number
+  3?: string // boolean
 }
 export interface IExpStatus {
-  1: string // 待发布 -> 编辑、发布
-  2: string // 待运行 -> 编辑、取消
-  3: string // 运行中 -> 查看报告、编辑、取消
-  4: string // 已取消 -> 查看报告
-  5: string // 已结束 -> 查看报告
+  1?: string // 待发布 -> 编辑、发布
+  2?: string // 待运行 -> 编辑、取消
+  3?: string // 运行中 -> 查看报告、编辑、取消
+  4?: string // 已取消 -> 查看报告
+  5?: string // 已结束 -> 查看报告
 }
 export interface IAppType {
-  1: string // 微信小程序
-  2: string // 抖音小程序
-  3: string // H5
+  1?: string // 微信小程序
+  2?: string // 抖音小程序
+  3?: string // H5
 }
 export interface ICommonParams {
   EXPERIMENT_TYPE?: IExpType
