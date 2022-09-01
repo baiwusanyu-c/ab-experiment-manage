@@ -52,7 +52,7 @@
   import useCommonParamsStore from '../../../store/modules/common-params'
   import store from '../../../store'
   import type { FormInstance } from 'element-plus'
-  import type { IComponentProxy, IOption, IAddApp } from '../../../utils/types'
+  import type { IAddApp, IComponentProxy, IOption } from '../../../utils/types'
   const props = defineProps({
     type: {
       type: String,

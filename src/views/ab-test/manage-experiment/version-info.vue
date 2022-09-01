@@ -168,7 +168,7 @@
     showErr.value = false
     errInfo.value = ''
     let check = true
-    const throwErr = (msg) =>{
+    const throwErr = msg => {
       showErr.value = true
       errInfo.value = msg
       throw 'error'

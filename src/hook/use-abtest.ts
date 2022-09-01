@@ -1,7 +1,7 @@
-import { parseTime } from "../utils/ruoyi";
+import { parseTime } from '../utils/ruoyi'
 
-export const useAbtest = () =>{
-  const handleDateArr = (params:any) =>{
+export const useAbtest = () => {
+  const handleDateArr = (params: any) => {
     if (params.dateArr?.length > 0) {
       params.startTime = parseTime(params.dateArr[0])
       params.endTime = parseTime(params.dateArr[1])
@@ -10,6 +10,6 @@ export const useAbtest = () =>{
     return params
   }
   return {
-    handleDateArr
+    handleDateArr,
   }
 }

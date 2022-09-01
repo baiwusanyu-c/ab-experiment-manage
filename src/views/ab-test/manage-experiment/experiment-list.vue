@@ -87,14 +87,14 @@
             v-if="scope.row.experimentStatus === '1'"
             v-hasPermi="['system:role:edit']"
             class="op-btn"
-            @click="publishAndCancelExp(scope.row.experimentId,0)"
+            @click="publishAndCancelExp(scope.row.experimentId, 0)"
             >发布</span
           >
           <span
             v-if="scope.row.experimentStatus === '2' || scope.row.experimentStatus === '3'"
             v-hasPermi="['system:role:edit']"
             class="op-btn"
-            @click="publishAndCancelExp(scope.row.experimentId,1)"
+            @click="publishAndCancelExp(scope.row.experimentId, 1)"
             >取消</span
           >
           <span
@@ -139,9 +139,9 @@
   import useCommonParamsStore from '../../../store/modules/common-params'
   import { parseTime, toPrecision } from '../../../utils/ruoyi'
   import store from '../../../store'
+  import { useAbtest } from '../../../hook/use-abtest'
   import type { IExpStatus, IExpType } from '../../../store/modules/common-params'
   import type { IComponentProxy, IExpData, IExpQueryParams, IOption } from '../../../utils/types'
-  import { useAbtest } from "../../../hook/use-abtest";
   const inst = getCurrentInstance()
   /********************* 搜索相关逻辑 *******************************/
 
@@ -180,11 +180,11 @@
   /**
    * 发布、取消实验
    */
-  const publishAndCancelExp = (experimentId: number,type:number) => {
+  const publishAndCancelExp = (experimentId: number, type: number) => {
     ;(inst?.proxy as IComponentProxy).$modal
       .confirm(`是否${type === 1 ? '取消' : '发布'}该实验？`)
       .then(() => {
-        if(type === 1){
+        if (type === 1) {
           return cancelExperiment({ experimentId })
         }
         return publishExperiment({ experimentId })

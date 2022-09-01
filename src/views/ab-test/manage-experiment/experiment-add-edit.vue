@@ -43,11 +43,11 @@
   import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
   import cache from '../../../plugins/cache'
   import { createExperiment, detailExperiment, editExperiment } from '../../../api/ab-test/ab-test'
+  import { useAbtest } from '../../../hook/use-abtest'
   import BaseInfo from './base-info.vue'
   import VersionInfo from './version-info.vue'
   import TargetAudience from './target-audience.vue'
   import type { IComponentProxy, IExpAddEditModel } from '../../../utils/types'
-  import { useAbtest } from "../../../hook/use-abtest";
   const inst = getCurrentInstance()
   const form = ref<IExpAddEditModel>({})
   const curStep = ref(1)
