@@ -1,10 +1,14 @@
 <template>
   <div class="version-info">
-    <el-button type="primary" icon="plus" @click="addVersionListItem">添加实验版本</el-button>
+    <el-button type="primary" icon="plus" v-if="isEdit !== 'true'" @click="addVersionListItem">添加实验版本</el-button>
     <div class="version-Item-container">
       <div class="version-Item version-Item--params">
         <div style="height: 160px"></div>
-        <div style="width: 100%"><p class="op-btn" @click="addVersionListParams">添加参数</p></div>
+        <div style="width: 100%">
+          <p v-if="isEdit === 'true'" class="op-btn">实验参数</p>
+          <p class="op-btn"
+             v-show ="isEdit !== 'true'"
+             @click="addVersionListParams">添加参数</p></div>
         <div v-for="(paramsItem, index) in versionParamList" class="version-params">
           <div class="version-Item--title">
             <el-tooltip
@@ -12,7 +16,7 @@
               placement="top"
               :disabled="index === 0">
               <el-icon color="#409eff" style="{'cursor': index !== 0 ? 'pointer' : ''}">
-                <Delete v-if="index !== 0" @click="delVersionListParams(index)" />
+                <Delete v-if="index !== 0 && isEdit !== 'true'" @click="delVersionListParams(index)" />
               </el-icon>
             </el-tooltip>
           </div>
@@ -38,8 +42,8 @@
       </div>
       <div v-for="(versionItem, index) in versionsForm" class="version-Item">
         <div class="version-Item--title">
-          <div></div>
-          <el-tooltip v-if="index !== 0" content="实验版本删除，会在提交后生效" placement="top">
+          <p class="op-btn" v-if="isEdit === 'true' && index === 0" style="margin-bottom: 1rem">版本名称</p>
+          <el-tooltip v-if="index !== 0 && isEdit !== 'true'" content="实验版本删除，会在提交后生效" placement="top">
             <el-icon color="#409eff" @click="delVersionListItem(index)">
               <Delete />
             </el-icon>
@@ -164,6 +168,10 @@
   const props = defineProps({
     modelValue: {
       type: Array as PropType<IVersionInfoItem>,
+    },
+    isEdit: {
+      type: String,
+      default: '',
     },
   })
   const emit = defineEmits(['update:modelValue', 'next'])

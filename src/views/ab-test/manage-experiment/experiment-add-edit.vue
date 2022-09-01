@@ -16,6 +16,7 @@
         <version-info
           v-if="curStep === 2"
           v-model="form.versions"
+          :is-edit="isEdit"
           @next="handleCanNext"></version-info>
         <target-audience
           v-if="curStep === 3"
