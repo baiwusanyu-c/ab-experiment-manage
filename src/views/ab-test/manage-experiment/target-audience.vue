@@ -142,6 +142,7 @@
   )
   const inst = getCurrentInstance()
   const handleChange = () => {
+    console.log()
     if (!verFrom()) {
       emit('next', true)
       return

@@ -51,7 +51,7 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
-          <span v-hasPermi="['system:role:edit']" class="op-btn" @click="handleEdit(scope.row)"
+          <span v-hasPermi="['abtest:list:edit']" class="op-btn" @click="handleEdit(scope.row)"
             >编辑</span
           >
         </template>

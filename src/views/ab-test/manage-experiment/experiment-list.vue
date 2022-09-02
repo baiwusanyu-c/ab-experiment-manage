@@ -37,7 +37,7 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
-          v-hasPermi="['system:role:add']"
+          v-hasPermi="['ab-test:exp:add']"
           type="primary"
           plain
           icon="Plus"
@@ -86,14 +86,14 @@
         <template #default="scope">
           <span
             v-if="scope.row.experimentStatus === '1'"
-            v-hasPermi="['system:role:edit']"
+            v-hasPermi="['ab-test:exp:publish']"
             class="op-btn"
             @click="publishAndCancelExp(scope.row.experimentId, 0)"
             >发布</span
           >
           <span
             v-if="scope.row.experimentStatus === '2' || scope.row.experimentStatus === '3'"
-            v-hasPermi="['system:role:edit']"
+            v-hasPermi="['ab-test:exp:cancel']"
             class="op-btn"
             @click="publishAndCancelExp(scope.row.experimentId, 1)"
             >取消</span
@@ -104,7 +104,7 @@
               scope.row.experimentStatus === '2' ||
               scope.row.experimentStatus === '3'
             "
-            v-hasPermi="['system:role:edit']"
+            v-hasPermi="['ab-test:exp:edit']"
             class="op-btn"
             @click="handleEdit(scope.row)"
             >编辑</span
@@ -115,7 +115,7 @@
               scope.row.experimentStatus === '4' ||
               scope.row.experimentStatus === '5'
             "
-            v-hasPermi="['system:role:edit']"
+            v-hasPermi="['ab-test:exp:scan']"
             class="op-btn"
             @click="handleEdit(scope.row)"
             >查看报告</span
