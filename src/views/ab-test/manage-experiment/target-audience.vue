@@ -4,7 +4,7 @@
     <el-slider
       v-model="audienceForm.experimentTrafficWeight"
       show-input
-      step="0.1"
+      :step="0.1"
       @change="handleChange" />
     <p>版本流量分配 (%)</p>
     <div class="version-flow">

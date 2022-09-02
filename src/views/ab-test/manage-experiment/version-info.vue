@@ -27,11 +27,11 @@
               type="text"
               autocomplete="off"
               maxlength="50"
-              @change="handleParamsChange" />
+              @change="handleParamsChange('name')" />
             <el-select
               v-model="paramsItem.paramType"
               placeholder="请选择所属应用"
-              @change="handleParamsChange">
+              @change="handleParamsChange('type')">
               <el-option
                 v-for="item in paramsTypeList"
                 :label="item.label"
@@ -65,12 +65,13 @@
           rows="4"
           @change="handleChange" />
         <el-input
-          v-for="paramsItem in versionItem.versionParams"
+          v-for="(paramsItem,versionIndex) in versionItem.versionParams"
           v-model="paramsItem.paramValue"
           class="params-val"
           placeholder="请输入参数值"
           type="text"
           autocomplete="off"
+          @input = 'handleInput(index,versionIndex)'
           @change="handleChange" />
       </div>
     </div>
@@ -85,7 +86,7 @@
   import store from '../../../store'
   import type { IComponentProxy, IOption, IVersionInfoItem } from '../../../utils/types'
   import type { PropType } from 'vue'
-
+  import { debounce } from "../../../utils";
   const inst = getCurrentInstance()
   // 默认两个版本
   const versionsForm = ref<Array<IVersionInfoItem>>([
@@ -207,14 +208,40 @@
   /**
    * 参数名称、类别填写后，触发change
    */
-  const handleParamsChange = () => {
+  const handleParamsChange = (type: string) => {
     versionParamList.value.forEach((val, index) => {
       versionsForm.value.forEach(ver => {
         ver.versionParams[index].paramName = val.paramName
         ver.versionParams[index].paramType = val.paramType
+        // 类别改变时 清掉之前填写值
+        if(type === 'type'){
+          ver.versionParams[index].paramValue = ''
+        }
       })
     })
     handleChange()
+  }
+  /**
+   * 参数输入时校验输入内容
+   * @param index
+   * @param versionIndex
+   */
+  const handleInput = debounce((index,versionIndex) =>{
+      const paramType = versionsForm.value[index].versionParams[versionIndex].paramType
+      let paramValue = versionsForm.value[index].versionParams[versionIndex].paramValue
+      versionsForm.value[index].versionParams[versionIndex].paramValue = verOnInput(paramValue, paramType)
+  },300)
+
+  const verOnInput = (val:string,type:number) =>{
+    const regNum = /^(-)?[1-9][0-9]*$/g
+    const regStr = /^[a-zA-Z0-9_]*$/g
+    let res = val
+    if((type === 1 && !regStr.test(res))  // string
+      || (type === 2 && !regNum.test(res))  // number
+      || type === 3 && (res !== 'false' && res !== 'true' )){ // bool
+      res = ''
+    }
+    return res
   }
 
   /************************ 版本表单相关逻辑 ****************************/

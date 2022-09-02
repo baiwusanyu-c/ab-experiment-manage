@@ -69,7 +69,6 @@
       versions: form.value.versions,
     }
     params = handleDateArr(params)
-    params.experimentTrafficWeight = (params.experimentTrafficWeight) * 100 / 1000
     if (route.query.isEdit) {
       editExperiment(params).then(res => {
         if (res) {
