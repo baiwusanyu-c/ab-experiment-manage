@@ -1,5 +1,6 @@
 <template>
   <div class="login">
+    <flota-circle></flota-circle>
     <el-form ref="loginRef" :model="loginForm" :rules="loginRules" class="login-form">
       <h3 class="title">AB-TEST后台管理系统</h3>
       <el-form-item prop="username">
@@ -73,6 +74,7 @@
   import { getCodeImg } from '@/api/login'
   import { decrypt, encrypt } from '@/utils/jsencrypt'
   import useUserStore from '@/store/modules/user'
+  import FlotaCircle from "../components/FlotaCircle/flota-circle";
 
   const userStore = useUserStore()
   const router = useRouter()
@@ -163,7 +165,10 @@
     justify-content: center;
     align-items: center;
     height: 100%;
-    background-image: url('../assets/images/login-background.jpg');
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    background-image: url('../assets/images/login-background.png');
     background-size: cover;
   }
   .title {
@@ -174,6 +179,8 @@
 
   .login-form {
     border-radius: 6px;
+    position: relative;
+    z-index: 2;
     background: #ffffff;
     width: 400px;
     padding: 25px 25px 5px 25px;
