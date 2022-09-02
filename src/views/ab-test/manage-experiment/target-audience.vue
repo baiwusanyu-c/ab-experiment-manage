@@ -65,6 +65,10 @@
     versions: {
       type: Array as PropType<IVersionInfoItem>,
     },
+    isEdit: {
+      type: String,
+      default: '',
+    },
   })
   /************************ 表单校验相关 ****************************/
 

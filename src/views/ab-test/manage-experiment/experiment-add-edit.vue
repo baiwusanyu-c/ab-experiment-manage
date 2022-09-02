@@ -20,6 +20,7 @@
           @next="handleCanNext"></version-info>
         <target-audience
           v-if="curStep === 3"
+          :is-edit="isEdit"
           v-model:versions="form.versions"
           v-model:audience="form.audience"
           @next="handleCanNext">
@@ -146,7 +147,7 @@
       }
       Reflect.deleteProperty(form.value.baseInfo, 'versions')
       form.value.audience = {
-        experimentTrafficWeight: res.data.experimentTrafficWeight * 10,
+        experimentTrafficWeight: res.data.experimentTrafficWeight,
       }
     })
   }
