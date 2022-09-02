@@ -74,7 +74,7 @@
       </el-table-column>
       <el-table-column label="流量分配" prop="experimentTrafficWeight" width="100">
         <template #default="scope">
-          <span>{{ toPrecision(scope.row.experimentTrafficWeight * 10, 2) }}%</span>
+          <span>{{ toPrecision(scope.row.experimentTrafficWeight, 2) }}%</span>
         </template>
       </el-table-column>
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
