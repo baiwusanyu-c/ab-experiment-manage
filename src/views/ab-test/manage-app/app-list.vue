@@ -1,21 +1,12 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryRef" :model="queryParams" :inline="true">
-      <el-form-item label="应用名称" prop="appName">
+      <el-form-item label="应用名称/AppKey" prop="searchValue">
         <el-input
-          v-model="queryParams.appName"
-          placeholder="请输入应用名称"
+          v-model="queryParams.searchValue"
+          placeholder="请输入应用名称/AppKey"
           clearable
           maxlength="50"
-          style="width: 240px"
-          @keyup.enter="handleQuery" />
-      </el-form-item>
-      <el-form-item label="应用ID" prop="appID">
-        <el-input
-          v-model="queryParams.appID"
-          placeholder="请输入应用ID"
-          clearable
-          maxlength="30"
           style="width: 240px"
           @keyup.enter="handleQuery" />
       </el-form-item>
@@ -27,7 +18,7 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
-          v-hasPermi="['system:role:add']"
+          v-hasPermi="['abtest:app:add']"
           type="primary"
           plain
           icon="Plus"
@@ -40,48 +31,54 @@
     <!-- 表格数据 -->
     <el-table v-loading="loading" :data="appList">
       <el-table-column type="index" width="50" />
-      <el-table-column label="应用名称" prop="roleId" width="120" />
-      <el-table-column label="应用ID" prop="roleName" :show-overflow-tooltip="true" width="150" />
-      <el-table-column label="App Name" prop="roleKey" :show-overflow-tooltip="true" width="150" />
-      <el-table-column label="应用类型" prop="roleSort" width="100" />
-      <el-table-column label="创建时间" align="center" prop="createTime">
+      <el-table-column label="应用名称" prop="appName" show-overflow-tooltip />
+      <el-table-column label="应用ID" prop="appId" show-overflow-tooltip width="150" />
+      <el-table-column label="App Key" prop="appKey" show-overflow-tooltip />
+      <el-table-column label="应用类型" prop="appType">
+        <template #default="scope">
+          <span>{{ getOptionVal(appType, scope.row.appType) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template #default="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="修改时间" align="center" prop="createTime">
+      <el-table-column label="修改时间" align="center" prop="updateTime" width="180">
         <template #default="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
+          <span>{{ parseTime(scope.row.updateTime) || '-' }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
-          <el-tooltip content="编辑" placement="top">
-            <el-button
-              v-hasPermi="['system:role:edit']"
-              type="text"
-              icon="Edit"
-              @click="handleEdit(scope.row)"></el-button>
-          </el-tooltip>
+          <span v-hasPermi="['abtest:app:edit']" class="op-btn" @click="handleEdit(scope.row)"
+            >编辑</span
+          >
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog v-model="showDialog" :title="titleDialog" width="800px" append-to-body>
-      <app-add-edit ref="appAddEdit" :type="typeDialog" @close="closeDialog"> </app-add-edit>
+    <el-dialog
+      v-model="showDialog"
+      :title="titleDialog"
+      width="800px"
+      append-to-body
+      @close="closeDialog">
+      <app-add-edit ref="appAddEdit" :type="typeDialog" :app-id="curAppId" @close="closeDialog">
+      </app-add-edit>
     </el-dialog>
   </div>
 </template>
 
 <script lang="ts" name="app-list" setup>
-  // TODO:搜索字段对接
-  // TODO:应用列表字段对接
-  // TODO: 应用编辑接口对接
-  // TODO: 应用编辑逻辑编写
-  import { getCurrentInstance, nextTick, ref } from 'vue'
+  import { computed, getCurrentInstance, nextTick, ref } from 'vue'
+  import { useEventBus } from '@vueuse/core'
   import { listApplication } from '../../../api/ab-test/ab-test'
+  import useCommonParamsStore from '../../../store/modules/common-params'
+  import store from '../../../store'
   import AppAddEdit from './app-add-edit.vue'
+  import type { IAppType } from '../../../store/modules/common-params'
   import type { ComponentPublicInstance } from 'vue'
-  import type { IComponentProxy, IQueryParams } from '../../../utils/types'
+  import type { IAppQueryParams, IComponentProxy } from '../../../utils/types'
   interface IAppAddEdit extends ComponentPublicInstance {
     appAddEdit: {
       resetForm: Function
@@ -91,13 +88,9 @@
   /********************* 搜索相关逻辑 *******************************/
 
   const showSearch = ref<boolean>(true)
-  const queryParams = ref<IQueryParams>({
-    pageNo: 1,
-    pageSize: 10,
-  })
+  const queryParams = ref<IAppQueryParams>({})
 
   const handleQuery = () => {
-    queryParams.value.pageNo = 1
     getList()
   }
 
@@ -118,18 +111,47 @@
       ;(inst?.refs as unknown as IAppAddEdit).appAddEdit.resetForm(false)
     })
   }
-
+  const curAppId = ref<string>('')
   const handleEdit = (row: any) => {
     titleDialog.value = '编辑应用'
     typeDialog.value = 'edit'
     showDialog.value = true
-    console.info(row)
+    nextTick(() => {
+      ;(inst?.refs as unknown as IAppAddEdit).appAddEdit.resetForm(false)
+      curAppId.value = row.appId
+    })
   }
-  const closeDialog = () => {
+  const closeDialog = (isUpdate: false) => {
     showDialog.value = false
+    curAppId.value = ''
+    if (isUpdate) {
+      getList()
+    }
   }
   defineExpose({
     closeDialog,
+  })
+  /************************ 获取公共参数相关 ****************************/
+
+  const appType = ref<IAppType>({
+    1: '',
+    2: '',
+    3: '',
+  })
+  const bus = useEventBus<string>('commonParams')
+  const setCommonParams = () => {
+    appType.value = useCommonParamsStore(store).getParams('APP_TYPE')
+  }
+  bus.on(setCommonParams)
+  setCommonParams()
+
+  const getOptionVal = computed(() => {
+    return function (data, key) {
+      if (key && data) {
+        return data[key]
+      }
+      return ''
+    }
   })
   /************************ 获取列表相关 ****************************/
 
@@ -137,16 +159,17 @@
   const loading = ref<boolean>(false)
   const getList = () => {
     loading.value = true
-    listApplication()
+    listApplication(queryParams.value)
       .then((res: any) => {
         if (res) {
-          appList.value = res
+          appList.value = res.data
         }
       })
       .finally(() => {
         loading.value = false
       })
   }
+  getList()
 </script>
 
 <style scoped></style>

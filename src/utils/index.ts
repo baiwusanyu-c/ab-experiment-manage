@@ -205,7 +205,7 @@ export function getTime(type: string) {
  * @param {boolean} immediate
  * @return {*}
  */
-export function debounce(func: Function, wait: number, immediate: boolean) {
+export function debounce(func: Function, wait: number, immediate?: boolean) {
   let timeout: number | null,
     args: Array<any> | null,
     context: any,
@@ -223,21 +223,23 @@ export function debounce(func: Function, wait: number, immediate: boolean) {
       timeout = null
       // 如果设定为immediate===true，因为开始边界已经调用过了此处无需调用
       if (!immediate) {
+        console.log(args)
         result = func.apply(context, args)
         if (!timeout) context = args = null
       }
     }
   }
 
-  return function (...args: any) {
+  return function (...argus: any) {
     context = this
     timestamp = +new Date()
+    args = argus
     const callNow = immediate && !timeout
     // 如果延时不存在，重新设定延时
     if (!timeout) timeout = window.setTimeout(later, wait)
     if (callNow) {
-      result = func.apply(context, args)
-      context = args = null
+      result = func.apply(context, argus)
+      context = argus = null
     }
 
     return result
@@ -251,7 +253,7 @@ export function debounce(func: Function, wait: number, immediate: boolean) {
  * @param {Object} source
  * @returns {Object}
  */
-export function deepClone(source: IOption) {
+export function deepClone(source: any) {
   if (!source && typeof source !== 'object') {
     // @ts-ignore
     throw new Error('error arguments', 'deepClone')
@@ -379,4 +381,13 @@ export function camelCase(str: string) {
 
 export function isNumberStr(str: string) {
   return /^[+-]?(0|([1-9]\d*))(\.\d+)?$/g.test(str)
+}
+
+export function getColor() {
+  let str = '#'
+  const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 'd', 'e', 'f']
+  for (let i = 0; i < 6; i++) {
+    str += arr[Math.floor(Math.random() * 16)]
+  }
+  return str
 }

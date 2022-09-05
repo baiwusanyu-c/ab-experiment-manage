@@ -46,13 +46,32 @@
 </template>
 
 <script lang="ts" name="app-add" setup>
-  // TODO: 应用类型需要接口对接获取数据
-  import { getCurrentInstance, ref } from 'vue'
-  import { addApplication } from '../../../api/ab-test/ab-test'
+  import { getCurrentInstance, ref, watch } from 'vue'
+  import { useEventBus } from '@vueuse/core'
+  import { addApplication, detailApplication, editApplication } from '../../../api/ab-test/ab-test'
   import useCommonParamsStore from '../../../store/modules/common-params'
+  import store from '../../../store'
   import type { FormInstance } from 'element-plus'
-  import type { IAddApp } from '../../../api/ab-test/ab-test'
-  import type { IComponentProxy } from '../../../utils/types'
+  import type { IAddApp, IComponentProxy, IOption } from '../../../utils/types'
+  const props = defineProps({
+    type: {
+      type: String,
+      default: 'add',
+    },
+    appId: {
+      type: String,
+      default: '',
+    },
+  })
+  watch(
+    () => props.appId,
+    nVal => {
+      if (nVal) {
+        // 编辑时获取应用数据
+        getAppDetail()
+      }
+    }
+  )
   const proxy = getCurrentInstance()?.proxy
   const ruleFormRef = ref<FormInstance | null>(null)
 
@@ -61,6 +80,7 @@
     appType: 1,
     appDesc: '',
     appKey: '',
+    appId: '',
   })
   const rules = ref({
     appName: [
@@ -79,12 +99,22 @@
     if (!formEl) return
     await formEl.validate((valid: boolean) => {
       if (valid) {
-        addApplication(form.value).then(res => {
-          if (res) {
-            ;(proxy as IComponentProxy).$modal.msgSuccess('创建成功')
-            emit('close')
-          }
-        })
+        if (props.type === 'add') {
+          addApplication(form.value).then(res => {
+            if (res) {
+              ;(proxy as IComponentProxy).$modal.msgSuccess('创建成功')
+              emit('close', true)
+            }
+          })
+        }
+        if (props.type === 'edit') {
+          editApplication(form.value).then(res => {
+            if (res) {
+              ;(proxy as IComponentProxy).$modal.msgSuccess('编辑成功')
+              emit('close', true)
+            }
+          })
+        }
       }
     })
   }
@@ -99,7 +129,24 @@
     resetForm,
   })
 
-  const appType = useCommonParamsStore().createOption('APP_TYPE')
+  const appType = ref<Array<IOption>>([])
+  const bus = useEventBus<string>('commonParams')
+  const setCommonParams = () => {
+    appType.value = useCommonParamsStore(store).createOption('APP_TYPE')
+  }
+  bus.on(setCommonParams)
+  setCommonParams()
+
+  /**
+   * 获取详情数据
+   */
+  const getAppDetail = () => {
+    detailApplication({ appId: props.appId }).then((res: any) => {
+      if (res) {
+        form.value = res.data
+      }
+    })
+  }
 </script>
 
 <style scoped lang="scss">

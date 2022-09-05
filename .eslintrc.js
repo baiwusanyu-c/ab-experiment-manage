@@ -181,6 +181,8 @@ module.exports = {
     // vue
     'vue/no-unused-components': ['warn'],
     'vue/require-default-prop': ['off'],
+    'vue/require-v-for-key':['off'],
+    'vue/valid-v-for':['off'],
     'vue/multi-word-component-names': ['off'],
     // prettier
     'prettier/prettier': 'error', // ++

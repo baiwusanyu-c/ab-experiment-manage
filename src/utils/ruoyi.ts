@@ -4,7 +4,7 @@
  */
 
 // 日期格式化
-export function parseTime(time: unknown, pattern: string) {
+export function parseTime(time: unknown, pattern?: string) {
   if (arguments.length === 0 || !time) {
     return null
   }
@@ -259,4 +259,12 @@ export async function blobValidate(data: Blob) {
   } catch (error) {
     return true
   }
+}
+
+export function toPrecision(num: number, precision = 0): number {
+  // 这里在做乘法运算时要使用toFixed去四舍五入，防止精度丢失问题，比如1.255*100 !== 125.5
+
+  return parseFloat(
+    String(Math.round(num * parseFloat((10 ** precision).toFixed(precision))) / 10 ** precision)
+  )
 }
