@@ -8,13 +8,13 @@
       <p>总进组用户数</p>
     </div>
     <h2 class="entry-val">{{ computeValToComma(reportBase.total) }}</h2>
-    <div v-for="item in reportBase.versions" :key="item.versionId" class="version">
+    <div v-for="item in reportBase.versions" :key="item.versionId" class="version"
+         :style="{'border-left-color':randomColor({seed:item.versionId*10 + 'versions'})}">
       <div class="version-item__name">{{ item.versionName }}</div>
       <div class="version-item">
-
         <el-progress
           type="circle"
-          :color="colorHash(item.versionId)"
+          :color="randomColor({seed:item.versionId*10 + 'versions'})"
           :percentage="computeGroupProportion(item.totalPerson, reportBase.total)" />
       </div>
       <div class="version-item">
@@ -37,36 +37,12 @@
   import { computed, ref } from 'vue'
   import { useRoute } from 'vue-router'
   import { numDivision, numberToCommaString } from '../../../../utils/ruoyi'
-
   import { reportOverview } from '../../../../api/ab-test/ab-test'
-  import { colorHash } from '../../../../utils'
+  import randomColor from 'randomcolor'
   import type { IReportBase } from '../../../../utils/types'
   const reportBase = ref<IReportBase>({})
   const loading = ref<boolean>(false)
   const getData = () => {
-    reportBase.value = {
-      total: 10086,
-      versions: [
-        {
-          versionName: '实验版本1',
-          versionId: 'dwqwasdwqd1',
-          totalPerson: 3000,
-          trafficWeight: 30,
-        },
-        {
-          versionName: '实验版本2',
-          versionId: 'dwqwasdwqd2',
-          totalPerson: 3000,
-          trafficWeight: 30,
-        },
-        {
-          versionName: '实验版本3',
-          versionId: 'dwqwasdwqd3',
-          totalPerson: 3000,
-          trafficWeight: 30,
-        },
-      ],
-    }
     loading.value = true
     reportOverview({ experimentId: expId.value })
       .then((res: any) => {
@@ -122,7 +98,6 @@
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
       border: 1px solid #e5e6e7;
-      border-left-color: red;
       border-left-width: 6px;
       box-sizing: border-box;
       padding: 1rem 1.5rem;

@@ -53,7 +53,7 @@
 
 <script lang="ts" setup name="target-audience">
   import { getCurrentInstance, nextTick, ref, watch } from 'vue'
-  import { getColor } from '../../../utils'
+  import randomColor from 'randomcolor'
   import type { PropType } from 'vue'
   import type { IAudienceInfo, IVersionInfoItem } from '../../../utils/types'
 
@@ -121,7 +121,7 @@
       props.versions && (versionsForm.value = props.versions)
       color.value.length === 0 &&
         versionsForm.value.forEach(() => {
-          color.value.push(getColor())
+          color.value.push(randomColor())
         })
     },
     { deep: true, immediate: true }

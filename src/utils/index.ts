@@ -383,27 +383,4 @@ export function isNumberStr(str: string) {
   return /^[+-]?(0|([1-9]\d*))(\.\d+)?$/g.test(str)
 }
 
-export function getColor() {
-  let str = '#'
-  const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 'd', 'e', 'f']
-  for (let i = 0; i < 6; i++) {
-    str += arr[Math.floor(Math.random() * 16)]
-  }
-  return str
-}
 
-export function colorHash(str: string) {
-  return str.split('').reduce(
-    (r, v, i) => {
-      let idx, val
-
-      idx = i % 3
-      val = Math.abs(Math.round(Math.sin(v.codePointAt(0) as number)) * 255)
-
-      r[idx] = r[idx] ^ val
-
-      return r
-    },
-    [0, 0, 0]
-  )
-}
