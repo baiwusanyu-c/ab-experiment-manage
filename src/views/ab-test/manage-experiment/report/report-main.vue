@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="app-container reporter-container">
     <report-base></report-base>
     <report-quota></report-quota>
     <report-trend></report-trend>
@@ -12,4 +12,8 @@
   import ReportTrend from './report-trend.vue'
 </script>
 
-<style scoped></style>
+<style scoped>
+  .reporter-container {
+    min-width: 900px;
+  }
+</style>

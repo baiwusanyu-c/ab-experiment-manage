@@ -3,7 +3,7 @@
     <h3>实验指标</h3>
     <div class="filter">
       指标：
-      <el-select v-model="queryParams" placeholder="请选择应用类型">
+      <el-select v-model="queryParams" placeholder="请选择应用类型" @change="handleSelect">
         <el-option label="全部" value=""></el-option>
         <el-option
           v-for="item in quotaSelectList"
@@ -27,7 +27,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="进组人数" prop="totalPerson">
+      <el-table-column label="进组人数" prop="totalPerson" align="center">
         <template #default="scope">
           <p>
             <span class="total-person">{{ computeValToComma(scope.row.totalPerson) }}</span>
@@ -35,13 +35,14 @@
           </p>
         </template>
       </el-table-column>
-      <el-table-column label="XXXXX" prop="indicatorValue">
+      <el-table-column :label="computeHeaderName" prop="indicatorValue" align="center">
         <template #default="scope">
           <span>{{ scope.row.indicatorValue }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="差异绝对值" prop="differenceAbsoluteValue"> </el-table-column>
-      <el-table-column label="差异相对值" align="center" prop="differenceRelativeValue">
+      <el-table-column label="差异绝对值" align="center" prop="differenceAbsoluteValue" :formatter="handleEmpty">
+      </el-table-column>
+      <el-table-column label="差异相对值" align="center" prop="differenceRelativeValue" :formatter="handleEmpty">
       </el-table-column>
     </el-table>
   </div>
@@ -49,6 +50,7 @@
 
 <script lang="ts" setup name="ReportQuota">
   // TODO: 下拉和列表接口对接
+  // TODO: 动态表头
   import { computed, getCurrentInstance, ref } from 'vue'
   import { useRoute } from 'vue-router'
   import { indicatorsList, indicatorsReport } from '../../../../api/ab-test/ab-test'
@@ -73,8 +75,8 @@
       versionName: 'versionName',
       totalPerson: 9999,
       indicatorValue: '999,99',
-      differenceAbsoluteValue: '-15.000',
-      differenceRelativeValue: '95.000',
+      differenceAbsoluteValue: null,
+      differenceRelativeValue: null,
     },
   ])
   const getList = async () => {
@@ -117,6 +119,21 @@
   const inst = getCurrentInstance()
   function copyTextSuccess() {
     ;(inst.proxy as IComponentProxy).$modal.msgSuccess('复制成功')
+  }
+
+  const handleEmpty = (row, column, cellValue) => {
+    if (cellValue === 'null' || !cellValue) {
+      return '—'
+    }
+    return cellValue
+  }
+
+  const headerName = ref<string>('asd')
+  const computeHeaderName = computed(()=>{
+    return headerName.value
+  })
+  const handleSelect = () =>{
+    headerName.value = 'asd'
   }
 </script>
 
