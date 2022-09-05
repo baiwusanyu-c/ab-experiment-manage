@@ -95,3 +95,19 @@ export function reportOverview(data: { experimentId: string | number }) {
     data,
   })
 }
+
+export function indicatorsList(data: { experimentId: string | number }) {
+  return request({
+    url: 'indicators/list',
+    method: 'post',
+    data,
+  })
+}
+
+export function indicatorsReport(data: { indicatorsName: string; experimentId: string }) {
+  return request({
+    url: 'report/indicators',
+    method: 'post',
+    data,
+  })
+}

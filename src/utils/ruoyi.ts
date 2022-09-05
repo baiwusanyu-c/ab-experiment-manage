@@ -291,7 +291,6 @@ export const numberToCommaString = (nStr: number, decimal = 6): string => {
 export function numDivision(num1: number, num2: number) {
   let baseNum1 = 0,
     baseNum2 = 0
-  let baseNum3, baseNum4
   try {
     baseNum1 = num1.toString().split('.')[1].length
   } catch (e) {
@@ -302,7 +301,7 @@ export function numDivision(num1: number, num2: number) {
   } catch (e) {
     baseNum2 = 0
   }
-  baseNum3 = Number(num1.toString().replace('.', ''))
-  baseNum4 = Number(num2.toString().replace('.', ''))
+  const baseNum3 = Number(num1.toString().replace('.', ''))
+  const baseNum4 = Number(num2.toString().replace('.', ''))
   return (baseNum3 / baseNum4) * 10 ** (baseNum2 - baseNum1)
 }

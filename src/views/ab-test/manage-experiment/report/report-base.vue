@@ -8,13 +8,16 @@
       <p>总进组用户数</p>
     </div>
     <h2 class="entry-val">{{ computeValToComma(reportBase.total) }}</h2>
-    <div v-for="item in reportBase.versions" :key="item.versionId" class="version"
-         :style="{'border-left-color':randomColor({seed:item.versionId*10 + 'versions'})}">
+    <div
+      v-for="item in reportBase.versions"
+      :key="item.versionId"
+      class="version"
+      :style="{ 'border-left-color': randomColor({ seed: item.versionId * 10 + 'versions' }) }">
       <div class="version-item__name">{{ item.versionName }}</div>
       <div class="version-item">
         <el-progress
           type="circle"
-          :color="randomColor({seed:item.versionId*10 + 'versions'})"
+          :color="randomColor({ seed: item.versionId * 10 + 'versions' })"
           :percentage="computeGroupProportion(item.totalPerson, reportBase.total)" />
       </div>
       <div class="version-item">
@@ -36,9 +39,9 @@
 <script lang="ts" setup name="ReportBase">
   import { computed, ref } from 'vue'
   import { useRoute } from 'vue-router'
+  import randomColor from 'randomcolor'
   import { numDivision, numberToCommaString } from '../../../../utils/ruoyi'
   import { reportOverview } from '../../../../api/ab-test/ab-test'
-  import randomColor from 'randomcolor'
   import type { IReportBase } from '../../../../utils/types'
   const reportBase = ref<IReportBase>({})
   const loading = ref<boolean>(false)

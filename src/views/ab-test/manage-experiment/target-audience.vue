@@ -146,7 +146,6 @@
   )
   const inst = getCurrentInstance()
   const handleChange = () => {
-    console.log(audienceForm.value.experimentTrafficWeight)
     if (!verFrom()) {
       emit('next', true)
       return
