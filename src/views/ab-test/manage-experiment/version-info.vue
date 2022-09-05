@@ -1,14 +1,15 @@
 <template>
   <div class="version-info">
-    <el-button type="primary" icon="plus" v-if="isEdit !== 'true'" @click="addVersionListItem">添加实验版本</el-button>
+    <el-button v-if="isEdit !== 'true'" type="primary" icon="plus" @click="addVersionListItem"
+      >添加实验版本</el-button
+    >
     <div class="version-Item-container">
       <div class="version-Item version-Item--params">
         <div style="height: 160px"></div>
         <div style="width: 100%">
           <p v-if="isEdit === 'true'" class="op-btn">实验参数</p>
-          <p class="op-btn"
-             v-show ="isEdit !== 'true'"
-             @click="addVersionListParams">添加参数</p></div>
+          <p v-show="isEdit !== 'true'" class="op-btn" @click="addVersionListParams">添加参数</p>
+        </div>
         <div v-for="(paramsItem, index) in versionParamList" class="version-params">
           <div class="version-Item--title">
             <el-tooltip
@@ -16,7 +17,9 @@
               placement="top"
               :disabled="index === 0">
               <el-icon color="#409eff" style="{'cursor': index !== 0 ? 'pointer' : ''}">
-                <Delete v-if="index !== 0 && isEdit !== 'true'" @click="delVersionListParams(index)" />
+                <Delete
+                  v-if="index !== 0 && isEdit !== 'true'"
+                  @click="delVersionListParams(index)" />
               </el-icon>
             </el-tooltip>
           </div>
@@ -42,8 +45,13 @@
       </div>
       <div v-for="(versionItem, index) in versionsForm" class="version-Item">
         <div class="version-Item--title">
-          <p class="op-btn" v-if="isEdit === 'true' && index === 0" style="margin-bottom: 1rem">版本名称</p>
-          <el-tooltip v-if="index !== 0 && isEdit !== 'true'" content="实验版本删除，会在提交后生效" placement="top">
+          <p v-if="isEdit === 'true' && index === 0" class="op-btn" style="margin-bottom: 1rem">
+            版本名称
+          </p>
+          <el-tooltip
+            v-if="index !== 0 && isEdit !== 'true'"
+            content="实验版本删除，会在提交后生效"
+            placement="top">
             <el-icon color="#409eff" @click="delVersionListItem(index)">
               <Delete />
             </el-icon>
@@ -65,13 +73,13 @@
           rows="4"
           @change="handleChange" />
         <el-input
-          v-for="(paramsItem,versionIndex) in versionItem.versionParams"
+          v-for="(paramsItem, versionIndex) in versionItem.versionParams"
           v-model="paramsItem.paramValue"
           class="params-val"
           placeholder="请输入参数值"
           type="text"
           autocomplete="off"
-          @input = 'handleInput(index,versionIndex)'
+          @input="handleInput(index, versionIndex)"
           @change="handleChange" />
       </div>
     </div>
@@ -84,9 +92,9 @@
   import { useEventBus } from '@vueuse/core'
   import useCommonParamsStore from '../../../store/modules/common-params'
   import store from '../../../store'
+  import { debounce } from '../../../utils'
   import type { IComponentProxy, IOption, IVersionInfoItem } from '../../../utils/types'
   import type { PropType } from 'vue'
-  import { debounce } from "../../../utils";
   const inst = getCurrentInstance()
   // 默认两个版本
   const versionsForm = ref<Array<IVersionInfoItem>>([
@@ -214,7 +222,7 @@
         ver.versionParams[index].paramName = val.paramName
         ver.versionParams[index].paramType = val.paramType
         // 类别改变时 清掉之前填写值
-        if(type === 'type'){
+        if (type === 'type') {
           ver.versionParams[index].paramValue = ''
         }
       })
@@ -226,19 +234,25 @@
    * @param index
    * @param versionIndex
    */
-  const handleInput = debounce((index,versionIndex) =>{
-      const paramType = versionsForm.value[index].versionParams[versionIndex].paramType
-      let paramValue = versionsForm.value[index].versionParams[versionIndex].paramValue
-      versionsForm.value[index].versionParams[versionIndex].paramValue = verOnInput(paramValue, paramType)
-  },300)
+  const handleInput = debounce((index, versionIndex) => {
+    const paramType = versionsForm.value[index].versionParams[versionIndex].paramType
+    const paramValue = versionsForm.value[index].versionParams[versionIndex].paramValue
+    versionsForm.value[index].versionParams[versionIndex].paramValue = verOnInput(
+      paramValue,
+      paramType
+    )
+  }, 300)
 
-  const verOnInput = (val:string,type:number) =>{
+  const verOnInput = (val: string, type: number) => {
     const regNum = /^(-)?[1-9][0-9]*$/g
     const regStr = /^[a-zA-Z0-9_]*$/g
     let res = val
-    if((type === 1 && !regStr.test(res))  // string
-      || (type === 2 && !regNum.test(res))  // number
-      || type === 3 && (res !== 'false' && res !== 'true' )){ // bool
+    if (
+      (type === 1 && !regStr.test(res)) || // string
+      (type === 2 && !regNum.test(res)) || // number
+      (type === 3 && res !== 'false' && res !== 'true')
+    ) {
+      // bool
       res = ''
     }
     return res
@@ -347,7 +361,7 @@
     font-size: 12px;
     color: #f56c6c;
     display: inline-block;
-    height: 20px
+    height: 20px;
   }
   .version-Item-container {
     margin-top: 2rem;

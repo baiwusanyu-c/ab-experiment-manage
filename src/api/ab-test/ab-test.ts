@@ -87,3 +87,11 @@ export function detailExperiment(data: { experimentId: string | number }) {
     data,
   })
 }
+
+export function reportOverview(data: { experimentId: string | number }) {
+  return request({
+    url: 'report/overview',
+    method: 'post',
+    data,
+  })
+}

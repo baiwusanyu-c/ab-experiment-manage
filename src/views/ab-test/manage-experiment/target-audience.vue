@@ -44,8 +44,8 @@
       </div>
       <span
         class="target-audience-err"
-        style="margin-top: 20px; display: inline-block;height: 20px"
-        >{{ errWhite}}</span
+        style="margin-top: 20px; display: inline-block; height: 20px"
+        >{{ errWhite }}</span
       >
     </div>
   </div>
@@ -84,7 +84,7 @@
     let whiteList = []
     versionsForm.value.forEach(val => {
       versionTrafficWeight = (val.versionTrafficWeight * 10 + versionTrafficWeight * 10) / 10
-      if(!val.whitelist) return
+      if (!val.whitelist) return
       // 校验白名单格式
       if (!reg.test(val.whitelist)) {
         check = false
@@ -158,8 +158,6 @@
       ;(inst.proxy.$parent as { cacheForm: Function }).cacheForm()
     })
   }
-
-
 </script>
 <style lang="scss">
   .version-flow {

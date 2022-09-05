@@ -114,3 +114,13 @@ export interface IModal {
     msgError: Function
   }
 }
+
+export interface IReportBase {
+  total?: number
+  versions?: Array<{
+    versionId: string
+    versionName: string
+    totalPerson: number
+    trafficWeight: number
+  }>
+}

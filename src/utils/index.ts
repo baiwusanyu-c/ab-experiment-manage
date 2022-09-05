@@ -391,3 +391,19 @@ export function getColor() {
   }
   return str
 }
+
+export function colorHash(str: string) {
+  return str.split('').reduce(
+    (r, v, i) => {
+      let idx, val
+
+      idx = i % 3
+      val = Math.abs(Math.round(Math.sin(v.codePointAt(0) as number)) * 255)
+
+      r[idx] = r[idx] ^ val
+
+      return r
+    },
+    [0, 0, 0]
+  )
+}
