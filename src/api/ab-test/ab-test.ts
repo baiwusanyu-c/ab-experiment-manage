@@ -111,3 +111,11 @@ export function indicatorsReport(data: { indicatorsName: string; experimentId: s
     data,
   })
 }
+
+export function dailyReport(data: { experimentId: string | number }) {
+  return request({
+    url: 'report/daily',
+    method: 'post',
+    data,
+  })
+}

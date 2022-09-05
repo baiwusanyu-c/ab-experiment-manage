@@ -40,9 +40,17 @@
           <span>{{ scope.row.indicatorValue }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="差异绝对值" align="center" prop="differenceAbsoluteValue" :formatter="handleEmpty">
+      <el-table-column
+        label="差异绝对值"
+        align="center"
+        prop="differenceAbsoluteValue"
+        :formatter="handleEmpty">
       </el-table-column>
-      <el-table-column label="差异相对值" align="center" prop="differenceRelativeValue" :formatter="handleEmpty">
+      <el-table-column
+        label="差异相对值"
+        align="center"
+        prop="differenceRelativeValue"
+        :formatter="handleEmpty">
       </el-table-column>
     </el-table>
   </div>
@@ -129,10 +137,10 @@
   }
 
   const headerName = ref<string>('asd')
-  const computeHeaderName = computed(()=>{
+  const computeHeaderName = computed(() => {
     return headerName.value
   })
-  const handleSelect = () =>{
+  const handleSelect = () => {
     headerName.value = 'asd'
   }
 </script>
