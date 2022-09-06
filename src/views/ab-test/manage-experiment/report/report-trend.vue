@@ -1,28 +1,31 @@
 <template>
-  <div class="report-trend">
+  <div id="report_trend" class="report-trend">
     <h3>
       <el-icon color="#409EFF" size="30px"><TrendCharts /></el-icon>
       天级趋势
     </h3>
-    <div id="report_trend_container"></div>
+
+    <div id="report_trend_container">
+      <p class="empty">暂无数据</p>
+    </div>
   </div>
 </template>
 
 <script name="ReportTrend" lang="ts" setup>
-
-  import { nextTick, watch } from "vue";
+  import { nextTick, onBeforeUnmount, ref, watch } from 'vue'
   import { useRoute } from 'vue-router'
   import * as echarts from 'echarts'
   import { dailyReport } from '../../../../api/ab-test/ab-test'
   const getChartData = () => {
-    dailyReport({experimentId: expId,indicatorsName:props.indicatorsName}).then(res=>{
+    dailyReport({ experimentId: expId, indicatorsName: props.indicatorsName }).then(res => {
       renderChart(res.data)
     })
   }
+  const echartsInstance = ref(null)
   const renderChart = data => {
     const container = document.getElementById('report_trend_container') as HTMLInputElement
     if (!container) return
-    const echartsInstance = echarts.init(container, 'macarons')
+    echartsInstance.value = echarts.init(container, 'macarons')
     const option = {
       xAxis: {
         type: 'category',
@@ -51,21 +54,29 @@
       })
       option.legend.data.push(data.indicators[i].versionName)
     }
-    echartsInstance.setOption(option)
+    echartsInstance.value.setOption(option)
+    window.addEventListener('resize', resize)
   }
+  const resize = () => echartsInstance.value.resize()
+  onBeforeUnmount(() => {
+    window.removeEventListener('resize', resize)
+  })
 
   const props = defineProps({
-      indicatorsName: {
-        required: true,
-        default:'',
-        type: String
-      }
-    })
-  watch(()=>props.indicatorsName,(nVal)=>{
-    if(nVal){
-      init()
-    }
+    indicatorsName: {
+      required: true,
+      default: '',
+      type: String,
+    },
   })
+  watch(
+    () => props.indicatorsName,
+    nVal => {
+      if (nVal) {
+        init()
+      }
+    }
+  )
   const route = useRoute()
   let expId = ''
   const init = () => {
@@ -85,16 +96,22 @@
     border: 1px solid #e5e6e7;
     box-sizing: border-box;
     padding: 1rem 1.5rem;
-    h3{
+    h3 {
       display: flex;
       align-items: center;
-      .el-icon{
-        margin-right: .5rem;
+      .el-icon {
+        margin-right: 0.5rem;
       }
     }
     #report_trend_container {
-      height: 25rem;
+      height: 20rem;
       width: 100%;
+      .empty {
+        text-align: center;
+        line-height: 20rem;
+        font-size: 15px;
+        color: #909399;
+      }
     }
   }
 </style>

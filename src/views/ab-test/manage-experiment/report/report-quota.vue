@@ -71,7 +71,7 @@
       quotaSelectList.value = res.data
       queryParams.value = res.data[0].indicatorsName
       headerName.value = res.data[0].indicatorsNameCN
-      emit('select',queryParams.value)
+      emit('select', queryParams.value)
       getList()
     })
   }
@@ -143,7 +143,7 @@
         }
       })
     } catch (e) {}
-    emit('select',queryParams.value)
+    emit('select', queryParams.value)
     getList()
   }
 </script>
@@ -155,11 +155,11 @@
     border: 1px solid #e5e6e7;
     box-sizing: border-box;
     padding: 1rem 1.5rem;
-    h3{
+    h3 {
       display: flex;
       align-items: center;
-      .el-icon{
-        margin-right: .5rem;
+      .el-icon {
+        margin-right: 0.5rem;
       }
     }
     .filter {

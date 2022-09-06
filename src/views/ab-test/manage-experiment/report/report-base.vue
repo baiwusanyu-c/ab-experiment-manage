@@ -89,11 +89,11 @@
     border: 1px solid #e5e6e7;
     box-sizing: border-box;
     padding: 1rem 1.5rem;
-    h3{
+    h3 {
       display: flex;
       align-items: center;
-      .el-icon{
-        margin-right: .5rem;
+      .el-icon {
+        margin-right: 0.5rem;
       }
     }
     .entry-num {
