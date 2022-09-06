@@ -58,9 +58,9 @@
     window.addEventListener('resize', resize)
   }
   const resize = () => echartsInstance.value.resize()
-  onBeforeUnmount(() => {
-    window.removeEventListener('resize', resize)
-  })
+  // onBeforeUnmount(() => {
+  //   window.removeEventListener('resize', resize)
+  // })
 
   const props = defineProps({
     indicatorsName: {
