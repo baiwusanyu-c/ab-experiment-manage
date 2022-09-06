@@ -98,7 +98,7 @@ export function reportOverview(data: { experimentId: string | number }) {
 
 export function indicatorsList(data: { experimentId: string | number }) {
   return request({
-    url: 'indicators/list',
+    url: 'experiment/indicators/list',
     method: 'post',
     data,
   })
@@ -106,13 +106,13 @@ export function indicatorsList(data: { experimentId: string | number }) {
 
 export function indicatorsReport(data: { indicatorsName: string; experimentId: string }) {
   return request({
-    url: 'report/indicators',
+    url: 'report/indicators/detail',
     method: 'post',
     data,
   })
 }
 
-export function dailyReport(data: { experimentId: string | number }) {
+export function dailyReport(data: { indicatorsName: string; experimentId: string }) {
   return request({
     url: 'report/daily',
     method: 'post',

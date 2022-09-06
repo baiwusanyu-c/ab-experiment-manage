@@ -1,40 +1,22 @@
 <template>
   <div class="report-trend">
-    <h3>天级趋势</h3>
+    <h3>
+      <el-icon color="#409EFF" size="30px"><TrendCharts /></el-icon>
+      天级趋势
+    </h3>
     <div id="report_trend_container"></div>
   </div>
 </template>
 
 <script name="ReportTrend" lang="ts" setup>
-  // TODO: 数据字段对接
-  import { nextTick } from 'vue'
+
+  import { nextTick, watch } from "vue";
   import { useRoute } from 'vue-router'
   import * as echarts from 'echarts'
   import { dailyReport } from '../../../../api/ab-test/ab-test'
   const getChartData = () => {
-    /*dailyReport({experimentId: expId}).then(res=>{
-
-    })*/
-    renderChart({
-      date: ['2022-9-1', '2022-9-2', '2022-9-3', '2022-9-4', '2022-9-5', '2022-9-6'],
-      value: [
-        {
-          versionName: 'name1',
-          data: [265, 524, 475, 985, 514, 400],
-        },
-        {
-          versionName: 'name2',
-          data: [255, 524, 475, 985, 514, 800],
-        },
-        {
-          versionName: 'name3',
-          data: [465, 524, 435, 985, 514, 700],
-        },
-        {
-          versionName: 'name4',
-          data: [565, 524, 275, 685, 614, 700],
-        },
-      ],
+    dailyReport({experimentId: expId,indicatorsName:props.indicatorsName}).then(res=>{
+      renderChart(res.data)
     })
   }
   const renderChart = data => {
@@ -61,17 +43,29 @@
       },
       series: [],
     }
-    for (let i = 0; i < data.value.length; i++) {
+    for (let i = 0; i < data.indicators.length; i++) {
       option.series.push({
-        name: data.value[i].versionName,
-        data: data.value[i].data,
+        name: data.indicators[i].versionName,
+        data: data.indicators[i].indicatorValue,
         type: 'line',
       })
-      option.legend.data.push(data.value[i].versionName)
+      option.legend.data.push(data.indicators[i].versionName)
     }
     echartsInstance.setOption(option)
   }
 
+  const props = defineProps({
+      indicatorsName: {
+        required: true,
+        default:'',
+        type: String
+      }
+    })
+  watch(()=>props.indicatorsName,(nVal)=>{
+    if(nVal){
+      init()
+    }
+  })
   const route = useRoute()
   let expId = ''
   const init = () => {
@@ -82,7 +76,6 @@
       })
     }
   }
-  init()
 </script>
 
 <style scoped lang="scss">
@@ -92,7 +85,13 @@
     border: 1px solid #e5e6e7;
     box-sizing: border-box;
     padding: 1rem 1.5rem;
-
+    h3{
+      display: flex;
+      align-items: center;
+      .el-icon{
+        margin-right: .5rem;
+      }
+    }
     #report_trend_container {
       height: 25rem;
       width: 100%;

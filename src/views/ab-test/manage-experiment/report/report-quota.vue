@@ -1,10 +1,12 @@
 <template>
   <div class="report-quota">
-    <h3>实验指标</h3>
+    <h3>
+      <el-icon color="#409EFF" size="30px"><Histogram /></el-icon>
+      实验指标
+    </h3>
     <div class="filter">
       指标：
       <el-select v-model="queryParams" placeholder="请选择应用类型" @change="handleSelect">
-        <el-option label="全部" value=""></el-option>
         <el-option
           v-for="item in quotaSelectList"
           :key="item.indicatorsNameCN + item.indicatorsName"
@@ -57,8 +59,6 @@
 </template>
 
 <script lang="ts" setup name="ReportQuota">
-  // TODO: 下拉和列表接口对接
-  // TODO: 动态表头
   import { computed, getCurrentInstance, ref } from 'vue'
   import { useRoute } from 'vue-router'
   import { indicatorsList, indicatorsReport } from '../../../../api/ab-test/ab-test'
@@ -70,6 +70,8 @@
     indicatorsList({ experimentId: expId }).then(res => {
       quotaSelectList.value = res.data
       queryParams.value = res.data[0].indicatorsName
+      headerName.value = res.data[0].indicatorsNameCN
+      emit('select',queryParams.value)
       getList()
     })
   }
@@ -77,16 +79,7 @@
   const queryParams = ref<string>('')
   const loading = ref<boolean>(false)
   const total = ref<number>(1)
-  const list = ref([
-    {
-      versionId: 'versionId',
-      versionName: 'versionName',
-      totalPerson: 9999,
-      indicatorValue: '999,99',
-      differenceAbsoluteValue: null,
-      differenceRelativeValue: null,
-    },
-  ])
+  const list = ref([])
   const getList = async () => {
     loading.value = true
     const params = {
@@ -95,7 +88,7 @@
     }
     indicatorsReport(params)
       .then(res => {
-        list.value = res.data.indicators
+        list.value = res.data.versions
         total.value = res.data.total
       })
       .finally(() => {
@@ -136,12 +129,22 @@
     return cellValue
   }
 
-  const headerName = ref<string>('asd')
+  const headerName = ref<string>('')
   const computeHeaderName = computed(() => {
     return headerName.value
   })
-  const handleSelect = () => {
-    headerName.value = 'asd'
+  const emit = defineEmits(['select'])
+  const handleSelect = (data: string) => {
+    try {
+      quotaSelectList.value.forEach(val => {
+        if (val.indicatorsName === data) {
+          headerName.value = val.indicatorsNameCN
+          throw 'error'
+        }
+      })
+    } catch (e) {}
+    emit('select',queryParams.value)
+    getList()
   }
 </script>
 
@@ -152,6 +155,13 @@
     border: 1px solid #e5e6e7;
     box-sizing: border-box;
     padding: 1rem 1.5rem;
+    h3{
+      display: flex;
+      align-items: center;
+      .el-icon{
+        margin-right: .5rem;
+      }
+    }
     .filter {
       margin-bottom: 2rem;
     }

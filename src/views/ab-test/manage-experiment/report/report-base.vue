@@ -1,6 +1,9 @@
 <template>
   <div class="report-base">
-    <h3>报告总览</h3>
+    <h3>
+      <el-icon color="#409EFF" size="30px"><Platform /></el-icon>
+      报告总览
+    </h3>
     <div class="entry-num">
       <el-icon color="#F56C6C" size="25px">
         <Avatar />
@@ -86,6 +89,13 @@
     border: 1px solid #e5e6e7;
     box-sizing: border-box;
     padding: 1rem 1.5rem;
+    h3{
+      display: flex;
+      align-items: center;
+      .el-icon{
+        margin-right: .5rem;
+      }
+    }
     .entry-num {
       display: flex;
       align-items: center;
