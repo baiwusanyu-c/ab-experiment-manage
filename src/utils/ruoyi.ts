@@ -268,3 +268,40 @@ export function toPrecision(num: number, precision = 0): number {
     String(Math.round(num * parseFloat((10 ** precision).toFixed(precision))) / 10 ** precision)
   )
 }
+// 逗号转化
+export const numberToCommaString = (nStr: number, decimal = 6): string => {
+  const text = `${nStr}`
+  const x: Array<string> = text.split('.') //按照小数点分隔
+  let x1: string = x[0] //整数部分
+  const x2: string = x.length > 1 ? `.${x[1]}` : '' //小数部分
+  const rgx = /(\d+)(\d{3})/ //正则式定义
+  while (rgx.test(x1)) {
+    //正则式匹配
+    x1 = x1.replace(rgx, '$1' + ',' + '$2') //正则式替换
+  }
+
+  return x1 + x2.slice(0, decimal + 1)
+}
+
+/**
+ * 除法
+ * @param num1
+ * @param num2
+ */
+export function numDivision(num1: number, num2: number) {
+  let baseNum1 = 0,
+    baseNum2 = 0
+  try {
+    baseNum1 = num1.toString().split('.')[1].length
+  } catch (e) {
+    baseNum1 = 0
+  }
+  try {
+    baseNum2 = num2.toString().split('.')[1].length
+  } catch (e) {
+    baseNum2 = 0
+  }
+  const baseNum3 = Number(num1.toString().replace('.', ''))
+  const baseNum4 = Number(num2.toString().replace('.', ''))
+  return (baseNum3 / baseNum4) * 10 ** (baseNum2 - baseNum1)
+}

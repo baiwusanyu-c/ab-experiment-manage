@@ -117,7 +117,7 @@
             "
             v-hasPermi="['ab-test:exp:scan']"
             class="op-btn"
-            @click="handleEdit(scope.row)"
+            @click="handleScan(scope.row)"
             >查看报告</span
           >
         </template>
@@ -177,6 +177,9 @@
 
   const handleEdit = (row: IExpData) => {
     router.push(`experiment-edit?expId=${row.experimentId}&isEdit=true`)
+  }
+  const handleScan = (row: IExpData) => {
+    router.push(`experiment-report?expId=${row.experimentId}`)
   }
   /**
    * 发布、取消实验

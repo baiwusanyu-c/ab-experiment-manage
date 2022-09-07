@@ -223,7 +223,6 @@ export function debounce(func: Function, wait: number, immediate?: boolean) {
       timeout = null
       // 如果设定为immediate===true，因为开始边界已经调用过了此处无需调用
       if (!immediate) {
-        console.log(args)
         result = func.apply(context, args)
         if (!timeout) context = args = null
       }
@@ -381,13 +380,4 @@ export function camelCase(str: string) {
 
 export function isNumberStr(str: string) {
   return /^[+-]?(0|([1-9]\d*))(\.\d+)?$/g.test(str)
-}
-
-export function getColor() {
-  let str = '#'
-  const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 'd', 'e', 'f']
-  for (let i = 0; i < 6; i++) {
-    str += arr[Math.floor(Math.random() * 16)]
-  }
-  return str
 }

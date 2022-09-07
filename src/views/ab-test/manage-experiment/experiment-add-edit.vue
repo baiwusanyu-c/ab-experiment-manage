@@ -20,9 +20,9 @@
           @next="handleCanNext"></version-info>
         <target-audience
           v-if="curStep === 3"
-          :is-edit="isEdit"
           v-model:versions="form.versions"
           v-model:audience="form.audience"
+          :is-edit="isEdit"
           @next="handleCanNext">
         </target-audience>
       </div>

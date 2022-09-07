@@ -44,8 +44,8 @@
       </div>
       <span
         class="target-audience-err"
-        style="margin-top: 20px; display: inline-block;height: 20px"
-        >{{ errWhite}}</span
+        style="margin-top: 20px; display: inline-block; height: 20px"
+        >{{ errWhite }}</span
       >
     </div>
   </div>
@@ -53,7 +53,7 @@
 
 <script lang="ts" setup name="target-audience">
   import { getCurrentInstance, nextTick, ref, watch } from 'vue'
-  import { getColor } from '../../../utils'
+  import randomColor from 'randomcolor'
   import type { PropType } from 'vue'
   import type { IAudienceInfo, IVersionInfoItem } from '../../../utils/types'
 
@@ -84,7 +84,7 @@
     let whiteList = []
     versionsForm.value.forEach(val => {
       versionTrafficWeight = (val.versionTrafficWeight * 10 + versionTrafficWeight * 10) / 10
-      if(!val.whitelist) return
+      if (!val.whitelist) return
       // 校验白名单格式
       if (!reg.test(val.whitelist)) {
         check = false
@@ -121,7 +121,7 @@
       props.versions && (versionsForm.value = props.versions)
       color.value.length === 0 &&
         versionsForm.value.forEach(() => {
-          color.value.push(getColor())
+          color.value.push(randomColor())
         })
     },
     { deep: true, immediate: true }
@@ -146,7 +146,6 @@
   )
   const inst = getCurrentInstance()
   const handleChange = () => {
-    console.log(audienceForm.value.experimentTrafficWeight)
     if (!verFrom()) {
       emit('next', true)
       return
@@ -158,8 +157,6 @@
       ;(inst.proxy.$parent as { cacheForm: Function }).cacheForm()
     })
   }
-
-
 </script>
 <style lang="scss">
   .version-flow {

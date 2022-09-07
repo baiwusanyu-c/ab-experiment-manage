@@ -87,3 +87,35 @@ export function detailExperiment(data: { experimentId: string | number }) {
     data,
   })
 }
+
+export function reportOverview(data: { experimentId: string | number }) {
+  return request({
+    url: 'report/overview',
+    method: 'post',
+    data,
+  })
+}
+
+export function indicatorsList(data: { experimentId: string | number }) {
+  return request({
+    url: 'experiment/indicators/list',
+    method: 'post',
+    data,
+  })
+}
+
+export function indicatorsReport(data: { indicatorsName: string; experimentId: string }) {
+  return request({
+    url: 'report/indicators/detail',
+    method: 'post',
+    data,
+  })
+}
+
+export function dailyReport(data: { indicatorsName: string; experimentId: string }) {
+  return request({
+    url: 'report/daily',
+    method: 'post',
+    data,
+  })
+}

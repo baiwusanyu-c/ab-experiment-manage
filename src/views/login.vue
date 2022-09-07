@@ -71,10 +71,10 @@
 
 <script setup>
   import Cookies from 'js-cookie'
+  import FlotaCircle from '../components/FlotaCircle/flota-circle'
   import { getCodeImg } from '@/api/login'
   import { decrypt, encrypt } from '@/utils/jsencrypt'
   import useUserStore from '@/store/modules/user'
-  import FlotaCircle from "../components/FlotaCircle/flota-circle";
 
   const userStore = useUserStore()
   const router = useRouter()
