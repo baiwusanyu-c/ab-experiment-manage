@@ -73,13 +73,13 @@
     if (route.query.isEdit) {
       editExperiment(params).then(res => {
         if (res) {
-          submitSuccess('更新成功', '/ab-test/manage-experiment/experiment-edit')
+          submitSuccess('更新成功', '/ab-exp/manage-experiment/experiment-edit')
         }
       })
     } else {
       createExperiment(params).then(res => {
         if (res) {
-          submitSuccess('创建成功', '/ab-test/manage-experiment/experiment-add')
+          submitSuccess('创建成功', '/ab-exp/manage-experiment/experiment-add')
         }
       })
     }
@@ -89,7 +89,7 @@
     ;(inst.proxy as IComponentProxy).$modal.msgSuccess(msg)
     handleCancel(false)
     ;(inst.proxy as IComponentProxy).$tab.closePage({ path })
-    router.push('/ab-test/manage-experiment/experiment-list')
+    router.push('/ab-exp/manage-experiment/experiment-list')
   }
 
   const handleCancel = (isReload = true) => {

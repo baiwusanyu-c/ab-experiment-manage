@@ -48,6 +48,7 @@
 
 <script setup>
   import { ElMessageBox } from 'element-plus'
+  import { useRouter } from 'vue-router'
   import Breadcrumb from '@/components/Breadcrumb'
   import TopNav from '@/components/TopNav'
   import Hamburger from '@/components/Hamburger'
@@ -61,7 +62,7 @@
   const appStore = useAppStore()
   const userStore = useUserStore()
   const settingsStore = useSettingsStore()
-
+  const router = useRouter()
   function toggleSideBar() {
     appStore.toggleSideBar()
   }
@@ -87,7 +88,7 @@
     })
       .then(() => {
         userStore.logOut().then(() => {
-          location.href = '/index'
+          window.location.reload()
         })
       })
       .catch(err => {
