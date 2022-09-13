@@ -1,7 +1,8 @@
-<h1 align="center">基于RuoYi的AB实验后台管理</h1>
-<p align="center">
-	<a href="https://gitee.com/y_project/RuoYi-Vue"><img src="https://img.shields.io/badge/RuoYi-v3.8.3-brightgreen.svg"></a>
-</p>
+<h1 align="center">AB实验后台管理</h1>
+
+// TODO 实验版本删除
+// TODO 日志更新
+// TODO 添加发版
 
 ## 前端运行指令
 
