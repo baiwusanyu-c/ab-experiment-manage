@@ -97,7 +97,7 @@ service.interceptors.response.use(
             useUserStore()
               .logOut()
               .then(() => {
-                location.href = '/index'
+                location.href = '/'
               })
           })
           .catch(() => {
