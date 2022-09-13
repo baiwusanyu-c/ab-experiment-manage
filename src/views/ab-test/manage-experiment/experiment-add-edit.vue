@@ -27,8 +27,14 @@
         </target-audience>
       </div>
       <div class="exp-btn-group">
-        <el-button v-show="curStep !== 1" type="primary" @click="curStep--">上一步</el-button>
-        <el-button v-show="curStep !== 3" :disabled="isCanNext" type="primary" @click="curStep++"
+        <el-button v-show="curStep !== 1" type="primary" @click="nextOrPrev(curStep - 1)"
+          >上一步</el-button
+        >
+        <el-button
+          v-show="curStep !== 3"
+          :disabled="isCanNext"
+          type="primary"
+          @click="nextOrPrev(curStep + 1)"
           >下一步</el-button
         >
         <el-button v-show="curStep === 3" :disabled="isCanNext" type="primary" @click="handleSubmit"
@@ -112,6 +118,7 @@
 
   const resetForm = () => {
     cache.session.remove('expAddEditForm')
+    cache.session.remove('curStep')
     form.value = {}
   }
 
@@ -124,9 +131,19 @@
     cache.session.setJSON('expAddEditForm', form.value)
   }
 
+  const nextOrPrev = (step: number) => {
+    curStep.value = step
+    cache.session.setJSON('curStep', curStep.value)
+  }
+
   // 获取缓存表单数据
   const getCacheFrom = () => {
-    return cache.session.getJSON('expAddEditForm')
+    const form = cache.session.getJSON('expAddEditForm')
+    const curStep = cache.session.getJSON('curStep')
+    return {
+      form,
+      curStep,
+    }
   }
 
   defineExpose({
@@ -161,8 +178,11 @@
       getExpDetail()
     } else {
       const cacheData = getCacheFrom()
-      if (cacheData) {
-        form.value = cacheData
+      if (cacheData.form) {
+        form.value = cacheData.form
+      }
+      if (cacheData.curStep) {
+        curStep.value = Number(cacheData.curStep)
       }
     }
   }
