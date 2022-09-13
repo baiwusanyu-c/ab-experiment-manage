@@ -68,11 +68,13 @@
   const quotaSelectList = ref<IOption>([])
   const getQuotaSelectList = () => {
     indicatorsList({ experimentId: expId }).then(res => {
-      quotaSelectList.value = res.data
-      queryParams.value = res.data[0].indicatorsName
-      headerName.value = res.data[0].indicatorsNameCN
-      emit('select', queryParams.value)
-      getList()
+      if (res.data.length > 0) {
+        quotaSelectList.value = res.data
+        queryParams.value = res.data[0].indicatorsName
+        headerName.value = res.data[0].indicatorsNameCN
+        emit('select', queryParams.value)
+        getList()
+      }
     })
   }
 

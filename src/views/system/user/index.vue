@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row :gutter="20">
       <!--部门数据-->
-      <el-col :span="4" :xs="24">
+      <!--      <el-col :span="4" :xs="24">
         <div class="head-container">
           <el-input
             v-model="deptName"
@@ -22,9 +22,9 @@
             default-expand-all
             @node-click="handleNodeClick" />
         </div>
-      </el-col>
+      </el-col>-->
       <!--用户数据-->
-      <el-col :span="20" :xs="24">
+      <el-col :span="24" :xs="24">
         <el-form
           v-show="showSearch"
           ref="queryRef"
@@ -157,13 +157,13 @@
             align="center"
             prop="nickName"
             :show-overflow-tooltip="true" />
-          <el-table-column
+          <!--          <el-table-column
             v-if="columns[3].visible"
             key="deptName"
             label="部门"
             align="center"
             prop="dept.deptName"
-            :show-overflow-tooltip="true" />
+            :show-overflow-tooltip="true" />-->
           <el-table-column
             v-if="columns[4].visible"
             key="phonenumber"
@@ -246,7 +246,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="归属部门" prop="deptId">
+            <!--            <el-form-item label="归属部门" prop="deptId">
               <el-tree-select
                 v-model="form.deptId"
                 :data="deptOptions"
@@ -254,7 +254,7 @@
                 value-key="id"
                 placeholder="请选择归属部门"
                 check-strictly />
-            </el-form-item>
+            </el-form-item>-->
           </el-col>
         </el-row>
         <el-row>

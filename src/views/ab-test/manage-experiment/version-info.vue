@@ -49,7 +49,7 @@
             版本名称
           </p>
           <el-tooltip
-            v-if="index !== 0 && isEdit !== 'true'"
+            v-if="index > 1 && isEdit !== 'true'"
             content="实验版本删除，会在提交后生效"
             placement="top">
             <el-icon color="#409eff" @click="delVersionListItem(index)">
