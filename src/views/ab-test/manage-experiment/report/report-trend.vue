@@ -21,11 +21,11 @@
       renderChart(res.data)
     })
   }
-  const echartsInstance = ref(null)
+  let echartsInstance = null
   const renderChart = data => {
     const container = document.getElementById('report_trend_container') as HTMLInputElement
     if (!container) return
-    echartsInstance.value = echarts.init(container, 'macarons')
+
     const option = {
       xAxis: {
         type: 'category',
@@ -49,15 +49,16 @@
     for (let i = 0; i < data.indicators.length; i++) {
       option.series.push({
         name: data.indicators[i].versionName,
-        data: data.indicators[i].indicatorValue,
+        data: [...data.indicators[i].indicatorValue],
         type: 'line',
       })
       option.legend.data.push(data.indicators[i].versionName)
     }
-    echartsInstance.value.setOption(option)
+    echartsInstance = echarts.init(container)
+    echartsInstance.setOption(option)
     window.addEventListener('resize', resize)
   }
-  const resize = () => echartsInstance.value.resize()
+  const resize = () => echartsInstance.resize()
   onBeforeUnmount(() => {
     window.removeEventListener('resize', resize)
   })
