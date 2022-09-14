@@ -172,7 +172,8 @@
   const init = () => {
     isEdit.value = 'false'
     expId.value = ''
-    if (route.query.isEdit) {
+    const cacheData = getCacheFrom()
+    if (route.query.isEdit && !cacheData.form) {
       isEdit.value = route.query.isEdit as string
       expId.value = route.query.expId as string
       getExpDetail()
