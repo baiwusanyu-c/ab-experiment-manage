@@ -48,6 +48,7 @@ export interface IExpQueryParams extends pageParams {
   startTime?: string
   endTime?: string
   dateArr: Array<Date>
+  orderType: 'ASC' | 'DESC'
 }
 export interface IExpData {
   experimentId: string

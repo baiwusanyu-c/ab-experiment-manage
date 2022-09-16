@@ -48,7 +48,11 @@
       <right-toolbar v-model:showSearch="showSearch" @query-table="getList"></right-toolbar>
     </el-row>
     <!-- 表格数据 -->
-    <el-table v-loading="loading" :data="expList">
+    <el-table
+      v-loading="loading"
+      default-sort="ascending"
+      :data="expList"
+      @sort-change="handleSort">
       <el-table-column type="index" width="50" />
       <el-table-column label="实验名称" prop="experimentName" show-overflow-tooltip />
       <el-table-column label="所属应用" prop="appName" show-overflow-tooltip />
@@ -77,7 +81,13 @@
           <span>{{ toPrecision(scope.row.experimentTrafficWeight, 2) }}%</span>
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+      <el-table-column
+        label="创建时间"
+        align="center"
+        prop="createTime"
+        width="180"
+        sortable="custom"
+        :sort-orders="['ascending', 'descending']">
         <template #default="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
@@ -155,6 +165,7 @@
     startTime: '',
     endTime: '',
     dateArr: [],
+    orderType: 'ASC',
   })
 
   const { handleDateArr } = useAbtest()
@@ -166,6 +177,15 @@
 
   const resetQuery = () => {
     ;(inst?.proxy as IComponentProxy).resetForm('queryRef')
+    handleQuery()
+  }
+
+  const handleSort = ({ column }: { column: { order: 'ascending' | 'descending' } }) => {
+    const orderMap = {
+      ascending: 'ASC',
+      descending: 'DESC',
+    }
+    queryParams.value.orderType = orderMap[column.order] as 'ASC' | 'DESC'
     handleQuery()
   }
   /********************* 新增、编辑、取消、发布相关逻辑 *******************************/
@@ -197,7 +217,7 @@
         getList()
         ;(inst?.proxy as IComponentProxy).$modal.msgSuccess(`${type === 1 ? '取消' : '发布'}成功`)
       })
-      .catch(err => {
+      .catch((err: Error) => {
         console.error(err)
       })
   }
@@ -215,7 +235,7 @@
   setCommonParams()
 
   const getOptionVal = computed(() => {
-    return function (data, key) {
+    return function (data: IOption, key: string) {
       if (key && data) {
         return data[key]
       }
