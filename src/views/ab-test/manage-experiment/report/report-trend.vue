@@ -12,7 +12,7 @@
 </template>
 
 <script name="ReportTrend" lang="ts" setup>
-  import { nextTick, onBeforeUnmount, ref, watch } from 'vue'
+  import { nextTick, onBeforeUnmount, watch } from 'vue'
   import { useRoute } from 'vue-router'
   import * as echarts from 'echarts'
   import { dailyReport } from '../../../../api/ab-test/ab-test'
@@ -21,8 +21,8 @@
       renderChart(res.data)
     })
   }
-  let echartsInstance = null
-  const renderChart = data => {
+  let echartsInstance: echarts.ECharts | null = null
+  const renderChart = (data: { date: any; indicators: string | any[] }) => {
     const container = document.getElementById('report_trend_container') as HTMLInputElement
     if (!container) return
 
