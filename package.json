@@ -1,6 +1,6 @@
 {
   "name": "ab-test-bms",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "AB-TEST管理系统",
   "author": "chabaidao",
   "license": "MIT",
@@ -17,7 +17,8 @@
     "prepare": "husky install",
     "preview": "vite preview",
     "optimizeImages": "tiny --once",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "release:tag": "bumpp package.json --commit --push --tag"
   },
   "repository": {
     "type": "git",
@@ -85,6 +86,7 @@
     "vite-plugin-vue-setup-extend": "0.4.0",
     "vue-tsc": "^0.0.24",
     "yaml-eslint-parser": "^0.5.0",
-    "conventional-changelog-cli": "^2.2.2"
+    "conventional-changelog-cli": "^2.2.2",
+    "bumpp": "^8.2.1"
   }
 }
