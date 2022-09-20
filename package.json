@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://gitee.com/y_project/RuoYi-Vue.git"
+    "url": "http://192.168.110.101:8081/bigdata/frontend/ab-test-vue.git"
   },
   "lint-staged": {
     "*.{vue,js,ts,jsx,tsx,md,json}": [
