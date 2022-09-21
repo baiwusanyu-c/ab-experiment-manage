@@ -78,6 +78,7 @@
           class="params-val"
           placeholder="请输入参数值"
           type="text"
+          max="500"
           autocomplete="off"
           @input="handleInput(index, versionIndex)"
           @change="handleChange" />
@@ -88,14 +89,15 @@
 </template>
 
 <script lang="ts" setup name="version-info">
-  import { getCurrentInstance, nextTick, ref, watch } from 'vue'
+  import { getCurrentInstance, nextTick, ref,watch } from 'vue'
   import { useEventBus } from '@vueuse/core'
   import useCommonParamsStore from '../../../store/modules/common-params'
   import store from '../../../store'
   import { debounce } from '../../../utils'
-  import type { IComponentProxy, IOption, IVersionInfoItem } from '../../../utils/types'
-  import type { PropType } from 'vue'
-  const inst = getCurrentInstance()
+  import type { ComponentInternalInstance} from 'vue';
+  import type { IComponentProxy, IOption, IVersionInfoItem , IVersionParams } from '../../../utils/types'
+
+  const inst = getCurrentInstance() as ComponentInternalInstance
   // 默认两个版本
   const versionsForm = ref<Array<IVersionInfoItem>>([
     {
@@ -132,7 +134,7 @@
   const verFrom = () => {
     errInfo.value = ''
     let check = true
-    const throwErr = msg => {
+    const throwErr = (msg: string) => {
       errInfo.value = msg
       throw 'error'
     }
@@ -176,7 +178,7 @@
 
   const props = defineProps({
     modelValue: {
-      type: Array as PropType<IVersionInfoItem>,
+      type: Array<IVersionInfoItem>
     },
     isEdit: {
       type: String,
@@ -193,7 +195,7 @@
     emit('next', false)
     emit('update:modelValue', versionsForm.value)
     nextTick(() => {
-      ;(inst.proxy.$parent as { cacheForm: Function }).cacheForm()
+      (inst!.proxy?.$parent! as IComponentProxy).cacheForm()
     })
   }
   watch(
@@ -234,7 +236,7 @@
    * @param index
    * @param versionIndex
    */
-  const handleInput = debounce((index, versionIndex) => {
+  const handleInput = debounce((index: number, versionIndex: number) => {
     const paramType = versionsForm.value[index].versionParams[versionIndex].paramType
     const paramValue = versionsForm.value[index].versionParams[versionIndex].paramValue
     versionsForm.value[index].versionParams[versionIndex].paramValue = verOnInput(
@@ -245,7 +247,8 @@
 
   const verOnInput = (val: string, type: number) => {
     const regNum = /^(-)?[1-9][0-9]*$/g
-    const regStr = /^[a-zA-Z0-9_]*$/g
+    // 参数值匹配，允许常规字符
+    const regStr = /[`~!@#$%^&*()_\-+=<>?:"{}|,./;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘'，。、A-Za-z0-9]/im
     let res = val
     if (
       (type === 1 && !regStr.test(res)) || // string
@@ -268,7 +271,7 @@
       versionName: '',
       versionDesc: '',
       versionType: 1,
-      versionParams: [],
+      versionParams: [] as Array<IVersionParams>,
     }
     // 新添加的实验版本参数应该根据 versionParamList 填充
     versionParamList.value.forEach(val => {
@@ -291,7 +294,7 @@
         versionsForm.value.splice(index, 1)
         handleChange()
       })
-      .catch(err => {
+      .catch((err: string) => {
         console.error(err)
       })
   }
@@ -330,7 +333,7 @@
         })
         handleChange()
       })
-      .catch(err => {
+      .catch((err: string) => {
         console.error(err)
       })
   }
