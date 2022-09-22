@@ -32,6 +32,7 @@ export interface IComponentProxy extends ComponentPublicInstance {
   $modal: any
   $tab: any
   resetForm: Function
+  cacheForm: Function
 }
 export interface IAppQueryParams {
   searchValue?: string
