@@ -1,4 +1,4 @@
-# 1.0.0 (2022-09-20)
+## [1.0.1](http://192.168.110.101:8081/bigdata/frontend/ab-test-vue/compare/02fdce77f80c9a68d88f83209b0dd53f41429ec0...v1.0.1) (2022-09-20)
 
 ### Bug Fixes
 
