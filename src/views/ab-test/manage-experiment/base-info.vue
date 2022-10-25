@@ -77,8 +77,8 @@
   import { listApplication } from '../../../api/ab-test/ab-test'
   import type { FormInstance } from 'element-plus'
   import type { PropType } from 'vue'
-  import type { IExpBaseInfo } from '../../../utils/types'
-  const { proxy } = getCurrentInstance()
+  import type { IComponentProxy, IExpBaseInfo } from '../../../utils/types'
+  const proxy = getCurrentInstance()?.proxy
   const baseInfoForm = ref<IExpBaseInfo>({
     experimentType: 1,
   })
@@ -115,7 +115,7 @@
         emit('next', false)
         emit('update:modelValue', baseInfoForm.value)
         nextTick(() => {
-          ;(proxy.$parent as { cacheForm: Function }).cacheForm()
+          ;(proxy!.$parent as IComponentProxy).cacheForm()
         })
       } else {
         emit('next', true)
