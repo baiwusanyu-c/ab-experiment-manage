@@ -41,7 +41,7 @@ $--color-success: #67C23A;
 $--color-warning: #E6A23C;
 $--color-danger: #F56C6C;
 $--color-info: #909399;
-
+$--color-placeholder: #a8abb2;
 $base-sidebar-width: 200px;
 
 // the :export directive is the magic sauce for webpack
@@ -62,4 +62,5 @@ $base-sidebar-width: 200px;
   dangerColor: $--color-danger;
   infoColor: $--color-info;
   warningColor: $--color-warning;
+  placeholderColor : $--color-placeholder;
 }
