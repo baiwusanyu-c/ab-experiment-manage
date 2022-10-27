@@ -45,8 +45,11 @@
     </div>
   </div>
 </template>
-
 <script lang="ts" setup name="experiment-add-edit">
+  // TODO: 锁定字段确定放在哪个表单（等待接口设计）
+  // TODO: 锁定字段接口对接
+  // TODO: 测试服务端实验字段是否提交成功
+  // TODO: 确定筛选表单设计（等待接口设计）
   import { getCurrentInstance, nextTick, ref } from 'vue'
   import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
   import cache from '../../../plugins/cache'
@@ -56,7 +59,7 @@
   import VersionInfo from './version-info.vue'
   import TargetAudience from './target-audience.vue'
   import type { IComponentProxy, IExpAddEditModel } from '../../../utils/types'
-  const inst = getCurrentInstance()
+  const inst = getCurrentInstance()?.proxy
   const form = ref<IExpAddEditModel>({})
   const curStep = ref(1)
   // 下一步、提交按钮限制
@@ -74,6 +77,7 @@
       ...form.value.baseInfo,
       ...form.value.audience,
       versions: form.value.versions,
+      label: form.value.label,
     }
     params = handleDateArr(params)
     if (route.query.isEdit) {
@@ -92,9 +96,9 @@
   }
 
   const submitSuccess = (msg: string, path: string) => {
-    ;(inst.proxy as IComponentProxy).$modal.msgSuccess(msg)
+    ;(inst! as IComponentProxy).$modal.msgSuccess(msg)
     handleCancel(false)
-    ;(inst.proxy as IComponentProxy).$tab.closePage({ path })
+    ;(inst! as IComponentProxy).$tab.closePage({ path })
     router.push('/ab-exp/manage-experiment/experiment-list')
   }
 
@@ -103,7 +107,7 @@
       resetForm()
       return
     }
-    ;(inst?.proxy as IComponentProxy).$modal
+    ;(inst! as IComponentProxy).$modal
       .confirm(`取消后将不会保存您填写的信息，是否要取消？`)
       .then(() => {
         resetForm()
@@ -111,7 +115,7 @@
           location.reload()
         })
       })
-      .catch(err => {
+      .catch((err: any) => {
         console.error(err)
       })
   }
@@ -158,14 +162,17 @@
   const getExpDetail = () => {
     detailExperiment({ experimentId: expId.value }).then(res => {
       form.value.versions = res.data.versions
-      form.value.baseInfo = {
+      const baseInfo = {
         ...res.data,
         dateArr: [res.data.startTime, res.data.endTime],
       }
-      Reflect.deleteProperty(form.value.baseInfo, 'versions')
+      Reflect.deleteProperty(baseInfo, 'versions')
+      form.value.baseInfo = baseInfo
       form.value.audience = {
         experimentTrafficWeight: res.data.experimentTrafficWeight,
       }
+      // TODO: label字段数据回填,由于有第三层组件，这里使用 inject
+      // form.value.label = {}
     })
   }
 
@@ -191,7 +198,7 @@
 </script>
 <style lang="scss">
   .exp-add-container {
-    width: 50rem;
+    width: 55rem;
     margin: 0 auto;
   }
   .exp-btn-group {

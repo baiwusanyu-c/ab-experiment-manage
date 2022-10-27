@@ -305,3 +305,7 @@ export function numDivision(num1: number, num2: number) {
   const baseNum4 = Number(num2.toString().replace('.', ''))
   return (baseNum3 / baseNum4) * 10 ** (baseNum2 - baseNum1)
 }
+
+export function jsonClone(val: any) {
+  return JSON.parse(JSON.stringify(val))
+}

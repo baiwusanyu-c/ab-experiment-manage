@@ -32,11 +32,11 @@
     ]
   },
   "dependencies": {
-    "@element-plus/icons-vue": "1.1.4",
+    "@element-plus/icons-vue": "^2.0.10",
     "@vueuse/core": "8.5.0",
     "axios": "0.26.1",
     "echarts": "5.3.3",
-    "element-plus": "2.1.8",
+    "element-plus": "^2.2.19",
     "file-saver": "2.0.5",
     "fuse.js": "6.5.3",
     "js-cookie": "3.0.1",

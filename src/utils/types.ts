@@ -103,11 +103,17 @@ export interface IVersionParams {
 export interface IAudienceInfo {
   experimentTrafficWeight?: number
 }
-
+export interface ILabelForm {
+  labelId: number | string
+  labelAction: number | string
+  labelRelationship: number | string
+  labelValue: string
+}
 export interface IExpAddEditModel {
   baseInfo?: IExpBaseInfo
   versions?: Array<IVersionInfoItem>
   audience?: IAudienceInfo
+  label?: Array<ILabelForm>
 }
 export declare type TExpAddEditFrom = IExpBaseInfo & IVersionInfo & IAudienceInfo
 
@@ -125,4 +131,32 @@ export interface IReportBase {
     totalPerson: number
     trafficWeight: number
   }>
+}
+
+export interface IRelationOption {
+  label: string
+  function: string
+}
+export interface IFilterLabelValItem {
+  labelId?: string
+  labelName?: string
+  labelNameCN?: string
+  labelType?: string
+}
+export interface IFilterLbName extends IFilterLabelValItem {
+  label?: string
+}
+
+export interface IFilterItem {
+  labelName: IFilterLbName
+  labelValue: Array<string>
+  relateId: string
+  loading: boolean
+  filter: Array<IFilterItem>
+}
+
+export interface IFilterItemOption {
+  isFilter: boolean
+  index: number
+  filterIndex?: number
 }

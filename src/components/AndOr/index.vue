@@ -40,6 +40,7 @@
     position: relative;
     width: 1.7rem;
     height: auto;
+    margin: 0 0.5rem;
     .and-or--btn__group {
       border: 1px solid #409eff;
       border-radius: 4px;
