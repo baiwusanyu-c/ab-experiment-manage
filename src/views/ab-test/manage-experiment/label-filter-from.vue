@@ -9,7 +9,6 @@
             v-model="filterFormList[index]"
             :option="{ isFilter: false, index }"
             :show-add="filterFormList.length > 1"
-            :relation-option="relationOption"
             @delete="deleteItem"
             @add="addFilterItem" />
           <div v-show="item.filter.length > 0" class="filter-col">
@@ -20,7 +19,6 @@
                 v-model="filterFormList[index].filter[filterIndex]"
                 :option="{ isFilter: true, index, filterIndex }"
                 :show-add="filterIndex === 0"
-                :relation-option="relationOption"
                 @delete="deleteItem"
                 @add="addFilterItem" />
             </div>
@@ -37,24 +35,24 @@
   import AndOr from '../../../components/AndOr'
   import { jsonClone } from '../../../utils/ruoyi'
   import LabelFilterFromItem from './label-filter-from-item.vue'
-  import type { IFilterItem, IFilterItemOption, IRelationOption } from '../../../utils/types'
+  import type { IFilterItem, IFilterItemOption } from '../../../utils/types'
 
   // TODO: 且或
   // TODO: 父级注入最终表单变量
-  // TODO: 列表獲取
+  // TODO: 列表獲取 1
   // TODO: 表單數據結構轉換
   // TODO: 編輯時數據結構轉換
-  // TODO: 表单校验
+  // TODO: 表单校验 2
   // TODO: 编辑
   // TODO: 创建
   const mock = [
     {
       labelName: {
         labelId: '1',
-        label: 'test1',
+        label: 'userCity',
       },
       labelValue: ['杭州', '成都', '广州'],
-      relateId: '1',
+      relateId: 'relative_time',
       loading: false,
       filter: [],
     },
@@ -134,25 +132,6 @@
     filterFormList.value[index] = jsonClone(filterFormList.value[index].filter[0])
     filterFormList.value[index].filter = []
   }
-
-  /******************************************* 关系规则 ******************************************/
-  const relationOption = ref<Array<IRelationOption>>([])
-  /**
-   * 获取关系规则列表
-   */
-  const getRelateOption = () => {
-    relationOption.value = [
-      {
-        label: 'test1',
-        function: '1',
-      },
-      {
-        label: 'test2',
-        function: '2',
-      },
-    ]
-  }
-  getRelateOption()
 </script>
 
 <style lang="scss">

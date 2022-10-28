@@ -119,3 +119,27 @@ export function dailyReport(data: { indicatorsName: string; experimentId: string
     data,
   })
 }
+
+export function getLabelFunction(data: { labelType: string }) {
+  return request({
+    url: 'label/function',
+    method: 'post',
+    data,
+  })
+}
+
+export function getLabelValue(data: { labelId: string }) {
+  return request({
+    url: 'label/value',
+    method: 'post',
+    data,
+  })
+}
+
+export function getLabelList(data: { labelNameCN: string }) {
+  return request({
+    url: 'label/list',
+    method: 'post',
+    data,
+  })
+}

@@ -198,7 +198,7 @@
 </script>
 <style lang="scss">
   .exp-add-container {
-    width: 55rem;
+    width: 57rem;
     margin: 0 auto;
   }
   .exp-btn-group {
