@@ -57,6 +57,7 @@
   const proxy = getCurrentInstance()?.proxy
   const { setFilterItemFrom, getFilterItemFrom } = useLabelNameOption(store)
   // TODO: 版本锁定 1
+  // TODO: labelType 和 labelName 字段 实验创建、编辑时添加这个字段 2
   // TODO: 编辑
   // TODO: 创建
   // TODO: 各个类型labelValue 测试
