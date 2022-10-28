@@ -1,5 +1,13 @@
 <template>
   <div class="label-filter-form">
+    <p
+      class="op-btn"
+      role="button"
+      :class="filterFormList.length >= 20 ? 'txt__disabled' : ''"
+      style="width: fit-content"
+      @click="addItem">
+      + 添加筛选
+    </p>
     <div class="filter-col">
       <and-or v-if="filterFormList.length > 1"></and-or>
       <div>
@@ -18,7 +26,7 @@
                 v-for="(filterItems, filterIndex) in item.filter"
                 v-model="filterFormList[index].filter[filterIndex]"
                 :option="{ isFilter: true, index, filterIndex }"
-                :show-add="filterIndex === 0"
+                :show-add="filterIndex === 0 && item.filter.length < 20"
                 @delete="deleteItem"
                 @add="addFilterItem" />
             </div>
@@ -26,25 +34,25 @@
         </div>
       </div>
     </div>
-    <p class="op-btn" role="button" style="width: fit-content" @click="addItem">+ 添加筛选</p>
+    <span v-if="verInfo" class="label-filter--text__error">{{ verInfo }}</span>
   </div>
 </template>
 
 <script lang="ts" setup name="LabelFilterFrom">
-  import { ref } from 'vue'
+  import { getCurrentInstance, ref, watch } from 'vue'
   import AndOr from '../../../components/AndOr'
   import { jsonClone } from '../../../utils/ruoyi'
   import LabelFilterFromItem from './label-filter-from-item.vue'
-  import type { IFilterItem, IFilterItemOption } from '../../../utils/types'
+  import type { IComponentProxy, IFilterItem, IFilterItemOption } from '../../../utils/types'
 
+  const proxy = getCurrentInstance()?.proxy
   // TODO: 且或
   // TODO: 父级注入最终表单变量
-  // TODO: 列表獲取 1
   // TODO: 表單數據結構轉換
   // TODO: 編輯時數據結構轉換
-  // TODO: 表单校验 2
   // TODO: 编辑
   // TODO: 创建
+  // TODO: 各个类型labelValue 测试
   const mock = [
     {
       labelName: {
@@ -57,7 +65,7 @@
       filter: [],
     },
   ] as Array<IFilterItem>
-  const filterFormList = ref<Array<IFilterItem>>(mock)
+  const filterFormList = ref<Array<IFilterItem>>([])
   const filterItem = {
     labelName: {
       labelId: '',
@@ -69,6 +77,44 @@
     filter: [],
   } as IFilterItem
 
+  const verInfo = ref<string>('')
+  const verForm = () => {
+    verInfo.value = ''
+    if (filterFormList.value.length === 0) {
+      verInfo.value = '请添加筛选条件'
+      return
+    }
+
+    const verItem = (item: IFilterItem) => {
+      if (!item.labelName.labelId) {
+        verInfo.value = '请添加标签'
+        return
+      }
+      if (!item.relateId || item.labelValue.length === 0) {
+        verInfo.value = '请完善条件规则'
+      }
+    }
+    filterFormList.value.forEach((val: IFilterItem) => {
+      if (val.filter.length === 0) {
+        verItem(val)
+      } else {
+        val.filter.forEach((filterVal: IFilterItem) => {
+          verItem(filterVal)
+        })
+      }
+    })
+  }
+
+  const init = () => {
+    verForm()
+  }
+  init()
+
+  watch(filterFormList.value, () => {
+    // 校验
+    verForm()
+    // 转换结构，赋值到父级表单
+  })
   /******************************************* 增刪 item ******************************************/
 
   /**
@@ -85,7 +131,10 @@
       filterFormList.value[index].filter.push(item)
       return
     }
-    if (filterFormList.value[index].filter.length >= 20) return
+    if (filterFormList.value[index].filter.length >= 20) {
+      ;(proxy! as IComponentProxy).$modal.msgError('不可超过 20 个')
+      return
+    }
     filterFormList.value[index].filter.push(item)
   }
 
@@ -116,7 +165,10 @@
    * 增加筛选
    */
   const addItem = () => {
-    if (filterFormList.value.length >= 20) return
+    if (filterFormList.value.length >= 20) {
+      ;(proxy! as IComponentProxy).$modal.msgError('不可超过 20 个')
+      return
+    }
     filterFormList.value.push(jsonClone(filterItem))
   }
   /**
@@ -139,9 +191,17 @@
     .filter-col {
       height: auto;
       margin: 1rem 0;
-      min-height: 100px;
+      min-height: 60px;
       display: flex;
       flex-direction: row;
+    }
+    .label-filter--text__error {
+      font-size: 12px;
+      color: #f56c6c;
+    }
+    .txt__disabled {
+      cursor: not-allowed;
+      color: #999;
     }
   }
 </style>
