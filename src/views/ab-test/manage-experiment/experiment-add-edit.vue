@@ -55,6 +55,8 @@
   import cache from '../../../plugins/cache'
   import { createExperiment, detailExperiment, editExperiment } from '../../../api/ab-test/ab-test'
   import { useAbtest } from '../../../hook/use-abtest'
+  import { useLabelNameOption } from '../../../store/modules/filter-item'
+  import store from '../../../store'
   import BaseInfo from './base-info.vue'
   import VersionInfo from './version-info.vue'
   import TargetAudience from './target-audience.vue'
@@ -72,12 +74,15 @@
 
   const router = useRouter()
   const { handleDateArr } = useAbtest()
+  const { getFilterItemFrom } = useLabelNameOption(store)
   const handleSubmit = () => {
+    debugger
+    form.value.labelData = JSON.stringify(getFilterItemFrom())
     let params = {
       ...form.value.baseInfo,
       ...form.value.audience,
       versions: form.value.versions,
-      label: form.value.label,
+      labelData: form.value.labelData,
     }
     params = handleDateArr(params)
     if (route.query.isEdit) {
@@ -171,8 +176,8 @@
       form.value.audience = {
         experimentTrafficWeight: res.data.experimentTrafficWeight,
       }
-      // TODO: label字段数据回填,由于有第三层组件，这里使用 inject
-      // form.value.label = {}
+      // TODO: labelData 字段数据回填,由于有第三层组件，这里使用 inject
+      // form.value.labelData = {}
     })
   }
 

@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { IFilterLbName } from '../../utils/types'
+import type { IFilerFrom, IFilterLbName } from '../../utils/types'
+
 // 提供一个option，用于select，避免每个组件渲染都是独立的 option
 // 否则组件层级转换后，由于option是新的，导致回显失败
 export const useLabelNameOption = defineStore('routerInfo', () => {
@@ -8,5 +9,21 @@ export const useLabelNameOption = defineStore('routerInfo', () => {
   const setLabelNameOption = (data: Array<IFilterLbName>) => {
     labelNameOption.value = data
   }
-  return { labelNameOption, setLabelNameOption }
+
+  const filterItemFrom = ref<IFilerFrom>({})
+
+  const setFilterItemFrom = (data: IFilerFrom) => {
+    filterItemFrom.value = data
+  }
+
+  const getFilterItemFrom = (): IFilerFrom => {
+    return filterItemFrom.value
+  }
+  return {
+    labelNameOption,
+    setFilterItemFrom,
+    filterItemFrom,
+    setLabelNameOption,
+    getFilterItemFrom,
+  }
 })

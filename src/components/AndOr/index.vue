@@ -3,15 +3,15 @@
     <div class="and-or--line"></div>
     <div class="and-or--btn__group">
       <button
-        :class="curRelation === 1 ? 'and-or-btn__active' : ''"
+        :class="curRelation === 'and' ? 'and-or-btn__active' : ''"
         type="button"
-        @click="handleRelation(1)">
+        @click="handleRelation('and')">
         且
       </button>
       <button
-        :class="curRelation === 2 ? 'and-or-btn__active' : ''"
+        :class="curRelation === 'or' ? 'and-or-btn__active' : ''"
         type="button"
-        @click="handleRelation(2)">
+        @click="handleRelation('or')">
         或
       </button>
     </div>
@@ -23,13 +23,13 @@
   import { ref } from 'vue'
   const props = defineProps({
     modelValue: {
-      type: Number,
-      default: 1,
+      type: String,
+      default: 'and',
     },
   })
   const emit = defineEmits(['update:modelValue'])
-  const curRelation = ref<number>(props.modelValue)
-  const handleRelation = (val: number) => {
+  const curRelation = ref<string>(props.modelValue)
+  const handleRelation = (val: string) => {
     curRelation.value = val
     emit('update:modelValue', val)
   }

@@ -5,7 +5,7 @@
       <el-radio :label="1" size="large">全部用户</el-radio>
       <el-radio :label="2" size="large">受众用户筛选</el-radio>
     </el-radio-group>
-    <label-filter-from v-if="showFilter === 2"></label-filter-from>
+    <label-filter-from v-if="showFilter === 2" @next="handleEmitEvt"></label-filter-from>
 
     <p class="ta-title">实验流量分配 (%)</p>
     <el-slider
@@ -133,7 +133,10 @@
   /************************ 双向绑定相关 ****************************/
 
   const emit = defineEmits(['update:audience', 'update:versions', 'next'])
-  emit('next', true)
+  const handleEmitEvt = (val: boolean) => {
+    emit('next', val)
+  }
+  handleEmitEvt(true)
   const color = ref<Array<string>>([])
   watch(
     () => props.versions,
@@ -156,10 +159,10 @@
         audienceForm.value = props.audience
         nextTick(() => {
           if (!verFrom()) {
-            emit('next', true)
+            handleEmitEvt(true)
             return
           }
-          emit('next', false)
+          handleEmitEvt(false)
         })
       }
     },
@@ -168,10 +171,10 @@
   const proxy = getCurrentInstance()?.proxy
   const handleChange = () => {
     if (!verFrom()) {
-      emit('next', true)
+      handleEmitEvt(true)
       return
     }
-    emit('next', false)
+    handleEmitEvt(false)
     emit('update:audience', audienceForm.value)
     emit('update:versions', versionsForm.value)
     nextTick(() => {

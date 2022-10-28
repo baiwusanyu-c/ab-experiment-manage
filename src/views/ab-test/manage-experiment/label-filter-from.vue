@@ -9,7 +9,7 @@
       + 添加筛选
     </p>
     <div class="filter-col">
-      <and-or v-if="filterFormList.length > 1"></and-or>
+      <and-or v-if="filterFormList.length > 1" v-model="relation"></and-or>
       <div>
         <div v-for="(item, index) in filterFormList">
           <label-filter-from-item
@@ -20,7 +20,7 @@
             @delete="deleteItem"
             @add="addFilterItem" />
           <div v-show="item.filter.length > 0" class="filter-col">
-            <and-or></and-or>
+            <and-or v-model="item.relationFilter"></and-or>
             <div>
               <label-filter-from-item
                 v-for="(filterItems, filterIndex) in item.filter"
@@ -39,32 +39,27 @@
 </template>
 
 <script lang="ts" setup name="LabelFilterFrom">
-  import { getCurrentInstance, ref, watch } from 'vue'
+  import { getCurrentInstance, onBeforeUnmount, ref, watch } from 'vue'
   import AndOr from '../../../components/AndOr'
   import { jsonClone } from '../../../utils/ruoyi'
+  import { useLabelNameOption } from '../../../store/modules/filter-item'
+  import store from '../../../store'
   import LabelFilterFromItem from './label-filter-from-item.vue'
-  import type { IComponentProxy, IFilterItem, IFilterItemOption } from '../../../utils/types'
+  import type {
+    IComponentProxy,
+    IFilterFromBase,
+    IFilterFromConditions,
+    IFilterItem,
+    IFilterItemOption,
+  } from '../../../utils/types'
 
   const proxy = getCurrentInstance()?.proxy
-  // TODO: 且或
-  // TODO: 父级注入最终表单变量
-  // TODO: 表單數據結構轉換
+
   // TODO: 編輯時數據結構轉換
   // TODO: 编辑
   // TODO: 创建
   // TODO: 各个类型labelValue 测试
-  const mock = [
-    {
-      labelName: {
-        labelId: '1',
-        label: 'userCity',
-      },
-      labelValue: ['杭州', '成都', '广州'],
-      relateId: 'relative_time',
-      loading: false,
-      filter: [],
-    },
-  ] as Array<IFilterItem>
+  const relation = ref<string>('and')
   const filterFormList = ref<Array<IFilterItem>>([])
   const filterItem = {
     labelName: {
@@ -75,34 +70,51 @@
     labelValue: [],
     loading: false,
     filter: [],
+    relationFilter: 'and',
   } as IFilterItem
 
+  const emit = defineEmits(['next'])
   const verInfo = ref<string>('')
   const verForm = () => {
     verInfo.value = ''
     if (filterFormList.value.length === 0) {
       verInfo.value = '请添加筛选条件'
+      emit('next', true)
       return
     }
-
-    const verItem = (item: IFilterItem) => {
-      if (!item.labelName.labelId) {
-        verInfo.value = '请添加标签'
-        return
+    try {
+      const verItem = (item: IFilterItem) => {
+        if (!item.labelName.labelId) {
+          verInfo.value = '请添加标签'
+          emit('next', true)
+          throw new Error()
+        }
+        const isUnNeedValue =
+          item.relateId === 'valuable' ||
+          item.relateId === 'no_valuable' ||
+          item.relateId === 'true' ||
+          item.relateId === 'false'
+        if (!item.relateId || (item.labelValue.length === 0 && !isUnNeedValue)) {
+          verInfo.value = '请完善条件规则'
+          emit('next', true)
+          throw new Error()
+        }
       }
-      if (!item.relateId || item.labelValue.length === 0) {
-        verInfo.value = '请完善条件规则'
-      }
+      filterFormList.value.forEach((val: IFilterItem) => {
+        if (val.filter.length === 0) {
+          verItem(val)
+        } else {
+          val.filter.forEach((filterVal: IFilterItem) => {
+            verItem(filterVal)
+          })
+        }
+      })
+    } catch (e) {
+      console.warn(e)
     }
-    filterFormList.value.forEach((val: IFilterItem) => {
-      if (val.filter.length === 0) {
-        verItem(val)
-      } else {
-        val.filter.forEach((filterVal: IFilterItem) => {
-          verItem(filterVal)
-        })
-      }
-    })
+    if (!verInfo.value) {
+      emit('next', false)
+    }
   }
 
   const init = () => {
@@ -114,6 +126,46 @@
     // 校验
     verForm()
     // 转换结构，赋值到父级表单
+    if (!verInfo.value) {
+      transformForm()
+    }
+  })
+
+  const transformForm = () => {
+    const form = {
+      relation: relation.value,
+      filters: [] as Array<IFilterFromBase>,
+      conditions: [] as Array<IFilterFromConditions>,
+    }
+    filterFormList.value.forEach(value => {
+      if (value.filter.length > 0) {
+        const filterContent = {
+          relation: value.relationFilter,
+          conditions: [] as Array<IFilterFromConditions>,
+        }
+        value.filter.forEach(filterItems => {
+          filterContent.conditions.push({
+            labelId: filterItems.labelName.labelId!,
+            function: filterItems.relateId,
+            params: filterItems.labelValue,
+          })
+        })
+        form.filters.push(filterContent)
+      } else {
+        form.conditions.push({
+          labelId: value.labelName.labelId!,
+          function: value.relateId,
+          params: value.labelValue,
+        })
+      }
+    })
+    // 转换后最终在爷组件 experiment-add-edit 中提交，通过 pinia 传递
+    const { setFilterItemFrom } = useLabelNameOption(store)
+    setFilterItemFrom(form)
+  }
+
+  onBeforeUnmount(() => {
+    emit('next', false)
   })
   /******************************************* 增刪 item ******************************************/
 
