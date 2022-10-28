@@ -22,6 +22,7 @@
           v-if="curStep === 3"
           v-model:versions="form.versions"
           v-model:audience="form.audience"
+          :has-label-data="form.labelData ? 2 : 1"
           :is-edit="isEdit"
           @next="handleCanNext">
         </target-audience>
@@ -74,9 +75,8 @@
 
   const router = useRouter()
   const { handleDateArr } = useAbtest()
-  const { getFilterItemFrom } = useLabelNameOption(store)
+  const { getFilterItemFrom, setFilterItemFrom } = useLabelNameOption(store)
   const handleSubmit = () => {
-    debugger
     form.value.labelData = JSON.stringify(getFilterItemFrom())
     let params = {
       ...form.value.baseInfo,
@@ -176,8 +176,24 @@
       form.value.audience = {
         experimentTrafficWeight: res.data.experimentTrafficWeight,
       }
-      // TODO: labelData 字段数据回填,由于有第三层组件，这里使用 inject
-      // form.value.labelData = {}
+      // TODO: labelData 字段数据回填,由于有第三层组件，这里使用 pinia
+      // form.value.labelData = res.data.labelData
+      // setFilterItemFrom(JSON.parse(res.data.labelData))
+      const mock = {
+        relation: 'and',
+        filters: [
+          {
+            relation: 'and',
+            conditions: [
+              { labelId: '1', function: 'equal', params: ['成都'] },
+              { labelId: '1', function: 'valuable', params: [] },
+            ],
+          },
+        ],
+        conditions: [{ labelId: '1', function: 'equal', params: ['北京', '成都'] }],
+      }
+      form.value.labelData = JSON.stringify(mock)
+      setFilterItemFrom(mock)
     })
   }
 

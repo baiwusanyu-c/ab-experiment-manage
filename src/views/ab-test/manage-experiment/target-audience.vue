@@ -87,9 +87,13 @@
       type: String,
       default: '',
     },
+    hasLabelData: {
+      type: Number,
+      default: 1,
+    },
   })
 
-  const showFilter = ref<number>(1)
+  const showFilter = ref<number>(props.hasLabelData)
   /************************ 表单校验相关 ****************************/
 
   const showErrVer = ref<boolean>(false)

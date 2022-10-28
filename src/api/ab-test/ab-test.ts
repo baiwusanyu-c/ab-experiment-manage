@@ -125,6 +125,9 @@ export function getLabelFunction(data: { labelType: string }) {
     url: 'label/function',
     method: 'post',
     data,
+    params: {
+      complicating: true,
+    },
   })
 }
 
@@ -133,6 +136,9 @@ export function getLabelValue(data: { labelId: string }) {
     url: 'label/value',
     method: 'post',
     data,
+    params: {
+      complicating: true,
+    },
   })
 }
 
@@ -141,5 +147,8 @@ export function getLabelList(data: { labelNameCN: string }) {
     url: 'label/list',
     method: 'post',
     data,
+    params: {
+      complicating: true,
+    },
   })
 }

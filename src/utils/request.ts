@@ -53,6 +53,7 @@ service.interceptors.request.use(
         const sTime = sessionObj.time // 请求时间
         const interval = 1000 // 间隔时间(ms)，小于此时间视为重复提交
         if (
+          !(config.params && config.params.complicating) &&
           sData === requestObj.data &&
           requestObj.time - sTime < interval &&
           sUrl === requestObj.url

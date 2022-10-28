@@ -41,12 +41,13 @@
 <script lang="ts" setup name="LabelFilterFrom">
   import { getCurrentInstance, onBeforeUnmount, ref, watch } from 'vue'
   import AndOr from '../../../components/AndOr'
-  import { jsonClone } from '../../../utils/ruoyi'
+  import { isEmptyObj, jsonClone } from '../../../utils/ruoyi'
   import { useLabelNameOption } from '../../../store/modules/filter-item'
   import store from '../../../store'
   import LabelFilterFromItem from './label-filter-from-item.vue'
   import type {
     IComponentProxy,
+    IFilerFrom,
     IFilterFromBase,
     IFilterFromConditions,
     IFilterItem,
@@ -54,8 +55,8 @@
   } from '../../../utils/types'
 
   const proxy = getCurrentInstance()?.proxy
-
-  // TODO: 編輯時數據結構轉換
+  const { setFilterItemFrom, getFilterItemFrom } = useLabelNameOption(store)
+  // TODO: 版本锁定 1
   // TODO: 编辑
   // TODO: 创建
   // TODO: 各个类型labelValue 测试
@@ -117,11 +118,6 @@
     }
   }
 
-  const init = () => {
-    verForm()
-  }
-  init()
-
   watch(filterFormList.value, () => {
     // 校验
     verForm()
@@ -130,7 +126,9 @@
       transformForm()
     }
   })
-
+  /**
+   * 提交表单 转换数据结构
+   */
   const transformForm = () => {
     const form = {
       relation: relation.value,
@@ -160,9 +158,55 @@
       }
     })
     // 转换后最终在爷组件 experiment-add-edit 中提交，通过 pinia 传递
-    const { setFilterItemFrom } = useLabelNameOption(store)
     setFilterItemFrom(form)
   }
+
+  const reTransformForm = (data: IFilerFrom) => {
+    relation.value = data.relation || 'and'
+    data.conditions?.forEach(value => {
+      const conditions = jsonClone(filterItem)
+      conditions.labelName.labelId = value.labelId
+      // TODO: label ?? labelType??
+      //  conditions.labelName.label = value.labelId
+      // conditions.labelName.labelType = value.labelType
+      conditions.labelName.labelType = 'string'
+      conditions.labelName.label = 'userCity'
+      conditions.labelValue = value.params
+      conditions.relateId = value.function
+      filterFormList.value.push(conditions)
+    })
+
+    data.filters?.forEach((value: IFilterFromBase) => {
+      const conditions = jsonClone(filterItem)
+      value.conditions?.forEach(filterVal => {
+        conditions.filter.push({
+          labelName: {
+            labelId: filterVal.labelId,
+            // TODO: label ?? labelType??
+            //  label: filterVal.labelId,
+            //  labelType: filterVal.labelType,
+            labelType: 'string',
+            label: 'userCity',
+          },
+          relateId: filterVal.function,
+          labelValue: filterVal.params,
+          loading: false,
+          relationFilter: value.relation,
+        })
+      })
+      filterFormList.value.push(conditions)
+    })
+  }
+
+  const init = () => {
+    verForm()
+    // 编辑时，转换数据结构
+    const editData = getFilterItemFrom()
+    if (!isEmptyObj(editData)) {
+      reTransformForm(editData)
+    }
+  }
+  init()
 
   onBeforeUnmount(() => {
     emit('next', false)

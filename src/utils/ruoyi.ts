@@ -309,3 +309,5 @@ export function numDivision(num1: number, num2: number) {
 export function jsonClone(val: any) {
   return JSON.parse(JSON.stringify(val))
 }
+
+export const isEmptyObj = (item: unknown): boolean => JSON.stringify(item) === '{}'
